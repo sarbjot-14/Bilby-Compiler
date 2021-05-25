@@ -8,6 +8,7 @@ import parseTree.nodeTypes.BooleanConstantNode;
 import parseTree.nodeTypes.MainBlockNode;
 import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.ErrorNode;
+import parseTree.nodeTypes.FloatingConstantNode;
 import parseTree.nodeTypes.IdentifierNode;
 import parseTree.nodeTypes.IntegerConstantNode;
 import parseTree.nodeTypes.NewlineNode;
@@ -315,7 +316,7 @@ public class Parser {
 		return token.isLextant(Punctuator.SUBTRACT);
 	}
 	
-	// literal -> number | identifier | booleanConstant
+	// literal -> intConst | floatConst | identifier | booleanConstant
 	private ParseNode parseLiteral() {
 		if(!startsLiteral(nowReading)) {
 			return syntaxErrorNode("literal");
@@ -323,6 +324,9 @@ public class Parser {
 		
 		if(startsIntLiteral(nowReading)) {
 			return parseIntLiteral();
+		}
+		if(startsFloatLiteral(nowReading)) {
+			return parseFloatLiteral();
 		}
 		if(startsIdentifier(nowReading)) {
 			return parseIdentifier();
@@ -334,10 +338,10 @@ public class Parser {
 		return syntaxErrorNode("literal");
 	}
 	private boolean startsLiteral(Token token) {
-		return startsIntLiteral(token) || startsIdentifier(token) || startsBooleanLiteral(token);
+		return startsIntLiteral(token) || startsFloatLiteral(token) || startsIdentifier(token) || startsBooleanLiteral(token);
 	}
 
-	// number (literal)
+	// integer (literal)
 	private ParseNode parseIntLiteral() {
 		if(!startsIntLiteral(nowReading)) {
 			return syntaxErrorNode("integer constant");
@@ -346,8 +350,20 @@ public class Parser {
 		return new IntegerConstantNode(previouslyRead);
 	}
 	private boolean startsIntLiteral(Token token) {
-		return token instanceof NumberToken;
+		return token instanceof IntegerConstantToken;
 	}
+	
+	// floating (literal)
+		private ParseNode parseFloatLiteral() {
+			if(!startsFloatLiteral(nowReading)) {
+				return syntaxErrorNode("floating constant");
+			}
+			readToken();
+			return new FloatingConstantNode(previouslyRead);
+		}
+		private boolean startsFloatLiteral(Token token) {
+			return token instanceof FloatingConstantToken;
+		}
 
 	// identifier (terminal)
 	private ParseNode parseIdentifier() {

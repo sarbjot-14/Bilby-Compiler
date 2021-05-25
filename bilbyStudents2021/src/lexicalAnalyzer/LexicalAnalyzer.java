@@ -7,15 +7,18 @@ import inputHandler.InputHandler;
 import inputHandler.LocatedChar;
 import inputHandler.LocatedCharStream;
 import inputHandler.PushbackCharStream;
+import tokens.FloatingConstantToken;
 import tokens.IdentifierToken;
 import tokens.LextantToken;
 import tokens.NullToken;
-import tokens.NumberToken;
+import tokens.IntegerConstantToken;
 import tokens.Token;
 
 import static lexicalAnalyzer.PunctuatorScanningAids.*;
 
 public class LexicalAnalyzer extends ScannerImp implements Scanner {
+	private static final char DECIMAL_POINT = '.';
+
 	public static LexicalAnalyzer make(String filename) {
 		InputHandler handler = InputHandler.fromFilename(filename);
 		PushbackCharStream charStream = PushbackCharStream.make(handler);
@@ -62,15 +65,31 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 	
 	
 	//////////////////////////////////////////////////////////////////////////////
-	// Integer lexical analysis	
+	// Integer and Floating lexical analysis	
 
 	private Token scanNumber(LocatedChar firstChar) {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(firstChar.getCharacter());
 		appendSubsequentDigits(buffer);
+		if(input.peek().getCharacter() == DECIMAL_POINT) {
+			LocatedChar decimal_point = input.next();
+			buffer.append(decimal_point.getCharacter());
+			if(input.peek().isDigit()) {
+				appendSubsequentDigits(buffer);
+				return FloatingConstantToken.make(firstChar, buffer.toString());
+			}
+			else {
+				lexicalError(firstChar,"malformed floating literal");
+				return findNextToken();
+			}
+		}
+		else {
+			return IntegerConstantToken.make(firstChar, buffer.toString());
+		}
 		
-		return NumberToken.make(firstChar, buffer.toString());
 	}
+	
+
 	private void appendSubsequentDigits(StringBuffer buffer) {
 		LocatedChar c = input.next();
 		while(c.isDigit()) {
@@ -157,7 +176,12 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 	
 	//////////////////////////////////////////////////////////////////////////////
 	// Error-reporting	
-
+	private void lexicalError(LocatedChar firstChar, String message) {
+		BilbyLogger log = BilbyLogger.getLogger("compiler.lexicalAnalyzer");
+		log.severe("Lexical error:" +message+ " at "+ firstChar.getLocation());
+		
+	}
+	
 	private void lexicalError(LocatedChar ch) {
 		BilbyLogger log = BilbyLogger.getLogger("compiler.lexicalAnalyzer");
 		log.severe("Lexical error: invalid character " + ch);

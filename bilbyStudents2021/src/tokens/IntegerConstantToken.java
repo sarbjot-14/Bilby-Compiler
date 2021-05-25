@@ -2,10 +2,10 @@ package tokens;
 
 import inputHandler.Locator;
 
-public class NumberToken extends TokenImp {
+public class IntegerConstantToken extends TokenImp {
 	protected int value;
 	
-	protected NumberToken(Locator locator, String lexeme) {
+	protected IntegerConstantToken(Locator locator, String lexeme) {
 		super(locator, lexeme);
 	}
 	protected void setValue(int value) {
@@ -15,14 +15,14 @@ public class NumberToken extends TokenImp {
 		return value;
 	}
 	
-	public static NumberToken make(Locator locator, String lexeme) {
-		NumberToken result = new NumberToken(locator, lexeme);
+	public static IntegerConstantToken make(Locator locator, String lexeme) {
+		IntegerConstantToken result = new IntegerConstantToken(locator, lexeme);
 		result.setValue(Integer.parseInt(lexeme));
 		return result;
 	}
 	
 	@Override
 	protected String rawString() {
-		return "number, " + value;
+		return "integerConstant, " + value;
 	}
 }
