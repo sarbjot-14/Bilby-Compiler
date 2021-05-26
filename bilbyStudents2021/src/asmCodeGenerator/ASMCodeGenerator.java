@@ -139,7 +139,7 @@ public class ASMCodeGenerator {
 			if(node.getType() == PrimitiveType.INTEGER) {
 				code.add(LoadI);
 			}	
-			else if(node.getType() == PrimitiveType.FLOATING) {
+			else if(node.getType() == PrimitiveType.FLOAT) {
 				code.add(LoadF);
 			}
 			else if(node.getType() == PrimitiveType.BOOLEAN) {
@@ -210,7 +210,7 @@ public class ASMCodeGenerator {
 			if(type == PrimitiveType.INTEGER) {
 				return StoreI;
 			}
-			if(type == PrimitiveType.FLOATING) {
+			if(type == PrimitiveType.FLOAT) {
 				return StoreF;
 			}
 			if(type == PrimitiveType.BOOLEAN) {
@@ -288,8 +288,18 @@ public class ASMCodeGenerator {
 			code.append(arg1);
 			code.append(arg2);
 			
-			ASMOpcode opcode = opcodeForOperator(node.getOperator());
-			code.add(opcode);							// type-dependent! (opcode is different for floats and for ints)
+			Object variant = node.getSignature().getVariant();
+			if(variant instanceof ASMOpcode) {
+				code.add((ASMOpcode)variant);
+					
+			}
+			
+			else {
+			}
+			
+			
+			//ASMOpcode opcode = opcodeForOperator(node.getOperator());
+			//code.add(opcode);							// type-dependent! (opcode is different for floats and for ints)
 		}
 		private ASMOpcode opcodeForOperator(Lextant lextant) {
 			assert(lextant instanceof Punctuator);
