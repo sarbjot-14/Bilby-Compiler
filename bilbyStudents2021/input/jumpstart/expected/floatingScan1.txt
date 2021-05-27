@@ -1,1 +1,1 @@
-Bad format specification encountered in "Printf" at location 8.
+1.230000

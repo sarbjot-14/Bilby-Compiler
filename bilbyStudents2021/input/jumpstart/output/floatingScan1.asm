@@ -6,8 +6,8 @@
         DataC        100                       
         DataC        0                         
         DLabel       $print-format-floating    
-        DataC        37                        %% "%F"
-        DataC        70                        
+        DataC        37                        %% "%f"
+        DataC        102                       
         DataC        0                         
         DLabel       $print-format-boolean     
         DataC        37                        %% "%s"

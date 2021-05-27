@@ -5,6 +5,10 @@
         DataC        37                        %% "%d"
         DataC        100                       
         DataC        0                         
+        DLabel       $print-format-floating    
+        DataC        37                        %% "%f"
+        DataC        102                       
+        DataC        0                         
         DLabel       $print-format-boolean     
         DataC        37                        %% "%s"
         DataC        115                       
@@ -81,37 +85,10 @@
         Jump         $$general-runtime-error   
         DLabel       $usable-memory-start      
         DLabel       $global-memory-block      
-        DataZ        12                        
+        DataZ        0                         
         Label        $$main                    
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% nickels
-        PushI        11                        
-        StoreI                                 
-        PushD        $global-memory-block      
-        PushI        4                         
-        Add                                    %% pennies
-        PushI        5                         
-        StoreI                                 
-        PushD        $global-memory-block      
-        PushI        8                         
-        Add                                    %% value
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% nickels
-        LoadI                                  
-        PushI        5                         
-        Multiply                               
-        PushD        $global-memory-block      
-        PushI        4                         
-        Add                                    %% pennies
-        LoadI                                  
-        Add                                    
-        StoreI                                 
-        PushD        $global-memory-block      
-        PushI        8                         
-        Add                                    %% value
-        LoadI                                  
+        PushI        45                        
+        Negate                                 
         PushD        $print-format-integer     
         Printf                                 
         PushD        $print-format-newline     

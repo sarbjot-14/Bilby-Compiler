@@ -87,9 +87,8 @@
         DLabel       $global-memory-block      
         DataZ        0                         
         Label        $$main                    
-        PushF        1.230000                  
-        PushF        2.340000                  
-        FAdd                                   
+        PushF        1.450000                  
+        Nop                                    
         PushD        $print-format-floating    
         Printf                                 
         PushD        $print-format-newline     

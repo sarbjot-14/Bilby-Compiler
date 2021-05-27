@@ -68,6 +68,10 @@ public class FunctionSignature {
 		return variableType.equals(valueType);
 	}
 	
+	public int getNumArguments() {
+		return paramTypes.length;
+	}
+	
 	// Null object pattern
 	private static FunctionSignature neverMatchedSignature = new FunctionSignature(1, PrimitiveType.ERROR) {
 		public boolean accepts(List<Type> types) {
@@ -106,5 +110,6 @@ public class FunctionSignature {
 			return neverMatchedSignature;
 		}
 	}
+	
 
 }

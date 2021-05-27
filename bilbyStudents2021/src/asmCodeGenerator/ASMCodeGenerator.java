@@ -226,14 +226,11 @@ public class ASMCodeGenerator {
 		public void visitLeave(OperatorNode node) {
 			Lextant operator = node.getOperator();
 			
-			if(operator == Punctuator.SUBTRACT) {
-				visitUnaryOperatorNode(node);
-			}
-			else if(operator == Punctuator.GREATER) {
+			if(operator == Punctuator.GREATER) {
 				visitComparisonOperatorNode(node, operator);
 			}
 			else {
-				visitNormalBinaryOperatorNode(node);
+				visitNormalOperatorNode(node);
 			}
 		}
 		private void visitComparisonOperatorNode(OperatorNode node,
@@ -271,22 +268,25 @@ public class ASMCodeGenerator {
 			code.add(Label, joinLabel);
 
 		}		
-		private void visitUnaryOperatorNode(OperatorNode node) {
+		private void visitNormalOperatorNode(OperatorNode node) {
 			newValueCode(node);
-			ASMCodeFragment arg1 = removeValueCode(node.child(0));
 			
-			code.append(arg1);
+			if(node.getSignature().getNumArguments() ==1) {
+				ASMCodeFragment arg1 = removeValueCode(node.child(0));
+				
+				code.append(arg1);
+			}
+			else if(node.getSignature().getNumArguments() ==2) {
+				ASMCodeFragment arg1 = removeValueCode(node.child(0));
+				ASMCodeFragment arg2 = removeValueCode(node.child(1));
+				
+				code.append(arg1);
+				code.append(arg2);
+			}
+			else {
+				throw new RuntimeException("numArguments > 2 in CodeGenerator.visitNormalOperatorNode");
+			}
 			
-			ASMOpcode opcode = opcodeForOperator(node.getOperator());
-			code.add(opcode);							// type-dependent! (opcode is different for floats and for ints)
-		}
-		private void visitNormalBinaryOperatorNode(OperatorNode node) {
-			newValueCode(node);
-			ASMCodeFragment arg1 = removeValueCode(node.child(0));
-			ASMCodeFragment arg2 = removeValueCode(node.child(1));
-			
-			code.append(arg1);
-			code.append(arg2);
 			
 			Object variant = node.getSignature().getVariant();
 			if(variant instanceof ASMOpcode) {
@@ -301,19 +301,6 @@ public class ASMCodeGenerator {
 			//ASMOpcode opcode = opcodeForOperator(node.getOperator());
 			//code.add(opcode);							// type-dependent! (opcode is different for floats and for ints)
 		}
-		private ASMOpcode opcodeForOperator(Lextant lextant) {
-			assert(lextant instanceof Punctuator);
-			Punctuator punctuator = (Punctuator)lextant;
-			switch(punctuator) {
-			case ADD: 	   		return Add;				// type-dependent!
-			case SUBTRACT:		return Negate;			// (unary subtract only) type-dependent!
-			case MULTIPLY: 		return Multiply;		// type-dependent!
-			default:
-				assert false : "unimplemented operator in opcodeForOperator";
-			}
-			return null;
-		}
-
 		///////////////////////////////////////////////////////////////////////////
 		// leaf nodes (ErrorNode not necessary)
 		public void visit(BooleanConstantNode node) {

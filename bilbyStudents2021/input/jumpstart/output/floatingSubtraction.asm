@@ -89,7 +89,7 @@
         Label        $$main                    
         PushF        1.230000                  
         PushF        2.340000                  
-        FAdd                                   
+        FSubtract                              
         PushD        $print-format-floating    
         Printf                                 
         PushD        $print-format-newline     
