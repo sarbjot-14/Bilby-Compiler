@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import asmCodeGenerator.codeStorage.ASMOpcode;
+import asmCodeGenerator.operators.GreaterCodeGenerator;
 import lexicalAnalyzer.Punctuator;
 import semanticAnalyzer.types.Type;
 import static semanticAnalyzer.types.PrimitiveType.*;
@@ -83,6 +84,12 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 			    new FunctionSignature(ASMOpcode.Subtract, INTEGER, INTEGER, INTEGER),
 			    new FunctionSignature(ASMOpcode.FSubtract, FLOAT, FLOAT, FLOAT)
 		);
+		
+		new FunctionSignatures(Punctuator.GREATER, 
+				new FunctionSignature(new GreaterCodeGenerator(ASMOpcode.Subtract, ASMOpcode.JumpPos),INTEGER,INTEGER,BOOLEAN),
+				new FunctionSignature(new GreaterCodeGenerator(ASMOpcode.FSubtract, ASMOpcode.JumpFPos), FLOAT, FLOAT, BOOLEAN)
+		);
+													
 		
 		// First, we use the operator itself (in this case the Punctuator ADD) as the key.
 		// Then, we give that key two signatures: one an (INT x INT -> INT) and the other

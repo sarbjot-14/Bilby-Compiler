@@ -62,6 +62,14 @@ public class ASMCodeFragment {
 		chunks.addAll(fragment.chunks);
 	}
 	
+	public void appendWithCodeType(ASMCodeFragment generated) {
+		append(generated);
+		codeType = generated.codeType;
+		
+		
+		
+	}
+	
 	public void add(ASMOpcode opcode, int operand, String comment) {
 		lastChunk().add(opcode, operand, comment);
 	}
@@ -184,5 +192,6 @@ public class ASMCodeFragment {
 	private static void error(String message) {
 		BilbyLogger log = BilbyLogger.getLogger("compiler.Optimizer");
 		log.severe("read error: " + message);
-	}	
+	}
+		
 }

@@ -1,10 +1,13 @@
 package asmCodeGenerator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import asmCodeGenerator.codeStorage.ASMOpcode;
+import asmCodeGenerator.operators.SimpleCodeGenerator;
 import asmCodeGenerator.runtime.RunTime;
 import lexicalAnalyzer.Lextant;
 import lexicalAnalyzer.Punctuator;
@@ -224,82 +227,36 @@ public class ASMCodeGenerator {
 		///////////////////////////////////////////////////////////////////////////
 		// expressions
 		public void visitLeave(OperatorNode node) {
-			Lextant operator = node.getOperator();
-			
-			if(operator == Punctuator.GREATER) {
-				visitComparisonOperatorNode(node, operator);
-			}
-			else {
-				visitNormalOperatorNode(node);
-			}
-		}
-		private void visitComparisonOperatorNode(OperatorNode node,
-				Lextant operator) {
-
-			ASMCodeFragment arg1 = removeValueCode(node.child(0));
-			ASMCodeFragment arg2 = removeValueCode(node.child(1));
-			
-			Labeller labeller = new Labeller("compare");
-			
-			String startLabel = labeller.newLabel("arg1");
-			String arg2Label  = labeller.newLabel("arg2");
-			String subLabel   = labeller.newLabel("sub");
-			String trueLabel  = labeller.newLabel("true");
-			String falseLabel = labeller.newLabel("false");
-			String joinLabel  = labeller.newLabel("join");
-			
-			newValueCode(node);
-			code.add(Label, startLabel);
-			code.append(arg1);
-			code.add(Label, arg2Label);
-			code.append(arg2);
-			code.add(Label, subLabel);
-			code.add(Subtract);
-			
-			code.add(JumpPos, trueLabel);
-			code.add(Jump, falseLabel);
-
-			code.add(Label, trueLabel);
-			code.add(PushI, 1);
-			code.add(Jump, joinLabel);
-			code.add(Label, falseLabel);
-			code.add(PushI, 0);
-			code.add(Jump, joinLabel);
-			code.add(Label, joinLabel);
-
-		}		
-		private void visitNormalOperatorNode(OperatorNode node) {
 			newValueCode(node);
 			
-			if(node.getSignature().getNumArguments() ==1) {
-				ASMCodeFragment arg1 = removeValueCode(node.child(0));
-				
-				code.append(arg1);
-			}
-			else if(node.getSignature().getNumArguments() ==2) {
-				ASMCodeFragment arg1 = removeValueCode(node.child(0));
-				ASMCodeFragment arg2 = removeValueCode(node.child(1));
-				
-				code.append(arg1);
-				code.append(arg2);
-			}
-			else {
-				throw new RuntimeException("numArguments > 2 in CodeGenerator.visitNormalOperatorNode");
-			}
 			
 			
 			Object variant = node.getSignature().getVariant();
 			if(variant instanceof ASMOpcode) {
+				for(ParseNode child:node.getChildren()) {
+					ASMCodeFragment arg = removeValueCode(child);
+					code.append(arg);
+				}
 				code.add((ASMOpcode)variant);
 					
 			}
 			
-			else {
+			else if(variant instanceof SimpleCodeGenerator) {
+				SimpleCodeGenerator generator = (SimpleCodeGenerator)variant;
+				List<ASMCodeFragment> args = new ArrayList<>();
+				for(ParseNode child:node.getChildren()) {
+					ASMCodeFragment arg = removeValueCode(child);
+					args.add(arg);
+				}
+				
+				ASMCodeFragment generated = generator.generate(node, args);
+				code.appendWithCodeType(generated);
+				
 			}
-			
-			
-			//ASMOpcode opcode = opcodeForOperator(node.getOperator());
-			//code.add(opcode);							// type-dependent! (opcode is different for floats and for ints)
+			else {
+				throw new RuntimeException("Varient unimplemented in ASMCodeGenerator Operator Nde");
+			}
+
 		}
 		///////////////////////////////////////////////////////////////////////////
 		// leaf nodes (ErrorNode not necessary)
