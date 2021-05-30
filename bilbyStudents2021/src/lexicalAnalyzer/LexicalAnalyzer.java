@@ -21,6 +21,8 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 	private static final char  EXPONENTIAL= 'E';
 	private static final char  PLUS= '+';
 	private static final char  MINUS= '-';
+	private static final char NEW_LINE = '\n';
+
 
 	public static LexicalAnalyzer make(String filename) {
 		InputHandler handler = InputHandler.fromFilename(filename);
@@ -51,6 +53,10 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		else if(isEndOfInput(ch)) {
 			return NullToken.make(ch);
 		}
+		else if(ch.isComment()) {
+			scanComment(ch);
+			return findNextToken();
+		}
 		else {
 			lexicalError(ch);
 			return findNextToken();
@@ -66,6 +72,20 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		return ch;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////
+	//  Comment lexical analysis	
+	private void scanComment(LocatedChar firstChar) {
+		firstChar.getCharacter();
+		LocatedChar c = input.next();
+		while(!c.isComment()  ) {
+			if(input.peek().getCharacter() == NEW_LINE) {
+				break;
+			}
+			c = input.next();
+		}
+		c = input.next();
+			
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////
 	// Integer and Floating lexical analysis	
