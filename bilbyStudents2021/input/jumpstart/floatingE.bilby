@@ -1,0 +1,7 @@
+main{
+
+	print 1.2E2 $n;
+	print 1.2E+2 $n;
+	print 1.2E-2 $n;
+	print 1.2E+21 $n;
+}

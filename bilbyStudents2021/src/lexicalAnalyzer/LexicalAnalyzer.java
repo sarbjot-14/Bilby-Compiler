@@ -18,6 +18,9 @@ import static lexicalAnalyzer.PunctuatorScanningAids.*;
 
 public class LexicalAnalyzer extends ScannerImp implements Scanner {
 	private static final char DECIMAL_POINT = '.';
+	private static final char  EXPONENTIAL= 'E';
+	private static final char  PLUS= '+';
+	private static final char  MINUS= '-';
 
 	public static LexicalAnalyzer make(String filename) {
 		InputHandler handler = InputHandler.fromFilename(filename);
@@ -76,6 +79,24 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 			buffer.append(decimal_point.getCharacter());
 			if(input.peek().isDigit()) {
 				appendSubsequentDigits(buffer);
+				if(input.peek().getCharacter() == EXPONENTIAL) {
+					LocatedChar exponential = input.next();
+					buffer.append(exponential.getCharacter());
+					if(input.peek().getCharacter() == PLUS || input.peek().getCharacter() == MINUS ) {
+						LocatedChar sign = input.next();
+						buffer.append(sign.getCharacter());
+					}
+					if(input.peek().isDigit()) {
+						appendSubsequentDigits(buffer);
+						
+					}
+					else {
+						lexicalError(exponential,"malformed exponential notation");
+						return findNextToken();
+					}
+					
+				}
+				
 				return FloatingConstantToken.make(firstChar, buffer.toString());
 			}
 			else {
