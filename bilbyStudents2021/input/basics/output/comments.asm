@@ -97,4 +97,9 @@
         Printf                                 
         PushD        $print-format-newline     
         Printf                                 
+        PushF        1.333300                  
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
         Halt                                   
