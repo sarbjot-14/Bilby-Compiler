@@ -181,7 +181,13 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		case '+':
 			return LextantToken.make(ch, "+", Punctuator.ADD);
 		case '>':
-			return LextantToken.make(ch, ">", Punctuator.GREATER);
+			if(ch.getCharacter()=='=') {
+				return LextantToken.make(ch, ">=", Punctuator.GREATER_THAN_EQUAL);
+			}
+			else {
+				
+				return LextantToken.make(ch, ">", Punctuator.GREATER);
+			}
 		case ':':
 			if(ch.getCharacter()=='=') {
 				return LextantToken.make(ch, ":=", Punctuator.ASSIGN);

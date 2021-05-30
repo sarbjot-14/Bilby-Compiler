@@ -1,0 +1,6 @@
+main{
+	print 1>=2 $n;
+	print 22>=11 $n;
+	print 25>=25 $n;
+	
+}

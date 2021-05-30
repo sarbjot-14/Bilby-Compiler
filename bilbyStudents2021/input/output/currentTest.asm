@@ -88,11 +88,14 @@
         DataZ        0                         
         Label        $$main                    
         Label        -compare-1-start          
-        PushF        124.300000                
-        PushF        66.200000                 
+        PushI        1                         
+        PushI        2                         
         Label        -compare-1-sub            
-        FSubtract                              
-        JumpFPos     -compare-1-true           
+        Subtract                               
+        JumpFalse    -compare-1-true           
+        Duplicate                              
+        JumpFalse    -compare-1-true           
+        JumpPos      -compare-1-true           
         Jump         -compare-1-false          
         Label        -compare-1-true           
         PushI        1                         
