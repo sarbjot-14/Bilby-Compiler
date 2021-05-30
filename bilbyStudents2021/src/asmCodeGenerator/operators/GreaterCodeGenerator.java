@@ -57,7 +57,7 @@ public class GreaterCodeGenerator implements SimpleCodeGenerator {
 		code.add(PushI, 0);
 		code.add(Jump, joinLabel);
 		code.add(Label, joinLabel);
-		return null;
+		return code;
 	}
 
 }

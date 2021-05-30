@@ -1,0 +1,11 @@
+main{
+	% this is a comment%
+	print 1.23 $n;  % testing comment%
+	% this is a comment%
+	
+	% this comment ends in new line%
+	
+	
+	
+	print 1.2222 $n;
+}

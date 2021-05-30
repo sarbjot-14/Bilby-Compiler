@@ -18,6 +18,8 @@ import static lexicalAnalyzer.PunctuatorScanningAids.*;
 
 public class LexicalAnalyzer extends ScannerImp implements Scanner {
 	private static final char DECIMAL_POINT = '.';
+	private static final char BACK_SLASH = '\\';
+	private static final char N = 'n';
 
 	public static LexicalAnalyzer make(String filename) {
 		InputHandler handler = InputHandler.fromFilename(filename);
@@ -48,6 +50,10 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		else if(isEndOfInput(ch)) {
 			return NullToken.make(ch);
 		}
+		else if(ch.isComment()) {
+			scanComment(ch);
+			return findNextToken();
+		}
 		else {
 			lexicalError(ch);
 			return findNextToken();
@@ -63,6 +69,23 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		return ch;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////
+	//  Comment lexical analysis	
+	private void scanComment(LocatedChar firstChar) {
+		firstChar.getCharacter();
+		LocatedChar c = input.next();
+		while(!c.isComment() ) {
+			if(input.peek().getCharacter() == BACK_SLASH) {
+				input.next();
+				if(input.peek().getCharacter() == 'n') {
+					break;
+				}
+			}
+			c = input.next();
+		}
+		c = input.next();
+		input.pushback(c);	
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////
 	// Integer and Floating lexical analysis	

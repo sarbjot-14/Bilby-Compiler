@@ -56,7 +56,11 @@ public class LocatedChar implements Locator {
 	public boolean isDigit() {
 		return Character.isDigit(character);
 	}
+	public boolean isComment() {
+		return  character.charValue() == '%';
+	}
 	public boolean isWhitespace() {
 		return Character.isWhitespace(character);
 	}
+
 }
