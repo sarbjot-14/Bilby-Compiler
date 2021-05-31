@@ -7,7 +7,8 @@ import java.util.Map;
 
 import asmCodeGenerator.codeStorage.ASMOpcode;
 import asmCodeGenerator.operators.GreaterCodeGenerator;
-import asmCodeGenerator.operators.GreaterThanEqualCodeGenerator;
+import asmCodeGenerator.operators.GreaterThanEqualCodeGeneratorFloat;
+import asmCodeGenerator.operators.GreaterThanEqualCodeGeneratorInt;
 import lexicalAnalyzer.Punctuator;
 import semanticAnalyzer.types.Type;
 import static semanticAnalyzer.types.PrimitiveType.*;
@@ -93,8 +94,8 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		
 		
 		new FunctionSignatures(Punctuator.GREATER_THAN_EQUAL, 
-				new FunctionSignature(new GreaterThanEqualCodeGenerator(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),INTEGER,INTEGER,BOOLEAN),
-				new FunctionSignature(new GreaterThanEqualCodeGenerator(ASMOpcode.FSubtract, ASMOpcode.JumpFPos,ASMOpcode.JumpFalse, ASMOpcode.Duplicate), FLOAT, FLOAT, BOOLEAN)
+				new FunctionSignature(new GreaterThanEqualCodeGeneratorInt(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),INTEGER,INTEGER,BOOLEAN),
+				new FunctionSignature(new GreaterThanEqualCodeGeneratorFloat(ASMOpcode.FSubtract, ASMOpcode.JumpFPos,ASMOpcode.JumpFalse, ASMOpcode.Duplicate, ASMOpcode.ConvertI), FLOAT, FLOAT, BOOLEAN)
 		);
 													
 		

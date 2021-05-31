@@ -13,19 +13,21 @@ import asmCodeGenerator.codeStorage.ASMCodeFragment.CodeType;
 import asmCodeGenerator.codeStorage.ASMOpcode;
 import parseTree.ParseNode;
 
-public class GreaterThanEqualCodeGenerator implements SimpleCodeGenerator {
+public class GreaterThanEqualCodeGeneratorInt implements SimpleCodeGenerator {
 	private ASMOpcode subtractOpcode;
 	private ASMOpcode jumpPosOpcode;
 	private ASMOpcode jumpFalseOpcode;
 	private ASMOpcode duplicateOpcode;
+	
 
 
-	public GreaterThanEqualCodeGenerator(ASMOpcode subtractOpcode, ASMOpcode jumpPosOpcode, ASMOpcode jumpFalseOpcode, ASMOpcode duplicateOpcode) {
+	public GreaterThanEqualCodeGeneratorInt(ASMOpcode subtractOpcode, ASMOpcode jumpPosOpcode, ASMOpcode jumpFalseOpcode, ASMOpcode duplicateOpcode) {
 		super();
 		this.subtractOpcode = subtractOpcode;
 		this.jumpPosOpcode = jumpPosOpcode;
 		this.jumpFalseOpcode = jumpFalseOpcode;
 		this.duplicateOpcode = duplicateOpcode;
+	
 	}
 
 
@@ -51,7 +53,7 @@ public class GreaterThanEqualCodeGenerator implements SimpleCodeGenerator {
 		code.add(Label, subLabel);
 		code.add(subtractOpcode);
 		code.add(duplicateOpcode);
-		code.add(jumpFalseOpcode, trueLabel);
+		code.add(jumpFalseOpcode, trueLabel); // needs int not float
 		code.add(jumpPosOpcode, trueLabel);
 		code.add(Jump, falseLabel);
 
