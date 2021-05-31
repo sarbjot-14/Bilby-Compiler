@@ -188,6 +188,14 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 				
 				return LextantToken.make(ch, ">", Punctuator.GREATER);
 			}
+		case '<':
+			if(ch.getCharacter()=='=') {
+				return LextantToken.make(ch, "<=", Punctuator.LESS_THAN_EQUAL);
+			}
+			else {
+				
+				return LextantToken.make(ch, "<", Punctuator.LESS);
+			}
 		case ':':
 			if(ch.getCharacter()=='=') {
 				return LextantToken.make(ch, ":=", Punctuator.ASSIGN);

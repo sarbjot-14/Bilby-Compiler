@@ -92,8 +92,8 @@
         PushI        2                         
         Label        -compare-1-sub            
         Subtract                               
-        JumpPos      -compare-1-true           
-        Jump         -compare-1-false          
+        JumpPos      -compare-1-false          
+        Jump         -compare-1-true           
         Label        -compare-1-true           
         PushI        1                         
         Jump         -compare-1-join           
@@ -116,8 +116,8 @@
         PushI        1                         
         Label        -compare-3-sub            
         Subtract                               
-        JumpPos      -compare-3-true           
-        Jump         -compare-3-false          
+        JumpPos      -compare-3-false          
+        Jump         -compare-3-true           
         Label        -compare-3-true           
         PushI        1                         
         Jump         -compare-3-join           

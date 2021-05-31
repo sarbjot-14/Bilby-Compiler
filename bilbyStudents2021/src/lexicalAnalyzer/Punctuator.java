@@ -11,6 +11,8 @@ public enum Punctuator implements Lextant {
 	MULTIPLY("*"),
 	GREATER(">"),
 	GREATER_THAN_EQUAL(">="),
+	LESS("<"),
+	LESS_THAN_EQUAL("<="),
 	ASSIGN(":="),
 	PRINT_SEPARATOR("$"),
 	PRINT_SPACE("$s"),

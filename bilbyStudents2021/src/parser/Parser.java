@@ -247,6 +247,20 @@ public class Parser {
 			
 			return OperatorNode.withChildren(compareToken, left, right);
 		}
+		else if(nowReading.isLextant(Punctuator.LESS)) {
+			Token compareToken = nowReading;
+			readToken();
+			ParseNode right = parseAdditiveExpression();
+			
+			return OperatorNode.withChildren(compareToken, left, right);
+		}
+		else if(nowReading.isLextant(Punctuator.LESS_THAN_EQUAL)) {
+			Token compareToken = nowReading;
+			readToken();
+			ParseNode right = parseAdditiveExpression();
+			
+			return OperatorNode.withChildren(compareToken, left, right);
+		}
 		return left;
 
 	}

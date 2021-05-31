@@ -88,12 +88,12 @@
         DataZ        0                         
         Label        $$main                    
         Label        -compare-1-start          
-        PushI        1                         
-        PushI        2                         
+        PushF        1.230000                  
+        PushF        2.340000                  
         Label        -compare-1-sub            
-        Subtract                               
-        JumpPos      -compare-1-true           
-        Jump         -compare-1-false          
+        FSubtract                              
+        JumpFPos     -compare-1-false          
+        Jump         -compare-1-true           
         Label        -compare-1-true           
         PushI        1                         
         Jump         -compare-1-join           
@@ -112,12 +112,12 @@
         PushD        $print-format-newline     
         Printf                                 
         Label        -compare-3-start          
-        PushI        2                         
-        PushI        1                         
+        PushF        2.340000                  
+        PushF        1.230000                  
         Label        -compare-3-sub            
-        Subtract                               
-        JumpPos      -compare-3-true           
-        Jump         -compare-3-false          
+        FSubtract                              
+        JumpFPos     -compare-3-false          
+        Jump         -compare-3-true           
         Label        -compare-3-true           
         PushI        1                         
         Jump         -compare-3-join           

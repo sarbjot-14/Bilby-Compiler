@@ -88,12 +88,15 @@
         DataZ        0                         
         Label        $$main                    
         Label        -compare-1-start          
-        PushI        1                         
-        PushI        2                         
+        PushF        124.300000                
+        PushF        66.200000                 
         Label        -compare-1-sub            
-        Subtract                               
-        JumpPos      -compare-1-true           
-        Jump         -compare-1-false          
+        FSubtract                              
+        Duplicate                              
+        ConvertI                               
+        JumpFalse    -compare-1-true           
+        JumpFPos     -compare-1-false          
+        Jump         -compare-1-true           
         Label        -compare-1-true           
         PushI        1                         
         Jump         -compare-1-join           
@@ -112,12 +115,15 @@
         PushD        $print-format-newline     
         Printf                                 
         Label        -compare-3-start          
-        PushI        2                         
-        PushI        1                         
+        PushF        5.500000                  
+        PushF        11.300000                 
         Label        -compare-3-sub            
-        Subtract                               
-        JumpPos      -compare-3-true           
-        Jump         -compare-3-false          
+        FSubtract                              
+        Duplicate                              
+        ConvertI                               
+        JumpFalse    -compare-3-true           
+        JumpFPos     -compare-3-false          
+        Jump         -compare-3-true           
         Label        -compare-3-true           
         PushI        1                         
         Jump         -compare-3-join           
@@ -131,6 +137,33 @@
         Label        -print-boolean-4-true     
         PushD        $boolean-true-string      
         Label        -print-boolean-4-join     
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        Label        -compare-5-start          
+        PushF        25.100000                 
+        PushF        25.100000                 
+        Label        -compare-5-sub            
+        FSubtract                              
+        Duplicate                              
+        ConvertI                               
+        JumpFalse    -compare-5-true           
+        JumpFPos     -compare-5-false          
+        Jump         -compare-5-true           
+        Label        -compare-5-true           
+        PushI        1                         
+        Jump         -compare-5-join           
+        Label        -compare-5-false          
+        PushI        0                         
+        Jump         -compare-5-join           
+        Label        -compare-5-join           
+        JumpTrue     -print-boolean-6-true     
+        PushD        $boolean-false-string     
+        Jump         -print-boolean-6-join     
+        Label        -print-boolean-6-true     
+        PushD        $boolean-true-string      
+        Label        -print-boolean-6-join     
         PushD        $print-format-boolean     
         Printf                                 
         PushD        $print-format-newline     
