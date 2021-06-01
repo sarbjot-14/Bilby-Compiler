@@ -1,0 +1,6 @@
+main{
+	print 'A' < 'C' $n;
+	print 'C' < 'A' $n;
+	print 'B' >= 'D' $n;
+	print 'B' >= 'B' $n;
+}
