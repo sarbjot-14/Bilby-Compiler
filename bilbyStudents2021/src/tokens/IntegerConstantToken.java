@@ -1,6 +1,8 @@
 package tokens;
 
+import inputHandler.LocatedChar;
 import inputHandler.Locator;
+import lexicalAnalyzer.LexicalAnalyzer;
 
 public class IntegerConstantToken extends TokenImp {
 	protected int value;
@@ -19,11 +21,13 @@ public class IntegerConstantToken extends TokenImp {
 		IntegerConstantToken result = new IntegerConstantToken(locator, lexeme);
 		try {
 			result.setValue(Integer.parseInt(lexeme));
-			return result;
+			
 		}
 		catch(NumberFormatException err) {
-			throw new RuntimeException("Int too big in IntegerConstantToken.java: " + lexeme);
+			result.setValue(0);
+			LexicalAnalyzer.lexicalError(locator, "int is too big");
 		}
+		return result;
 	}
 	
 	@Override

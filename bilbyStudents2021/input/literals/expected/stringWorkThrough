@@ -1,0 +1,46 @@
+
+
+amsCodeGenerator line 60
+	turnAddressIntoValue()
+		code.add(LoadI);
+	
+	opcodeForStore(Type type)
+		return StoreI;
+
+1)
+
+when we want save a string we need do the following steps:
+
+1. save 3
+
+2. save 9
+
+3. save the length
+
+4. save characters and '\0'
+
+5. return the pointer which point to 3(because 3 is the first element in the record)
+
+ Steps 1-3 can be done with DataI, ---> 3 and 9 and len
+ Step 4 with DataS, and -- >  save characters including null
+ Step 5 with a PushD (if you've labelled the data with a DLabel).   
+ Step 5 is not a "return" but rather leaving the data address on the stack.
+
+ 
+
+so every time we print a string, we add 12 to the pointer, so make the pointer point to the characters, then use '%s' to print it.
+
+Is that correct?
+
+Label        $$main                    
+PushF        1.230000    // takes a floating operand f:  [... a] -> [... a f]            
+PushD        $print-format-floating   // takes a string operand, pushes the data location labelled with this string.
+Printf                                 
+PushD        $print-format-newline  // takes a string operand, pushes the data location labelled with this string.      
+Printf                                 
+Halt   
+
+
+Printf,			// Does a C-style printf, with args taken from the top of the accumulator stack
+					// (Top of accumulator = first arg, etc.)
+					// Does not support 'I64' (wide integer) or 'n' or 'p' (pointer) specifiers                               

@@ -1,6 +1,7 @@
 package tokens;
 
 import inputHandler.Locator;
+import lexicalAnalyzer.LexicalAnalyzer;
 
 public class FloatingConstantToken extends TokenImp {
 	protected double value;
@@ -17,7 +18,16 @@ public class FloatingConstantToken extends TokenImp {
 	
 	public static FloatingConstantToken make(Locator locator, String lexeme) {
 		FloatingConstantToken result = new FloatingConstantToken(locator, lexeme);
-		result.setValue(Double.parseDouble(lexeme));
+
+		if(Double.parseDouble(lexeme) == Double.POSITIVE_INFINITY) {
+			result.setValue(0);
+			LexicalAnalyzer.lexicalError(locator, "float is too big");
+		}
+		else {
+			result.setValue(Double.parseDouble(lexeme));
+		}
+
+
 		return result;
 	}
 	

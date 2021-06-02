@@ -1,1 +1,1 @@
-Not enough operands on stack for Duplicate instruction at location 10.
+Couldn't read file "/home/sarbjot/Desktop/cmpt379/bilbyCompiler/bilbyStudents2021/input/output/currentTest.asm"

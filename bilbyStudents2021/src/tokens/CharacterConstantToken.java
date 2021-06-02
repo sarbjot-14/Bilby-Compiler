@@ -19,6 +19,7 @@ public class CharacterConstantToken extends TokenImp {
 		CharacterConstantToken result = new CharacterConstantToken(locator, lexeme);
 		result.setValue(lexeme.charAt(0));
 		return result;
+		
 	}
 	
 	@Override

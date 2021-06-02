@@ -6,12 +6,14 @@ import logging.BilbyLogger;
 import inputHandler.InputHandler;
 import inputHandler.LocatedChar;
 import inputHandler.LocatedCharStream;
+import inputHandler.Locator;
 import inputHandler.PushbackCharStream;
 import tokens.CharacterConstantToken;
 import tokens.FloatingConstantToken;
 import tokens.IdentifierToken;
 import tokens.LextantToken;
 import tokens.NullToken;
+import tokens.StringConstantToken;
 import tokens.IntegerConstantToken;
 import tokens.Token;
 
@@ -24,6 +26,7 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 	private static final char  MINUS= '-';
 	private static final char NEW_LINE = '\n';
 	private static final char HASH = '#';
+	private static final char DOUBLE_QUOTES = '\"';
 
 
 	public static LexicalAnalyzer make(String filename) {
@@ -61,6 +64,9 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		}
 		else if(isChar(ch)) {
 			return scanChar(ch); 
+		}
+		else if(isDoubleQuote(ch)) {
+			return scanString(ch); 
 		}
 		else {
 			lexicalError(ch);
@@ -133,6 +139,27 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		}
 		//return findNextToken();
 		
+		
+
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////
+	//  String lexical analysis	
+	private Token scanString(LocatedChar firstChar) {
+		firstChar.getCharacter(); // throw away "
+		StringBuffer buffer = new StringBuffer();
+		String hi = "hello my world";
+
+		LocatedChar c = input.next();
+		while(!isDoubleQuote(c)) {
+			buffer.append(c.getCharacter());
+			c = input.next();
+			
+		}
+		c = input.next(); // throw away "
+		input.pushback(c);
+		//System.out.println(buffer.toString());
+		return StringConstantToken.make(firstChar, buffer.toString());
 		
 
 	}
@@ -282,17 +309,21 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		
 		return lc.getCharacter() == HASH;
 	}
+	private boolean isDoubleQuote(LocatedChar lc) {
+
+		return lc.getCharacter() == DOUBLE_QUOTES;
+	}
 	
 	
 	//////////////////////////////////////////////////////////////////////////////
 	// Error-reporting	
-	private void lexicalError(LocatedChar firstChar, String message) {
+	public static void lexicalError(Locator firstChar, String message) {
 		BilbyLogger log = BilbyLogger.getLogger("compiler.lexicalAnalyzer");
 		log.severe("Lexical error:" +message+ " at "+ firstChar.getLocation());
 		
 	}
 	
-	private void lexicalError(LocatedChar ch) {
+	public static void lexicalError(LocatedChar ch) {
 		BilbyLogger log = BilbyLogger.getLogger("compiler.lexicalAnalyzer");
 		log.severe("Lexical error: invalid character " + ch);
 	}

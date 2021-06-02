@@ -24,6 +24,7 @@ import parseTree.nodeTypes.OperatorNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.ProgramNode;
 import parseTree.nodeTypes.SpaceNode;
+import parseTree.nodeTypes.StringConstantNode;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
@@ -152,6 +153,11 @@ public class ASMCodeGenerator {
 			else if(node.getType() == PrimitiveType.CHARACTER) {
 				code.add(LoadI);
 			}
+			else if(node.getType() == PrimitiveType.STRING) {
+				code.add(LoadI);
+//				String stringLabel = new Labeller("pstring").newLabel("");
+
+			}
 			else {
 				assert false : "node " + node;
 			}
@@ -226,6 +232,9 @@ public class ASMCodeGenerator {
 			if(type == PrimitiveType.BOOLEAN) {
 				return StoreI;
 			}
+			if(type == PrimitiveType.STRING) {
+				return StoreI;
+			}
 			assert false: "Type " + type + " unimplemented in opcodeForStore()";
 			return null;
 		}
@@ -291,6 +300,23 @@ public class ASMCodeGenerator {
 			newValueCode(node);
 			
 			code.add(PushI, node.getValue());
+		}
+		public void visit(StringConstantNode node) {
+			newValueCode(node);
+		
+			String stringLabel = new Labeller("stringConstant").newLabel("");
+			code.add(DLabel,stringLabel);
+			code.add(DataI, 3);
+			code.add(DataI, 9);
+			code.add(DataI, node.getValue().length());
+			code.add(DataS, node.getValue());
+			code.add(PushD, stringLabel );
+			
+			
+//			 Steps 1-3 can be done with DataI, ---> 3 and 9 and len
+//			 Step 4 with DataS, and -- >  save characters including null
+//			 Step 5 with a PushD (if you've labelled the data with a DLabel).   
+//			 Step 5 is not a "return" but rather leaving the data address on the stack.
 		}
 	}
 
