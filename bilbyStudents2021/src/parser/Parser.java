@@ -5,6 +5,7 @@ import java.util.Arrays;
 import logging.BilbyLogger;
 import parseTree.*;
 import parseTree.nodeTypes.BooleanConstantNode;
+import parseTree.nodeTypes.CharacterConstantNode;
 import parseTree.nodeTypes.MainBlockNode;
 import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.ErrorNode;
@@ -213,7 +214,7 @@ public class Parser {
 	// multiplicativeExpression -> atomicExpression [MULT atomicExpression]*  (left-assoc)
 	// atomicExpression         -> unaryExpression | literal
 	// unaryExpression			-> UNARYOP atomicExpression
-	// literal                  -> intNumber | identifier | booleanConstant
+	// literal                  -> intNumber | identifier | booleanConstant | characterConstant
 
 	// expr  -> comparisonExpression
 	private ParseNode parseExpression() {		
@@ -346,6 +347,9 @@ public class Parser {
 		if(startsIntLiteral(nowReading)) {
 			return parseIntLiteral();
 		}
+		if(startsCharacterLiteral(nowReading)) {
+			return parseCharacterLiteral();
+		}
 		if(startsFloatLiteral(nowReading)) {
 			return parseFloatLiteral();
 		}
@@ -359,7 +363,7 @@ public class Parser {
 		return syntaxErrorNode("literal");
 	}
 	private boolean startsLiteral(Token token) {
-		return startsIntLiteral(token) || startsFloatLiteral(token) || startsIdentifier(token) || startsBooleanLiteral(token);
+		return startsIntLiteral(token) || startsCharacterLiteral(token) || startsFloatLiteral(token) || startsIdentifier(token) || startsBooleanLiteral(token);
 	}
 
 	// integer (literal)
@@ -373,6 +377,18 @@ public class Parser {
 	private boolean startsIntLiteral(Token token) {
 		return token instanceof IntegerConstantToken;
 	}
+	
+	//  character (literal)
+		private ParseNode parseCharacterLiteral() {
+			if(!startsCharacterLiteral(nowReading)) {
+				return syntaxErrorNode("character constant");
+			}
+			readToken();
+			return new CharacterConstantNode(previouslyRead);
+		}
+		private boolean startsCharacterLiteral(Token token) {
+			return token instanceof CharacterConstantToken;
+		}
 	
 	// floating (literal)
 		private ParseNode parseFloatLiteral() {

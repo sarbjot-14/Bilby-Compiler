@@ -1,0 +1,10 @@
+main{
+	print ## $n;
+	print #8 $n;
+	print #109 $n;
+	print #200 $n;
+	
+	
+	
+	
+}

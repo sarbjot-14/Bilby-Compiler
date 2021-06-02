@@ -1,0 +1,7 @@
+main{
+	print #101 $n;
+	print #136 $n;
+	print #176 $n;
+	
+	
+}

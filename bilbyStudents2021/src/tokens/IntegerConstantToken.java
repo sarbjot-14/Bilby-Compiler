@@ -17,8 +17,13 @@ public class IntegerConstantToken extends TokenImp {
 	
 	public static IntegerConstantToken make(Locator locator, String lexeme) {
 		IntegerConstantToken result = new IntegerConstantToken(locator, lexeme);
-		result.setValue(Integer.parseInt(lexeme));
-		return result;
+		try {
+			result.setValue(Integer.parseInt(lexeme));
+			return result;
+		}
+		catch(NumberFormatException err) {
+			throw new RuntimeException("Int too big in IntegerConstantToken.java: " + lexeme);
+		}
 	}
 	
 	@Override

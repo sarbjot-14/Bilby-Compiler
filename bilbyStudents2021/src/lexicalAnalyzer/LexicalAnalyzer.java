@@ -7,6 +7,7 @@ import inputHandler.InputHandler;
 import inputHandler.LocatedChar;
 import inputHandler.LocatedCharStream;
 import inputHandler.PushbackCharStream;
+import tokens.CharacterConstantToken;
 import tokens.FloatingConstantToken;
 import tokens.IdentifierToken;
 import tokens.LextantToken;
@@ -22,6 +23,7 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 	private static final char  PLUS= '+';
 	private static final char  MINUS= '-';
 	private static final char NEW_LINE = '\n';
+	private static final char HASH = '#';
 
 
 	public static LexicalAnalyzer make(String filename) {
@@ -57,6 +59,9 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 			scanComment(ch);
 			return findNextToken();
 		}
+		else if(isChar(ch)) {
+			return scanChar(ch); 
+		}
 		else {
 			lexicalError(ch);
 			return findNextToken();
@@ -85,6 +90,51 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		}
 		c = input.next();
 			
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////
+	//  Char lexical analysis	
+	private Token scanChar(LocatedChar firstChar) {
+		firstChar.getCharacter(); // throw away #
+		StringBuffer buffer = new StringBuffer();
+		
+		
+		
+		if(input.peek().getCharacter() == '#') {
+			input.next(); // throw away #
+			if(input.peek().getCharacter() != '#' && !input.peek().isDigit() ) {
+				lexicalError(firstChar,"malformed character");
+				return findNextToken();
+			}
+			firstChar = input.next();
+			buffer.append(firstChar.getCharacter());
+			return CharacterConstantToken.make(firstChar, buffer.toString());
+		}
+		else if(input.peek().isDigit()) {
+			appendSubsequentDigits(buffer);
+			String octaString = buffer.toString();
+			try {
+				int decimalChar=Integer.parseInt(octaString,8); 
+				char c=(char)decimalChar;
+				String stringWithChar =String.valueOf(c);  
+				return CharacterConstantToken.make(firstChar, stringWithChar);
+			}
+			catch(NumberFormatException e){
+				lexicalError(firstChar,"malformed character, not octal");
+				return findNextToken();
+			}
+			
+		}
+		else {
+			firstChar = input.next();
+			buffer.append(firstChar.getCharacter());
+
+			return CharacterConstantToken.make(firstChar, buffer.toString());
+		}
+		//return findNextToken();
+		
+		
+
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////
@@ -226,6 +276,11 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 
 	private boolean isEndOfInput(LocatedChar lc) {
 		return lc == LocatedCharStream.FLAG_END_OF_INPUT;
+	}
+	
+	private boolean isChar(LocatedChar lc) {
+		
+		return lc.getCharacter() == HASH;
 	}
 	
 	

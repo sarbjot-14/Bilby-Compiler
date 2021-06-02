@@ -1,0 +1,8 @@
+main{
+	print #G $n;
+	print #! $n;
+	print #~ $n;
+	
+	
+	
+}

@@ -92,8 +92,8 @@
         DataZ        0                         
         Label        $$main                    
         Label        -compare-1-start          
-        PushI        1                         
-        PushI        2                         
+        PushI        71                        
+        PushI        67                        
         Label        -compare-1-sub            
         Subtract                               
         JumpPos      -compare-1-true           
@@ -116,8 +116,8 @@
         PushD        $print-format-newline     
         Printf                                 
         Label        -compare-3-start          
-        PushI        2                         
-        PushI        1                         
+        PushI        67                        
+        PushI        71                        
         Label        -compare-3-sub            
         Subtract                               
         JumpPos      -compare-3-true           

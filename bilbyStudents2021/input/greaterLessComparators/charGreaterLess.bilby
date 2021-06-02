@@ -1,0 +1,12 @@
+main{
+	print #G > #C $n;
+	print #C > #G $n;
+	print #C < #G $n;
+	print #G < #C $n;
+	print #G >= #G $n;
+	print #C >= #G $n;
+	print #C <= #C $n;
+	print #C <= #G $n;
+	
+	
+}
