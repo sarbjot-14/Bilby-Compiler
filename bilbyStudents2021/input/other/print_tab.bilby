@@ -1,0 +1,10 @@
+main{
+	
+	print "tes$sting printing" $n; 
+	
+	print 3 $s$s 4 $ 5 $s$n;
+	
+	%prints a 3, then two spaces, then a 4, then a 5 (no space between 4 and 5), then a space, then a newline.
+	
+	print 3 $s$s 4 $ 5$t$t $s$n;
+}

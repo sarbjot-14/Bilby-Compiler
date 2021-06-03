@@ -18,6 +18,7 @@ import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.ProgramNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StringConstantNode;
+import parseTree.nodeTypes.TabNode;
 import tokens.*;
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
@@ -160,7 +161,7 @@ public class Parser {
 
 	
 	// This adds the printSeparator it parses to the children of the given parent
-	// printSeparator -> PRINT_SEPARATOR | PRINT_SPACE | PRINT_NEWLINE 
+	// printSeparator -> PRINT_SEPARATOR | PRINT_SPACE | PRINT_NEWLINE | PRINT_TAB
 	
 	private void parsePrintSeparator(ParseNode parent) {
 		if(!startsPrintSeparator(nowReading)) {
@@ -179,12 +180,17 @@ public class Parser {
 			ParseNode child = new SpaceNode(previouslyRead);
 			parent.appendChild(child);
 		}
+		else if(nowReading.isLextant(Punctuator.PRINT_TAB)) {
+			readToken();
+			ParseNode child = new TabNode(previouslyRead);
+			parent.appendChild(child);
+		}
 		else if(nowReading.isLextant(Punctuator.PRINT_SEPARATOR)) {
 			readToken();
 		} 
 	}
 	private boolean startsPrintSeparator(Token token) {
-		return token.isLextant(Punctuator.PRINT_SEPARATOR, Punctuator.PRINT_SPACE, Punctuator.PRINT_NEWLINE);
+		return token.isLextant(Punctuator.PRINT_SEPARATOR, Punctuator.PRINT_SPACE, Punctuator.PRINT_NEWLINE,  Punctuator.PRINT_TAB);
 	}
 	
 	

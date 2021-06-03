@@ -1,6 +1,4 @@
 main{
-	print "helloWorld" $n;
-
 	
-	
+	print 3 $s$s 4 $ 5$t$t $s$n;
 }

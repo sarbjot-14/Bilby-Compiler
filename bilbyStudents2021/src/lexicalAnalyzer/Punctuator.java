@@ -16,6 +16,7 @@ public enum Punctuator implements Lextant {
 	ASSIGN(":="),
 	PRINT_SEPARATOR("$"),
 	PRINT_SPACE("$s"),
+	PRINT_TAB("$t"),
 	PRINT_NEWLINE("$n"),
 	TERMINATOR(";"), 
 	OPEN_BRACE("{"),
