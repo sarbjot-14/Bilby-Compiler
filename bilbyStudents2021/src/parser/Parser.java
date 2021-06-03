@@ -53,12 +53,12 @@ public class Parser {
 			return syntaxErrorNode("program");
 		}
 		ParseNode program = new ProgramNode(nowReading);
-		
-		expect(Keyword.MAIN);
-		ParseNode mainBlock = parseMainBlock();
+		// terminal? -> expect
+		expect(Keyword.MAIN); // current token is equal to one of it's arguments
+		ParseNode mainBlock = parseMainBlock(); // Recursively parse, 
 		program.appendChild(mainBlock);
 		
-		if(!(nowReading instanceof NullToken)) {
+		if(!(nowReading instanceof NullToken)) { // end of input
 			return syntaxErrorNode("end of program");
 		}
 		
@@ -80,7 +80,7 @@ public class Parser {
 		ParseNode mainBlock = new MainBlockNode(nowReading);
 		expect(Punctuator.OPEN_BRACE);
 		
-		while(startsStatement(nowReading)) {
+		while(startsStatement(nowReading)) { // 0 or more statements
 			ParseNode statement = parseStatement();
 			mainBlock.appendChild(statement);
 		}
@@ -106,6 +106,7 @@ public class Parser {
 		if(startsPrintStatement(nowReading)) {
 			return parsePrintStatement();
 		}
+		// add if and other things
 		return syntaxErrorNode("statement");
 	}
 	private boolean startsStatement(Token token) {
@@ -118,11 +119,12 @@ public class Parser {
 		if(!startsPrintStatement(nowReading)) {
 			return syntaxErrorNode("print statement");
 		}
+		
 		ParseNode result = new PrintStatementNode(nowReading);
 		
-		readToken();
-		result = parsePrintExpressionList(result);
-		
+		expect(Keyword.PRINT);
+		result = parsePrintExpressionList(result);// pass it parent. Put all of expression list as children of result (parent)
+		// result is parent
 		expect(Punctuator.TERMINATOR);
 		return result;
 	}
@@ -146,7 +148,7 @@ public class Parser {
 			if(nowReading.isLextant(Punctuator.TERMINATOR)) {
 				return parent;
 			}
-			do {
+			do { // do whiles good for + in regex
 				parsePrintSeparator(parent);
 			} while(startsPrintSeparator(nowReading));
 		}
@@ -167,9 +169,9 @@ public class Parser {
 			return;
 		}
 		
-		if(nowReading.isLextant(Punctuator.PRINT_NEWLINE)) {
+		if(nowReading.isLextant(Punctuator.PRINT_NEWLINE)) { 
 			readToken();
-			ParseNode child = new NewlineNode(previouslyRead);
+			ParseNode child = new NewlineNode(previouslyRead); // prevRead is $n
 			parent.appendChild(child);
 		}		
 		else if(nowReading.isLextant(Punctuator.PRINT_SPACE)) {
@@ -210,12 +212,13 @@ public class Parser {
 	///////////////////////////////////////////////////////////
 	// expressions
 	// expr                     -> comparisonExpression
-	// comparisonExpression     -> additiveExpression [> additiveExpression]?
-	// additiveExpression       -> multiplicativeExpression [+ multiplicativeExpression]*  (left-assoc)
-	// multiplicativeExpression -> atomicExpression [MULT atomicExpression]*  (left-assoc)
-	// atomicExpression         -> unaryExpression | literal
-	// unaryExpression			-> UNARYOP atomicExpression
-	// literal                  -> intNumber | identifier | booleanConstant | characterConstant | stringConstant
+	// comparisonExpression     -> additiveExpression [COMPARISON additiveExpression]?
+	// additiveExpression       -> multiplicativeExpression [ADDOP multiplicativeExpression]*  (left-assoc)
+	// multiplicativeExpression -> unaryExpression [MULTOP unaryExpression]*  (left-assoc)
+	// unaryExpression			-> UNARYOP* atomicExpression
+	// atomicExpression         -> bracketExpression | literal
+	// bracketExpression       -> (expression) | [ expression CAST type ]
+	// literal                  -> intConstant | identifier | booleanConstant | characterConstant | stringConstant | floatConstant 
 
 	// expr  -> comparisonExpression
 	private ParseNode parseExpression() {		
@@ -235,34 +238,14 @@ public class Parser {
 		}
 		
 		ParseNode left = parseAdditiveExpression();
-		if(nowReading.isLextant(Punctuator.GREATER)) {
+		if(nowReading.isLextant(Punctuator.GREATER, Punctuator.GREATER_THAN_EQUAL,Punctuator.LESS,Punctuator.LESS_THAN_EQUAL  )) {
 			Token compareToken = nowReading;
 			readToken();
 			ParseNode right = parseAdditiveExpression();
 			
 			return OperatorNode.withChildren(compareToken, left, right);
 		}
-		else if(nowReading.isLextant(Punctuator.GREATER_THAN_EQUAL)) {
-			Token compareToken = nowReading;
-			readToken();
-			ParseNode right = parseAdditiveExpression();
-			
-			return OperatorNode.withChildren(compareToken, left, right);
-		}
-		else if(nowReading.isLextant(Punctuator.LESS)) {
-			Token compareToken = nowReading;
-			readToken();
-			ParseNode right = parseAdditiveExpression();
-			
-			return OperatorNode.withChildren(compareToken, left, right);
-		}
-		else if(nowReading.isLextant(Punctuator.LESS_THAN_EQUAL)) {
-			Token compareToken = nowReading;
-			readToken();
-			ParseNode right = parseAdditiveExpression();
-			
-			return OperatorNode.withChildren(compareToken, left, right);
-		}
+		
 		return left;
 
 	}
@@ -270,7 +253,7 @@ public class Parser {
 		return startsAdditiveExpression(token);
 	}
 
-	// additiveExpression -> multiplicativeExpression [+ multiplicativeExpression]*  (left-assoc)
+	// additiveExpression -> multiplicativeExpression [ADDOP multiplicativeExpression]*  (left-assoc)
 	private ParseNode parseAdditiveExpression() {
 		if(!startsAdditiveExpression(nowReading)) {
 			return syntaxErrorNode("additiveExpression");
@@ -282,7 +265,7 @@ public class Parser {
 			readToken();
 			ParseNode right = parseMultiplicativeExpression();
 			
-			left = OperatorNode.withChildren(additiveToken, left, right);
+			left = OperatorNode.withChildren(additiveToken, left, right); // left associative
 		}
 		return left;
 	}
