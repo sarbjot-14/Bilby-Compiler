@@ -1,6 +1,6 @@
 main{
-	print "helloWorld" $n;
-
+	print 10 /5  $n;
+	
 	
 	
 }
