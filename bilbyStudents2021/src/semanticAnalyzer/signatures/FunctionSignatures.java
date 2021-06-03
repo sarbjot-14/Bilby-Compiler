@@ -118,13 +118,17 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		);
 		new FunctionSignatures(Punctuator.EQUALS, 
 				new FunctionSignature(new EqualsCodeGeneratorInt(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),INTEGER,INTEGER,BOOLEAN),
+				new FunctionSignature(new EqualsCodeGeneratorInt(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),STRING,STRING,BOOLEAN),
 				new FunctionSignature(new EqualsCodeGeneratorInt(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),CHARACTER,CHARACTER,BOOLEAN),
-				new FunctionSignature(new EqualsCodeGeneratorFloat(ASMOpcode.FSubtract, ASMOpcode.JumpFPos,ASMOpcode.JumpFalse, ASMOpcode.Duplicate, ASMOpcode.ConvertI), FLOAT, FLOAT, BOOLEAN),
+				new FunctionSignature(new EqualsCodeGeneratorInt(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),BOOLEAN,BOOLEAN,BOOLEAN),
+				new FunctionSignature(new EqualsCodeGeneratorFloat(ASMOpcode.FSubtract, ASMOpcode.JumpFPos,ASMOpcode.JumpFalse, ASMOpcode.Duplicate, ASMOpcode.ConvertI), FLOAT, FLOAT, BOOLEAN)
 				
 		);
 		new FunctionSignatures(Punctuator.NOT_EQUALS, 
 				new FunctionSignature(new NotEqualsCodeGeneratorInt(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),INTEGER,INTEGER,BOOLEAN),
+				new FunctionSignature(new NotEqualsCodeGeneratorInt(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),STRING,STRING,BOOLEAN),
 				new FunctionSignature(new NotEqualsCodeGeneratorInt(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),CHARACTER,CHARACTER,BOOLEAN),
+				new FunctionSignature(new NotEqualsCodeGeneratorInt(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),BOOLEAN,BOOLEAN,BOOLEAN),
 				new FunctionSignature(new NotEqualsCodeGeneratorFloat(ASMOpcode.FSubtract, ASMOpcode.JumpFPos,ASMOpcode.JumpFalse, ASMOpcode.Duplicate, ASMOpcode.ConvertI), FLOAT, FLOAT, BOOLEAN)
 		);
 													

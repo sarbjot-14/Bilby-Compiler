@@ -1,0 +1,7 @@
+main{
+	imm hi := "hiWorld";
+	imm bye := "byeWorld";
+	print hi != hi $n;
+	print hi != bye $n;
+
+}
