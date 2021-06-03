@@ -27,6 +27,7 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 	private static final char NEW_LINE = '\n';
 	private static final char HASH = '#';
 	private static final char DOUBLE_QUOTES = '\"';
+	private static final char EQUALS = '=';
 
 
 	public static LexicalAnalyzer make(String filename) {
@@ -148,8 +149,7 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 	private Token scanString(LocatedChar firstChar) {
 		firstChar.getCharacter(); // throw away "
 		StringBuffer buffer = new StringBuffer();
-		String hi = "hello my world";
-
+		
 		LocatedChar c = input.next();
 		while(!isDoubleQuote(c)) {
 			buffer.append(c.getCharacter());
@@ -163,6 +163,7 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		
 
 	}
+	
 	
 	//////////////////////////////////////////////////////////////////////////////
 	// Integer and Floating lexical analysis	
@@ -285,6 +286,22 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 			return LextantToken.make(ch, ",", Punctuator.PRINT_SEPARATOR);
 		case ';':
 			return LextantToken.make(ch, ";", Punctuator.TERMINATOR);
+		case '=':
+			if(ch.getCharacter()=='=') {
+				return LextantToken.make(ch, "==", Punctuator.EQUALS);
+			}
+			else {
+				lexicalError(ch);
+				return(NullToken.make(ch));
+			}
+		case '!':
+			if(ch.getCharacter()=='=') {
+				return LextantToken.make(ch, "!=", Punctuator.NOT_EQUALS);
+			}
+			else {
+				lexicalError(ch);
+				return(NullToken.make(ch));
+			}
 		default:
 			lexicalError(ch);
 			return(NullToken.make(ch));
@@ -300,6 +317,7 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		char c = lc.getCharacter();
 		return isPunctuatorStartingCharacter(c);
 	}
+	
 
 	private boolean isEndOfInput(LocatedChar lc) {
 		return lc == LocatedCharStream.FLAG_END_OF_INPUT;

@@ -1,0 +1,6 @@
+main{
+	print #B != #B $n;
+	print #C != #H $n;
+	print #H != #C $n;
+	
+}

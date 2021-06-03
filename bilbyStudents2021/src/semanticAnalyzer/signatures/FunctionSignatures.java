@@ -6,12 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 import asmCodeGenerator.codeStorage.ASMOpcode;
+import asmCodeGenerator.operators.EqualsCodeGeneratorFloat;
+import asmCodeGenerator.operators.EqualsCodeGeneratorInt;
 import asmCodeGenerator.operators.GreaterCodeGenerator;
 import asmCodeGenerator.operators.GreaterThanEqualCodeGeneratorFloat;
 import asmCodeGenerator.operators.GreaterThanEqualCodeGeneratorInt;
 import asmCodeGenerator.operators.LessCodeGenerator;
 import asmCodeGenerator.operators.LessThanEqualCodeGeneratorFloat;
 import asmCodeGenerator.operators.LessThanEqualCodeGeneratorInt;
+import asmCodeGenerator.operators.NotEqualsCodeGeneratorFloat;
+import asmCodeGenerator.operators.NotEqualsCodeGeneratorInt;
 import lexicalAnalyzer.Punctuator;
 import semanticAnalyzer.types.Type;
 import static semanticAnalyzer.types.PrimitiveType.*;
@@ -111,6 +115,17 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				new FunctionSignature(new LessThanEqualCodeGeneratorInt(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),INTEGER,INTEGER,BOOLEAN),
 				new FunctionSignature(new LessThanEqualCodeGeneratorInt(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),CHARACTER,CHARACTER,BOOLEAN),
 				new FunctionSignature(new LessThanEqualCodeGeneratorFloat(ASMOpcode.FSubtract, ASMOpcode.JumpFPos,ASMOpcode.JumpFalse, ASMOpcode.Duplicate, ASMOpcode.ConvertI), FLOAT, FLOAT, BOOLEAN)
+		);
+		new FunctionSignatures(Punctuator.EQUALS, 
+				new FunctionSignature(new EqualsCodeGeneratorInt(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),INTEGER,INTEGER,BOOLEAN),
+				new FunctionSignature(new EqualsCodeGeneratorInt(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),CHARACTER,CHARACTER,BOOLEAN),
+				new FunctionSignature(new EqualsCodeGeneratorFloat(ASMOpcode.FSubtract, ASMOpcode.JumpFPos,ASMOpcode.JumpFalse, ASMOpcode.Duplicate, ASMOpcode.ConvertI), FLOAT, FLOAT, BOOLEAN),
+				
+		);
+		new FunctionSignatures(Punctuator.NOT_EQUALS, 
+				new FunctionSignature(new NotEqualsCodeGeneratorInt(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),INTEGER,INTEGER,BOOLEAN),
+				new FunctionSignature(new NotEqualsCodeGeneratorInt(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),CHARACTER,CHARACTER,BOOLEAN),
+				new FunctionSignature(new NotEqualsCodeGeneratorFloat(ASMOpcode.FSubtract, ASMOpcode.JumpFPos,ASMOpcode.JumpFalse, ASMOpcode.Duplicate, ASMOpcode.ConvertI), FLOAT, FLOAT, BOOLEAN)
 		);
 													
 		
