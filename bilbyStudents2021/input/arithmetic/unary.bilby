@@ -1,0 +1,9 @@
+main{
+	print -5 $n;
+	print --1 $n;
+	print ---7 $n;
+	print +7 $n;
+	print ++7 $n;
+	
+	
+}

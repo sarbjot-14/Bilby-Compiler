@@ -27,6 +27,9 @@
         DLabel       $print-format-space       
         DataC        32                        %% " "
         DataC        0                         
+        DLabel       $print-tab-space          
+        DataC        9                         %% "\t"
+        DataC        0                         
         DLabel       $boolean-true-string      
         DataC        116                       %% "true"
         DataC        114                       
