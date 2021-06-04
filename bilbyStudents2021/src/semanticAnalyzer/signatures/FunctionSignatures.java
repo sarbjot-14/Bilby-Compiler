@@ -94,6 +94,20 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 			    new FunctionSignature(ASMOpcode.FSubtract, FLOAT, FLOAT, FLOAT)
 		);
 		
+		new FunctionSignatures(Punctuator.MULTIPLY,
+			    new FunctionSignature(ASMOpcode.Nop, INTEGER, INTEGER),
+			    new FunctionSignature(ASMOpcode.Nop, FLOAT, FLOAT),
+			    new FunctionSignature(ASMOpcode.Multiply, INTEGER, INTEGER, INTEGER),
+			    new FunctionSignature(ASMOpcode.FMultiply, FLOAT, FLOAT, FLOAT)
+			);
+		
+		new FunctionSignatures(Punctuator.DIVIDE,
+			    new FunctionSignature(ASMOpcode.Nop, INTEGER, INTEGER),
+			    new FunctionSignature(ASMOpcode.Nop, FLOAT, FLOAT),
+			    new FunctionSignature(ASMOpcode.Divide, INTEGER, INTEGER, INTEGER),
+			    new FunctionSignature(ASMOpcode.FDivide, FLOAT, FLOAT, FLOAT)
+			);
+		
 		new FunctionSignatures(Punctuator.GREATER, 
 				new FunctionSignature(new GreaterCodeGenerator(ASMOpcode.Subtract, ASMOpcode.JumpPos),INTEGER,INTEGER,BOOLEAN),
 				new FunctionSignature(new GreaterCodeGenerator(ASMOpcode.FSubtract, ASMOpcode.JumpFPos), FLOAT, FLOAT, BOOLEAN),
