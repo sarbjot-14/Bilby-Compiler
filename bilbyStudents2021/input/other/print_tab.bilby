@@ -1,6 +1,6 @@
 main{
 	
-	print "tessting printing" $n; 
+	print $t"tessting printing" $n; 
 	
-	print 3 $s$s 4 $ 5$7 $s$n;
+	print 3 $s$s 4 $ 5$t7$n;
 }
