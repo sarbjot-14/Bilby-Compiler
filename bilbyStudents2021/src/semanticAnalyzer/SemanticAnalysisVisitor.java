@@ -152,6 +152,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	@Override
 	public void visit(SpaceNode node) {
 	}
+	@Override
 	public void visit(TabNode node) {
 	}
 	///////////////////////////////////////////////////////////////////////////
