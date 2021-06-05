@@ -237,7 +237,7 @@ public class Parser {
 		return startsComparisonExpression(token);
 	}
 
-	// comparisonExpression -> additiveExpression [> additiveExpression]?
+	// comparisonExpression     -> additiveExpression [COMPARISON additiveExpression]?
 	private ParseNode parseComparisonExpression() {
 		if(!startsComparisonExpression(nowReading)) {
 			return syntaxErrorNode("comparison expression");
@@ -279,7 +279,7 @@ public class Parser {
 		return startsMultiplicativeExpression(token);
 	}	
 
-	// multiplicativeExpression -> atomicExpression [MULT atomicExpression]*  (left-assoc)
+	// multiplicativeExpression -> unaryExpression [MULTOP unaryExpression]*  (left-assoc)
 	private ParseNode parseMultiplicativeExpression() {
 		if(!startsMultiplicativeExpression(nowReading)) {
 			return syntaxErrorNode("multiplicativeExpression");
@@ -299,7 +299,8 @@ public class Parser {
 		return startsAtomicExpression(token);
 	}
 	
-	// atomicExpression         -> unaryExpression | literal
+	
+	// atomicExpression         -> bracketExpression | literal
 	private ParseNode parseAtomicExpression() {
 		if(!startsAtomicExpression(nowReading)) {
 			return syntaxErrorNode("atomic expression");
@@ -328,7 +329,7 @@ public class Parser {
 		return token.isLextant(Punctuator.SUBTRACT,Punctuator.ADD);
 	}
 	
-	// literal -> intConst | floatConst | identifier | booleanConstant
+	// literal   -> intConstant | identifier | booleanConstant | characterConstant | stringConstant | floatConstant
 	private ParseNode parseLiteral() {
 		if(!startsLiteral(nowReading)) {
 			return syntaxErrorNode("literal");

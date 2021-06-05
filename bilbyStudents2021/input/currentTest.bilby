@@ -1,6 +1,5 @@
 main{
-	print 10 /5  $n;
-	
+	print 3 + 5 + 7 +9 $n;
 	
 	
 }
