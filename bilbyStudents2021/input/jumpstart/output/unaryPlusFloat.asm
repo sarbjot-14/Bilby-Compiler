@@ -102,6 +102,7 @@
         Nop                                    
         PushD        $print-format-integer     
         Printf                                 
-        PushD        $print-format-newline     
+        PushI        10                        
+        PushD        $print-format-character   
         Printf                                 
         Halt                                   

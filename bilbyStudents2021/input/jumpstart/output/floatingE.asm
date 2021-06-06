@@ -101,21 +101,25 @@
         PushF        120.000000                
         PushD        $print-format-floating    
         Printf                                 
-        PushD        $print-format-newline     
+        PushI        10                        
+        PushD        $print-format-character   
         Printf                                 
         PushF        120.000000                
         PushD        $print-format-floating    
         Printf                                 
-        PushD        $print-format-newline     
+        PushI        10                        
+        PushD        $print-format-character   
         Printf                                 
         PushF        0.012000                  
         PushD        $print-format-floating    
         Printf                                 
-        PushD        $print-format-newline     
+        PushI        10                        
+        PushD        $print-format-character   
         Printf                                 
         PushF        1200000000000000000000.000000 
         PushD        $print-format-floating    
         Printf                                 
-        PushD        $print-format-newline     
+        PushI        10                        
+        PushD        $print-format-character   
         Printf                                 
         Halt                                   

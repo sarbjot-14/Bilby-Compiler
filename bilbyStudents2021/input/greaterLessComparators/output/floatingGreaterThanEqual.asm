@@ -123,7 +123,8 @@
         Label        -print-boolean-2-join     
         PushD        $print-format-boolean     
         Printf                                 
-        PushD        $print-format-newline     
+        PushI        10                        
+        PushD        $print-format-character   
         Printf                                 
         Label        -compare-3-start          
         PushF        5.500000                  
@@ -150,7 +151,8 @@
         Label        -print-boolean-4-join     
         PushD        $print-format-boolean     
         Printf                                 
-        PushD        $print-format-newline     
+        PushI        10                        
+        PushD        $print-format-character   
         Printf                                 
         Label        -compare-5-start          
         PushF        25.100000                 
@@ -177,6 +179,7 @@
         Label        -print-boolean-6-join     
         PushD        $print-format-boolean     
         Printf                                 
-        PushD        $print-format-newline     
+        PushI        10                        
+        PushD        $print-format-character   
         Printf                                 
         Halt                                   

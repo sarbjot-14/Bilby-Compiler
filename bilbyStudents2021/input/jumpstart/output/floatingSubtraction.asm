@@ -103,6 +103,7 @@
         FSubtract                              
         PushD        $print-format-floating    
         Printf                                 
-        PushD        $print-format-newline     
+        PushI        10                        
+        PushD        $print-format-character   
         Printf                                 
         Halt                                   

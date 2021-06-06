@@ -120,6 +120,7 @@
         Label        -print-boolean-2-join     
         PushD        $print-format-boolean     
         Printf                                 
-        PushD        $print-format-newline     
+        PushI        10                        
+        PushD        $print-format-character   
         Printf                                 
         Halt                                   

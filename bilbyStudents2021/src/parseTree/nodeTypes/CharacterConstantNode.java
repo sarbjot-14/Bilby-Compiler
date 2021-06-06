@@ -3,12 +3,13 @@ package parseTree.nodeTypes;
 import parseTree.ParseNode;
 import parseTree.ParseNodeVisitor;
 import tokens.CharacterConstantToken;
+import tokens.CharacterToken;
 import tokens.Token;
 
 public class CharacterConstantNode extends ParseNode {
 	public CharacterConstantNode(Token token) {
 		super(token);
-		assert(token instanceof CharacterConstantToken);
+		assert(token instanceof CharacterToken);
 	}
 	public CharacterConstantNode(ParseNode node) {
 		super(node);
@@ -21,8 +22,8 @@ public class CharacterConstantNode extends ParseNode {
 		return numberToken().getValue();
 	}
 
-	public CharacterConstantToken numberToken() {
-		return (CharacterConstantToken)token;
+	public CharacterToken numberToken() {
+		return (CharacterToken)token;
 	}	
 
 ///////////////////////////////////////////////////////////

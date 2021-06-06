@@ -27,6 +27,9 @@ import lexicalAnalyzer.Scanner;
 
 
 public class Parser {
+	private static final char NEWLINE = '\n';
+	private static final char SPACE = ' ';
+	private static final char TAB = '\t';
 	private Scanner scanner;
 	private Token nowReading;
 	private Token previouslyRead;
@@ -172,17 +175,17 @@ public class Parser {
 		
 		if(nowReading.isLextant(Punctuator.PRINT_NEWLINE)) { 
 			readToken();
-			ParseNode child = new NewlineNode(previouslyRead); // prevRead is $n
+			ParseNode child = new CharacterConstantNode(CharacterToken.make(previouslyRead,previouslyRead.getLexeme(), NEWLINE));
 			parent.appendChild(child);
 		}		
 		else if(nowReading.isLextant(Punctuator.PRINT_SPACE)) {
 			readToken();
-			ParseNode child = new SpaceNode(previouslyRead);
+			ParseNode child = new CharacterConstantNode(CharacterToken.make(previouslyRead,previouslyRead.getLexeme(), SPACE));
 			parent.appendChild(child);
 		}
 		else if(nowReading.isLextant(Punctuator.PRINT_TAB)) {
 			readToken();
-			ParseNode child = new TabNode(previouslyRead);
+			ParseNode child = new CharacterConstantNode(CharacterToken.make(previouslyRead,previouslyRead.getLexeme(), TAB));
 			parent.appendChild(child);
 		}
 		else if(nowReading.isLextant(Punctuator.PRINT_SEPARATOR)) {
