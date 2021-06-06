@@ -285,18 +285,18 @@ public class Parser {
 			return syntaxErrorNode("multiplicativeExpression");
 		}
 		
-		ParseNode left = parseAtomicExpression();
+		ParseNode left = parseUnaryExpression();
 		while(nowReading.isLextant(Punctuator.MULTIPLY, Punctuator.DIVIDE)) {
 			Token multiplicativeToken = nowReading;
 			readToken();
-			ParseNode right = parseAtomicExpression();
+			ParseNode right = parseUnaryExpression();
 			
 			left = OperatorNode.withChildren(multiplicativeToken, left, right);
 		}
 		return left;
 	}
 	private boolean startsMultiplicativeExpression(Token token) {
-		return startsAtomicExpression(token);
+		return startsUnaryExpression(token);
 	}
 	
 	
