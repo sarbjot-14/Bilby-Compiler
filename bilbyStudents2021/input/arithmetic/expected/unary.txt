@@ -1,1 +1,5 @@
-Couldn't read file "/home/sarbjot/Desktop/cmpt379/bilbyCompiler/bilbyStudents2021/input/arithmetic/output/unary.asm"
+-5
+1
+-7
+7
+7

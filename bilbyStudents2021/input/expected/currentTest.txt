@@ -1,1 +1,1 @@
-Couldn't read file "/home/sarbjot/Desktop/cmpt379/bilbyCompiler/bilbyStudents2021/input/output/currentTest.asm"
+4

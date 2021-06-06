@@ -1,5 +1,5 @@
 main{
-	print 4$n;
+	print 4 $n;
 	
 	
 }

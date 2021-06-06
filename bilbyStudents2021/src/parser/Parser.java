@@ -335,23 +335,25 @@ public class Parser {
 
 	// unaryExpression			-> UNARYOP* unaryExpression | atomicExpression
 	private ParseNode parseUnaryExpression() {
-		if(!startsUnaryExpression(nowReading) && !startsAtomicExpression(nowReading)) {
+
+		if(!startsUnaryExpression(nowReading) ) {
 			return syntaxErrorNode("unary or atomic expression");
 		}
-		if(startsUnaryExpression(nowReading)) {
+
+        if(nowReading.isLextant(Punctuator.SUBTRACT, Punctuator.ADD))  {
+        	
 			Token operatorToken = nowReading;
 			readToken();
 			ParseNode child = parseUnaryExpression();
 			return OperatorNode.withChildren(operatorToken, child);
-		}
-		else {
-		
-			return parseAtomicExpression();
-		}	
-		
+        }
+        else {
+        	return parseAtomicExpression();
+        }
+        		
 	}
 	private boolean startsUnaryExpression(Token token) {
-		return token.isLextant(Punctuator.SUBTRACT,Punctuator.ADD);
+		return (token.isLextant(Punctuator.SUBTRACT,Punctuator.ADD) || startsAtomicExpression(nowReading));
 	}
 	
 	// literal   -> intConstant | identifier | booleanConstant | characterConstant | stringConstant | floatConstant
