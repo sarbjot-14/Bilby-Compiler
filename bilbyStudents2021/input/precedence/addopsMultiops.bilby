@@ -1,0 +1,10 @@
+main{
+	print 3 + 5 + 7$n;
+	print 35 - 5 + 7$n;
+	print 3 - 5 - 7$n;
+	print 3 + 5 * 4$n;
+	print 5 * 4 +3  $n;
+	print -3 +3+ 8 / 4 -4 *2   $n;
+	
+	
+}

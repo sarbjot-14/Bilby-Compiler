@@ -221,7 +221,7 @@ public class Parser {
 	// comparisonExpression     -> additiveExpression [COMPARISON additiveExpression]?
 	// additiveExpression       -> multiplicativeExpression [ADDOP multiplicativeExpression]*  (left-assoc)
 	// multiplicativeExpression -> unaryExpression [MULTOP unaryExpression]*  (left-assoc)
-	// unaryExpression			-> UNARYOP* atomicExpression
+	// unaryExpression			-> UNARYOP* unaryExpression | atomicExpression
 	// atomicExpression         -> bracketExpression | literal
 	// bracketExpression       -> (expression) | [ expression CAST type ]
 	// literal                  -> intConstant | identifier | booleanConstant | characterConstant | stringConstant | floatConstant 
@@ -266,8 +266,8 @@ public class Parser {
 		}
 		
 		ParseNode left = parseMultiplicativeExpression();
-		while(nowReading.isLextant(Punctuator.ADD, Punctuator.SUBTRACT)) {
-			Token additiveToken = nowReading;
+		while(nowReading.isLextant(Punctuator.ADD, Punctuator.SUBTRACT)) { // a + b + c
+			Token additiveToken = nowReading;  // a is left, + is parent, b is right, this tree is new left, c is right, + is partent. 
 			readToken();
 			ParseNode right = parseMultiplicativeExpression();
 			
@@ -300,30 +300,55 @@ public class Parser {
 	}
 	
 	
+	
 	// atomicExpression         -> bracketExpression | literal
 	private ParseNode parseAtomicExpression() {
 		if(!startsAtomicExpression(nowReading)) {
 			return syntaxErrorNode("atomic expression");
 		}
-		if(startsUnaryExpression(nowReading)) {
-			return parseUnaryExpression();
+		if(startsBracketExpression(nowReading)) {
+			return parseBracketExpression();
 		}
 		return parseLiteral();
 	}
 	private boolean startsAtomicExpression(Token token) {
-		return startsLiteral(token) || startsUnaryExpression(token);
+		return startsLiteral(token) || startsBracketExpression(token);
 	}
-
-	// unaryExpression			-> UNARYOP atomicExpression
-	private ParseNode parseUnaryExpression() {
-		if(!startsUnaryExpression(nowReading)) {
-			return syntaxErrorNode("unary expression");
+	
+	// bracketExpression       -> (expression) | [ expression CAST type ]
+	
+	private ParseNode parseBracketExpression() {
+		if(!startsBracketExpression(nowReading)) {
+			return syntaxErrorNode("bracket expression");
 		}
-		Token operatorToken = nowReading;
-		readToken();
-		ParseNode child = parseAtomicExpression();
+		expect(Punctuator.OPEN_BRACE_PAREN);
+		ParseNode left = parseExpression();
+		expect(Punctuator.CLOSE_BRACE_PAREN);
+		return left;
+	
+	}
+	
+	private boolean startsBracketExpression(Token token) {
+		return token.isLextant(Punctuator.OPEN_BRACE_PAREN);
+	}
+	
+
+	// unaryExpression			-> UNARYOP* unaryExpression | atomicExpression
+	private ParseNode parseUnaryExpression() {
+		if(!startsUnaryExpression(nowReading) && !startsAtomicExpression(nowReading)) {
+			return syntaxErrorNode("unary or atomic expression");
+		}
+		if(startsUnaryExpression(nowReading)) {
+			Token operatorToken = nowReading;
+			readToken();
+			ParseNode child = parseUnaryExpression();
+			return OperatorNode.withChildren(operatorToken, child);
+		}
+		else {
 		
-		return OperatorNode.withChildren(operatorToken, child);
+			return parseAtomicExpression();
+		}	
+		
 	}
 	private boolean startsUnaryExpression(Token token) {
 		return token.isLextant(Punctuator.SUBTRACT,Punctuator.ADD);

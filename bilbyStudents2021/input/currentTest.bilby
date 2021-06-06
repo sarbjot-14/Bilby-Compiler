@@ -1,5 +1,7 @@
 main{
-	print 3 + 5 + 7 +9 $n;
+
+	print 2   $n;
+
 	
 	
 }
