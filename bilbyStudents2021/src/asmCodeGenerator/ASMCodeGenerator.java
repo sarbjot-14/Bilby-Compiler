@@ -13,6 +13,7 @@ import lexicalAnalyzer.Lextant;
 import lexicalAnalyzer.Punctuator;
 import parseTree.*;
 import parseTree.nodeTypes.BooleanConstantNode;
+import parseTree.nodeTypes.CastNode;
 import parseTree.nodeTypes.CharacterConstantNode;
 import parseTree.nodeTypes.MainBlockNode;
 import parseTree.nodeTypes.DeclarationNode;
@@ -26,6 +27,7 @@ import parseTree.nodeTypes.ProgramNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
+import parseTree.nodeTypes.TypeNode;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
@@ -279,6 +281,43 @@ public class ASMCodeGenerator {
 				throw new RuntimeException("Varient unimplemented in ASMCodeGenerator Operator Nde");
 			}
 
+		}
+		///////////////////////////////////////////////////////////////////////////
+		// type casting
+		public void visitLeave(TypeNode node) {
+			newValueCode(node);
+		}
+		
+		public void visitLeave(CastNode node) {
+			//Now we just use the whichVariant field of the FunctionSignature for
+			//a cast to hold the operation(s) required for the cast.
+			newValueCode(node);
+			
+			Object variant = node.getSignature().getVariant();
+			if(variant instanceof ASMOpcode) {
+				for(ParseNode child:node.getChildren()) {
+					ASMCodeFragment arg = removeValueCode(child);
+					code.append(arg);
+				}
+				code.add((ASMOpcode)variant);
+					
+			}
+			
+			else if(variant instanceof SimpleCodeGenerator) {
+				SimpleCodeGenerator generator = (SimpleCodeGenerator)variant;
+				List<ASMCodeFragment> args = new ArrayList<>();
+				for(ParseNode child:node.getChildren()) {
+					ASMCodeFragment arg = removeValueCode(child);
+					args.add(arg);
+				}
+				
+				ASMCodeFragment generated = generator.generate(node, args);
+				code.appendWithCodeType(generated);
+				
+			}
+			else {
+				throw new RuntimeException("Varient unimplemented in ASMCodeGenerator Operator Nde");
+			}
 		}
 		///////////////////////////////////////////////////////////////////////////
 		// leaf nodes (ErrorNode not necessary)

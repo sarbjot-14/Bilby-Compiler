@@ -1,7 +1,7 @@
 main{
 	imm nickels := 11;
-	print [nickels as float] $n;
+	%[nickels as float];
 	
 	
-
+	
 }

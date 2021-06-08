@@ -145,6 +145,10 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				new FunctionSignature(new NotEqualsCodeGeneratorInt(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),BOOLEAN,BOOLEAN,BOOLEAN),
 				new FunctionSignature(new NotEqualsCodeGeneratorFloat(ASMOpcode.FSubtract, ASMOpcode.JumpFPos,ASMOpcode.JumpFalse, ASMOpcode.Duplicate, ASMOpcode.ConvertI), FLOAT, FLOAT, BOOLEAN)
 		);
+		new FunctionSignatures(Punctuator.CAST, 
+				new FunctionSignature(ASMOpcode.ConvertF, INTEGER,FLOAT, FLOAT)
+				
+		);
 													
 		
 		// First, we use the operator itself (in this case the Punctuator ADD) as the key.

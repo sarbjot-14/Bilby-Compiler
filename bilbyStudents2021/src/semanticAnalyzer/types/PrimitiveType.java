@@ -1,5 +1,6 @@
 package semanticAnalyzer.types;
 
+import tokens.Token;
 
 public enum PrimitiveType implements Type {
 	BOOLEAN(1),
@@ -26,5 +27,14 @@ public enum PrimitiveType implements Type {
 	}
 	public String infoString() {
 		return infoString;
+	}
+	
+	public static Type fromToken(Token token) {
+		if(token.getLexeme().equals("float")){
+			return PrimitiveType.FLOAT;
+		}
+		else {
+			return PrimitiveType.ERROR;
+		}
 	}
 }
