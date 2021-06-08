@@ -33,6 +33,18 @@ public enum PrimitiveType implements Type {
 		if(token.getLexeme().equals("float")){
 			return PrimitiveType.FLOAT;
 		}
+		else if(token.getLexeme().equals("int")){
+			return PrimitiveType.INTEGER;
+		}
+		else if(token.getLexeme().equals("string")){
+			return PrimitiveType.STRING;
+		}
+		else if(token.getLexeme().equals("char")){
+			return PrimitiveType.CHARACTER;
+		}
+		else if(token.getLexeme().equals("bool")){
+			return PrimitiveType.BOOLEAN;
+		}
 		else {
 			return PrimitiveType.ERROR;
 		}
