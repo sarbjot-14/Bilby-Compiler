@@ -26,7 +26,7 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 	private static final char  MINUS= '-';
 	private static final char NEW_LINE = '\n';
 	private static final char HASH = '#';
-	private static final char DOUBLE_QUOTES = '\"';
+	private static final char STRING_DELIMITER = '\"';
 	private static final char EQUALS = '=';
 
 
@@ -147,21 +147,36 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 	//////////////////////////////////////////////////////////////////////////////
 	//  String lexical analysis	
 	private Token scanString(LocatedChar firstChar) {
-		firstChar.getCharacter(); // throw away "
 		StringBuffer buffer = new StringBuffer();
+		firstChar.getCharacter(); // throw away "
+		buffer.append(input.next().getCharacter());
 		
-		LocatedChar c = input.next();
-		while(!isDoubleQuote(c)) {
+		while(isStringContinue(input.peek())) {
+			LocatedChar c = input.next();
 			buffer.append(c.getCharacter());
-			c = input.next();
+			
 			
 		}
-		c = input.next(); // throw away "
-		input.pushback(c);
-		//System.out.println(buffer.toString());
-		return StringConstantToken.make(firstChar, buffer.toString());
+		return appendClosingStringDelimiter(firstChar, buffer);
 		
 
+	}
+	
+	private Token appendClosingStringDelimiter(LocatedChar firstChar, StringBuffer buffer) {
+		LocatedChar c = input.next();
+		//buffer.append(c.getCharacter());
+
+		if(c.getCharacter() == STRING_DELIMITER) {
+			return StringConstantToken.make(firstChar, buffer.toString());
+		}
+		else { // c.getCharacter() == NEWLINE
+			lexicalError(c, "string literal terminated by newline");
+			return findNextToken();
+		}
+	}
+
+	private boolean isStringContinue(LocatedChar c) {
+		return !(c.getCharacter() == STRING_DELIMITER || c.getCharacter() == NEW_LINE);
 	}
 	
 	
@@ -245,68 +260,7 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 	}
 	
 	
-	//////////////////////////////////////////////////////////////////////////////
-	// Punctuator lexical analysis	
-	// old method left in to show a simple scanning method.
-	// current method is the algorithm object PunctuatorScanner.java
-
-	@SuppressWarnings("unused")
-	private Token oldScanPunctuator(LocatedChar ch) {
-		
-		switch(ch.getCharacter()) {
-		case '*':
-			return LextantToken.make(ch, "*", Punctuator.MULTIPLY);
-		case '+':
-			return LextantToken.make(ch, "+", Punctuator.ADD);
-		case '>':
-			if(ch.getCharacter()=='=') {
-				return LextantToken.make(ch, ">=", Punctuator.GREATER_THAN_EQUAL);
-			}
-			else {
-				
-				return LextantToken.make(ch, ">", Punctuator.GREATER);
-			}
-		case '<':
-			if(ch.getCharacter()=='=') {
-				return LextantToken.make(ch, "<=", Punctuator.LESS_THAN_EQUAL);
-			}
-			else {
-				
-				return LextantToken.make(ch, "<", Punctuator.LESS);
-			}
-		case ':':
-			if(ch.getCharacter()=='=') {
-				return LextantToken.make(ch, ":=", Punctuator.ASSIGN);
-			}
-			else {
-				lexicalError(ch);
-				return(NullToken.make(ch));
-			}
-		case ',':
-			return LextantToken.make(ch, ",", Punctuator.PRINT_SEPARATOR);
-		case ';':
-			return LextantToken.make(ch, ";", Punctuator.TERMINATOR);
-		case '=':
-			if(ch.getCharacter()=='=') {
-				return LextantToken.make(ch, "==", Punctuator.EQUALS);
-			}
-			else {
-				lexicalError(ch);
-				return(NullToken.make(ch));
-			}
-		case '!':
-			if(ch.getCharacter()=='=') {
-				return LextantToken.make(ch, "!=", Punctuator.NOT_EQUALS);
-			}
-			else {
-				lexicalError(ch);
-				return(NullToken.make(ch));
-			}
-		default:
-			lexicalError(ch);
-			return(NullToken.make(ch));
-		}
-	}
+	
 
 	
 
@@ -329,7 +283,7 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 	}
 	private boolean isDoubleQuote(LocatedChar lc) {
 
-		return lc.getCharacter() == DOUBLE_QUOTES;
+		return lc.getCharacter() == STRING_DELIMITER;
 	}
 	
 	
