@@ -62,19 +62,19 @@ public class Scope {
 
 ///////////////////////////////////////////////////////////////////////
 //bindings
-	public Binding createBinding(IdentifierNode identifierNode, Type type) {
+	public Binding createBinding(IdentifierNode identifierNode, Type type,boolean isImmutable) {
 		Token token = identifierNode.getToken();
 		symbolTable.errorIfAlreadyDefined(token);
 
 		String lexeme = token.getLexeme();
-		Binding binding = allocateNewBinding(type, token.getLocation(), lexeme);	
+		Binding binding = allocateNewBinding(type, token.getLocation(), lexeme,isImmutable);	
 		symbolTable.install(lexeme, binding);
 
 		return binding;
 	}
-	private Binding allocateNewBinding(Type type, TextLocation textLocation, String lexeme) {
+	private Binding allocateNewBinding(Type type, TextLocation textLocation, String lexeme,boolean isImmutable) {
 		MemoryLocation memoryLocation = allocator.allocate(type.getSize());
-		return new Binding(type, textLocation, memoryLocation, lexeme);
+		return new Binding(type, textLocation, memoryLocation, lexeme,isImmutable);
 	}
 	
 ///////////////////////////////////////////////////////////////////////
@@ -102,9 +102,9 @@ public class Scope {
 			return "scope: the-null-scope";
 		}
 		@Override
-		public Binding createBinding(IdentifierNode identifierNode, Type type) {
+		public Binding createBinding(IdentifierNode identifierNode, Type type,boolean isImmutable) {
 			unscopedIdentifierError(identifierNode.getToken());
-			return super.createBinding(identifierNode, type);
+			return super.createBinding(identifierNode, type,isImmutable);
 		}
 		// subscopes of null scope need their own strategy.  Assumes global block is static.
 		public Scope createSubscope() {

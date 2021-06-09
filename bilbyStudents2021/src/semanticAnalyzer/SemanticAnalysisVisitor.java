@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
 import logging.BilbyLogger;
 import parseTree.ParseNode;
@@ -77,6 +78,10 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	}
 	@Override
 	public void visitLeave(DeclarationNode node) {
+		boolean isImmutable=false;
+		if(node.getToken().isLextant(Keyword.IMM)) {
+			isImmutable= true;
+		}
 		IdentifierNode identifier = (IdentifierNode) node.child(0);
 		ParseNode initializer = node.child(1);
 		
@@ -84,11 +89,15 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		node.setType(declarationType);
 		
 		identifier.setType(declarationType);
-		addBinding(identifier, declarationType);
+		addBinding(identifier, declarationType,isImmutable);
 	}
 	@Override
 	public void visitLeave(AssignmentNode node) {
+		
 		IdentifierNode identifier = (IdentifierNode) node.child(0);
+		if(identifier.getBinding().getIsImmutable()) {
+			logError("assignment on immutable");
+		}
 		ParseNode initializer = node.child(1);
 		
 		Type assignmentType = initializer.getType();
@@ -101,8 +110,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		}
 		node.setType(assignmentType);
 		
-		//identifier.setType(declarationType);
-		//addBinding(identifier, declarationType);
+		
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -191,9 +199,9 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		ParseNode parent = node.getParent();
 		return (parent instanceof DeclarationNode) && (node == parent.child(0));
 	}
-	private void addBinding(IdentifierNode identifierNode, Type type) {
+	private void addBinding(IdentifierNode identifierNode, Type type,boolean isImmutable) {
 		Scope scope = identifierNode.getLocalScope();
-		Binding binding = scope.createBinding(identifierNode, type);
+		Binding binding = scope.createBinding(identifierNode, type,isImmutable);
 		identifierNode.setBinding(binding);
 	}
 	
