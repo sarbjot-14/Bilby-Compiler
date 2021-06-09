@@ -1,5 +1,6 @@
 package semanticAnalyzer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import lexicalAnalyzer.Lextant;
 import logging.BilbyLogger;
 import parseTree.ParseNode;
 import parseTree.ParseNodeVisitor;
+import parseTree.nodeTypes.AssignmentNode;
 import parseTree.nodeTypes.BooleanConstantNode;
 import parseTree.nodeTypes.CharacterConstantNode;
 import parseTree.nodeTypes.MainBlockNode;
@@ -83,6 +85,24 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		
 		identifier.setType(declarationType);
 		addBinding(identifier, declarationType);
+	}
+	@Override
+	public void visitLeave(AssignmentNode node) {
+		IdentifierNode identifier = (IdentifierNode) node.child(0);
+		ParseNode initializer = node.child(1);
+		
+		Type assignmentType = initializer.getType();
+		List<Type> typeList = new ArrayList<Type>();
+        typeList.add(identifier.getType());
+        typeList.add(assignmentType);
+        
+		if(identifier.getType() != assignmentType) {
+			typeCheckError(node,typeList);
+		}
+		node.setType(assignmentType);
+		
+		//identifier.setType(declarationType);
+		//addBinding(identifier, declarationType);
 	}
 
 	///////////////////////////////////////////////////////////////////////////

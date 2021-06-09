@@ -9,6 +9,7 @@ public enum Keyword implements Lextant {
 	IMM("imm"),
 	PRINT("print"),
 	TRUE("true"),
+	MUT("mut"),
 	FALSE("false"),
 	MAIN("main"),
 	NULL_KEYWORD("");

@@ -12,6 +12,7 @@ import asmCodeGenerator.runtime.RunTime;
 import lexicalAnalyzer.Lextant;
 import lexicalAnalyzer.Punctuator;
 import parseTree.*;
+import parseTree.nodeTypes.AssignmentNode;
 import parseTree.nodeTypes.BooleanConstantNode;
 import parseTree.nodeTypes.CharacterConstantNode;
 import parseTree.nodeTypes.MainBlockNode;
@@ -215,6 +216,18 @@ public class ASMCodeGenerator {
 		
 
 		public void visitLeave(DeclarationNode node) {
+			newVoidCode(node);
+			ASMCodeFragment lvalue = removeAddressCode(node.child(0));	
+			ASMCodeFragment rvalue = removeValueCode(node.child(1));
+			
+			code.append(lvalue);
+			code.append(rvalue);
+			
+			Type type = node.getType();
+			code.add(opcodeForStore(type));
+		}
+		public void visitLeave(AssignmentNode node) {
+			// refactor?
 			newVoidCode(node);
 			ASMCodeFragment lvalue = removeAddressCode(node.child(0));	
 			ASMCodeFragment rvalue = removeValueCode(node.child(1));

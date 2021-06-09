@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import logging.BilbyLogger;
 import parseTree.*;
+import parseTree.nodeTypes.AssignmentNode;
 import parseTree.nodeTypes.BooleanConstantNode;
 import parseTree.nodeTypes.CharacterConstantNode;
 import parseTree.nodeTypes.MainBlockNode;
@@ -96,7 +97,7 @@ public class Parser {
 	///////////////////////////////////////////////////////////
 	// statements
 	
-	// statement-> declaration | printStmt
+	// statement-> declaration | printStmt | assignmentStatement
 	private ParseNode parseStatement() {
 		if(!startsStatement(nowReading)) {
 			return syntaxErrorNode("statement");
@@ -107,12 +108,36 @@ public class Parser {
 		if(startsPrintStatement(nowReading)) {
 			return parsePrintStatement();
 		}
+		if(startsAssignmentStatement(nowReading)) {
+			return parseAssignmentStatement();
+		}
 		// add if and other things
 		return syntaxErrorNode("statement");
 	}
 	private boolean startsStatement(Token token) {
 		return startsPrintStatement(token) ||
-			   startsDeclaration(token);
+			   startsDeclaration(token) || startsAssignmentStatement(token);
+	}
+	private boolean startsAssignmentStatement(Token token) {
+		return startsIdentifier(token);
+	}
+	
+	// assignmentStatement → target := expression   TERMINATOR
+	// target → identifier
+	private ParseNode parseAssignmentStatement() {
+		if(!startsAssignmentStatement(nowReading)) {
+			return syntaxErrorNode("assignment");
+		}
+		//Token assignmentToken = LextantToken.make(new LocatedChar('a',new TextLocation("assign",0,0)), "assign", Keyword.forLexeme("assign"));
+		//readToken();
+
+		ParseNode identifier = parseIdentifier();
+		Token assignmentToken = nowReading;
+		readToken();
+		ParseNode initializer = parseExpression();
+		expect( Punctuator.TERMINATOR);
+
+		return AssignmentNode.withChildren(assignmentToken, identifier, initializer);
 	}
 	
 	// printStmt -> PRINT printExpressionList TERMINATOR
@@ -210,7 +235,7 @@ public class Parser {
 		return DeclarationNode.withChildren(declarationToken, identifier, initializer);
 	}
 	private boolean startsDeclaration(Token token) {
-		return token.isLextant(Keyword.IMM);
+		return token.isLextant(Keyword.IMM) || token.isLextant(Keyword.MUT);
 	}
 
 
