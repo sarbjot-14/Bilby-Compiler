@@ -1,0 +1,17 @@
+main{
+	imm i := 20;
+	print [i as int] $n;
+	
+	imm f := 20.0;
+	print [f as float] $n;
+	
+	imm c := #A;
+	print [c as char] $n;
+	
+	imm b := false;
+	print [b as bool] $n;
+	
+	
+	
+	
+}

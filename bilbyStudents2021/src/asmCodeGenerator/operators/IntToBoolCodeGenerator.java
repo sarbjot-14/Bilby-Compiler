@@ -14,19 +14,14 @@ import asmCodeGenerator.codeStorage.ASMOpcode;
 import parseTree.ParseNode;
 
 public class IntToBoolCodeGenerator implements SimpleCodeGenerator {
-	private ASMOpcode subtractOpcode;
-	private ASMOpcode jumpPosOpcode;
+
 	private ASMOpcode jumpFalseOpcode;
-	private ASMOpcode duplicateOpcode;
 	
 
 
-	public IntToBoolCodeGenerator(ASMOpcode subtractOpcode, ASMOpcode jumpPosOpcode, ASMOpcode jumpFalseOpcode, ASMOpcode duplicateOpcode) {
+	public IntToBoolCodeGenerator( ASMOpcode jumpFalseOpcode) {
 		super();
-		this.subtractOpcode = subtractOpcode;
-		this.jumpPosOpcode = jumpPosOpcode;
 		this.jumpFalseOpcode = jumpFalseOpcode;
-		this.duplicateOpcode = duplicateOpcode;
 		
 	}
 
@@ -38,7 +33,6 @@ public class IntToBoolCodeGenerator implements SimpleCodeGenerator {
 		Labeller labeller = new Labeller("compare");
 
 		String startLabel = labeller.newLabel("start");
-		String subLabel   = labeller.newLabel("sub");
 		String trueLabel  = labeller.newLabel("true");
 		String falseLabel = labeller.newLabel("false");
 		String joinLabel  = labeller.newLabel("join");
@@ -50,9 +44,7 @@ public class IntToBoolCodeGenerator implements SimpleCodeGenerator {
 			code.append(fragment);
 		}
 
-		code.add(Label, subLabel);
-		code.add(subtractOpcode);
-		code.add(duplicateOpcode);
+
 		code.add(jumpFalseOpcode, falseLabel); 
 		code.add(Jump, trueLabel);
 

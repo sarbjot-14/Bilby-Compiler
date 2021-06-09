@@ -1,8 +1,15 @@
 main{
 	%Integer may be cast to character (by using the bottom 7 bits of the integer as the character)%
-	imm testintf := 70;
-	print [testintf as char] $n;
+	imm first := 1;
+	print [first as char] $n;
 	
+	imm second := 126;
+	print [second as char] $n; 
+	% print ~
+	
+	imm third := 57054;
+	print [third as char] $n; 
+	% print ^
 	
 	
 }

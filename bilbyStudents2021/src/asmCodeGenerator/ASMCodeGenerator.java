@@ -235,13 +235,13 @@ public class ASMCodeGenerator {
 				return StoreF;
 			}
 			if(type == PrimitiveType.BOOLEAN) {
-				return StoreC;
-			}
-			if(type == PrimitiveType.BOOLEAN) {
 				return StoreI;
 			}
 			if(type == PrimitiveType.STRING) {
 				return StoreI;
+			}
+			if(type == PrimitiveType.CHARACTER) {
+				return StoreC;
 			}
 			assert false: "Type " + type + " unimplemented in opcodeForStore()";
 			return null;

@@ -149,14 +149,15 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		);
 		new FunctionSignatures(Punctuator.CAST, 
 				new FunctionSignature(ASMOpcode.ConvertF, INTEGER,FLOAT, FLOAT),
+
+				new FunctionSignature(ASMOpcode.ConvertI, FLOAT,INTEGER, FLOAT),
 				
-				new FunctionSignature(ASMOpcode.ConvertF, FLOAT,INTEGER, FLOAT),
-				new FunctionSignature(ASMOpcode.ConvertF, CHARACTER,INTEGER, INTEGER),
-				new FunctionSignature(new IntToCharCodeGenerator(ASMOpcode.BTAnd,ASMOpcode.LoadI, ASMOpcode.PushPC,ASMOpcode.Subtract), INTEGER,CHARACTER, CHARACTER),
-				new FunctionSignature(ASMOpcode.ConvertF, INTEGER,FLOAT, FLOAT),
-				new FunctionSignature(new IntToBoolCodeGenerator(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate), INTEGER,BOOLEAN, BOOLEAN),
-				new FunctionSignature(ASMOpcode.ConvertF, CHARACTER,BOOLEAN, BOOLEAN),
+				new FunctionSignature(ASMOpcode.Nop, CHARACTER,INTEGER, INTEGER),
+				new FunctionSignature(new IntToCharCodeGenerator(ASMOpcode.BTAnd), INTEGER,CHARACTER, CHARACTER),
+				//new FunctionSignature(ASMOpcode.ConvertF, INTEGER,FLOAT, FLOAT),
+				new FunctionSignature(new IntToBoolCodeGenerator(ASMOpcode.JumpFalse), INTEGER,BOOLEAN, BOOLEAN),
 				
+				new FunctionSignature(new IntToBoolCodeGenerator(ASMOpcode.JumpFalse), CHARACTER,BOOLEAN, BOOLEAN),				
 				new FunctionSignature(ASMOpcode.Nop, INTEGER,INTEGER, INTEGER),
 				new FunctionSignature(ASMOpcode.Nop, FLOAT,FLOAT, FLOAT),
 				new FunctionSignature(ASMOpcode.Nop, CHARACTER,CHARACTER, CHARACTER),
