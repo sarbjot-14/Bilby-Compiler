@@ -150,7 +150,7 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		new FunctionSignatures(Punctuator.CAST, 
 				new FunctionSignature(ASMOpcode.ConvertF, INTEGER,FLOAT, FLOAT),
 
-				new FunctionSignature(ASMOpcode.ConvertI, FLOAT,INTEGER, FLOAT),
+				new FunctionSignature(ASMOpcode.ConvertI, FLOAT,INTEGER, INTEGER),
 				
 				new FunctionSignature(ASMOpcode.Nop, CHARACTER,INTEGER, INTEGER),
 				new FunctionSignature(new IntToCharCodeGenerator(ASMOpcode.BTAnd), INTEGER,CHARACTER, CHARACTER),
