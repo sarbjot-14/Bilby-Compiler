@@ -4,7 +4,7 @@ import parseTree.nodeTypes.BooleanConstantNode;
 import parseTree.nodeTypes.CharacterConstantNode;
 import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
-import parseTree.nodeTypes.MainBlockNode;
+import parseTree.nodeTypes.StatementBlockNode;
 import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.ErrorNode;
 import parseTree.nodeTypes.FloatingConstantNode;
@@ -23,8 +23,8 @@ public interface ParseNodeVisitor {
 	void visitEnter(OperatorNode node);
 	void visitLeave(OperatorNode node);
 	
-	void visitEnter(MainBlockNode node);
-	void visitLeave(MainBlockNode node);
+	void visitEnter(StatementBlockNode node);
+	void visitLeave(StatementBlockNode node);
 
 	void visitEnter(DeclarationNode node);
 	void visitLeave(DeclarationNode node);
@@ -78,10 +78,10 @@ public interface ParseNodeVisitor {
 		public void visitLeave(DeclarationNode node) {
 			defaultVisitLeave(node);
 		}					
-		public void visitEnter(MainBlockNode node) {
+		public void visitEnter(StatementBlockNode node) {
 			defaultVisitEnter(node);
 		}
-		public void visitLeave(MainBlockNode node) {
+		public void visitLeave(StatementBlockNode node) {
 			defaultVisitLeave(node);
 		}				
 		public void visitEnter(ParseNode node) {
