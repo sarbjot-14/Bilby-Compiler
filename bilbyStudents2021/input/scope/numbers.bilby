@@ -1,0 +1,13 @@
+main{
+	%Block statements introduce a new scope in which variables can be declared. Variables in inner scopes (e.g. nested
+	%block statements) will hide variables in outer scopes with the same name.
+	
+    imm x := 1;
+    print "okay" $n;
+   {
+      imm x := 2;
+      print x $n;
+   }
+    %should print 2
+    %same name, which hides the outer scope's variable:
+}

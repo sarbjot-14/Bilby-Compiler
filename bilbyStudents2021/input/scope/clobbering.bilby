@@ -1,0 +1,11 @@
+main {
+ imm x := 1;
+ {
+   print x $n;
+   imm x := 2;
+   print x $n;
+ }
+ print x $n;
+ 
+ %output should be: 1, 2, 1
+}

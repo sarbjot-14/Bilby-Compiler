@@ -7,7 +7,7 @@ import parseTree.*;
 import parseTree.nodeTypes.BooleanConstantNode;
 import parseTree.nodeTypes.CastNode;
 import parseTree.nodeTypes.CharacterConstantNode;
-import parseTree.nodeTypes.MainBlockNode;
+import parseTree.nodeTypes.StatementBlockNode;
 import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.ErrorNode;
 import parseTree.nodeTypes.FloatingConstantNode;
@@ -49,7 +49,7 @@ public class Parser {
 
 	////////////////////////////////////////////////////////////
 	// "program" is the start symbol S
-	// S -> MAIN mainBlock
+	// S -> MAIN StatementBlock
 	
 	private ParseNode parseProgram() {
 		if(!startsProgram(nowReading)) {
@@ -58,8 +58,8 @@ public class Parser {
 		ParseNode program = new ProgramNode(nowReading);
 		// terminal? -> expect
 		expect(Keyword.MAIN); // current token is equal to one of it's arguments
-		ParseNode mainBlock = parseMainBlock(); // Recursively parse, 
-		program.appendChild(mainBlock);
+		ParseNode blockStatement = parseBlockStatement(); // Recursively parse, 
+		program.appendChild(blockStatement);
 		
 		if(!(nowReading instanceof NullToken)) { // end of input
 			return syntaxErrorNode("end of program");
@@ -73,24 +73,24 @@ public class Parser {
 	
 	
 	///////////////////////////////////////////////////////////
-	// mainBlock
+	// statementBlock
 	
-	// mainBlock -> { statement* }
-	private ParseNode parseMainBlock() {
-		if(!startsMainBlock(nowReading)) {
-			return syntaxErrorNode("mainBlock");
+	// statementBlock -> { statement* }
+		private ParseNode parseBlockStatement() {
+			if(!startsBlockStatement(nowReading)) {
+				return syntaxErrorNode("statementBlock");
 		}
-		ParseNode mainBlock = new MainBlockNode(nowReading);
+		ParseNode blockStatement = new StatementBlockNode(nowReading);
 		expect(Punctuator.OPEN_BRACE);
 		
 		while(startsStatement(nowReading)) { // 0 or more statements
 			ParseNode statement = parseStatement();
-			mainBlock.appendChild(statement);
+			blockStatement.appendChild(statement);
 		}
 		expect(Punctuator.CLOSE_BRACE);
-		return mainBlock;
+		return blockStatement;
 	}
-	private boolean startsMainBlock(Token token) {
+	private boolean startsBlockStatement(Token token) {
 		return token.isLextant(Punctuator.OPEN_BRACE);
 	}
 	
@@ -98,7 +98,7 @@ public class Parser {
 	///////////////////////////////////////////////////////////
 	// statements
 	
-	// statement-> declaration | printStmt
+	// statement-> declaration | printStmt | blockStatement
 	private ParseNode parseStatement() {
 		if(!startsStatement(nowReading)) {
 			return syntaxErrorNode("statement");
@@ -109,12 +109,15 @@ public class Parser {
 		if(startsPrintStatement(nowReading)) {
 			return parsePrintStatement();
 		}
+		if(startsBlockStatement(nowReading)) {
+			return parseBlockStatement();
+		}
 		// add if and other things
 		return syntaxErrorNode("statement");
 	}
 	private boolean startsStatement(Token token) {
 		return startsPrintStatement(token) ||
-			   startsDeclaration(token);
+				startsDeclaration(token) || startsBlockStatement(token);
 	}
 	
 	// printStmt -> PRINT printExpressionList TERMINATOR
