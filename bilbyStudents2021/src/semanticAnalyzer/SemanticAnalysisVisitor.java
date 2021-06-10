@@ -1,8 +1,9 @@
 package semanticAnalyzer;
 
+import lexicalAnalyzer.Keyword;
 import java.util.Arrays;
 import java.util.List;
-
+import java.util.ArrayList;
 import lexicalAnalyzer.Lextant;
 import lexicalAnalyzer.Punctuator;
 import logging.BilbyLogger;
@@ -14,6 +15,7 @@ import parseTree.nodeTypes.CharacterConstantNode;
 import parseTree.nodeTypes.StatementBlockNode;
 import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.ErrorNode;
+import parseTree.nodeTypes.AssignmentNode;
 import parseTree.nodeTypes.FloatingConstantNode;
 import parseTree.nodeTypes.IdentifierNode;
 import parseTree.nodeTypes.IntegerConstantNode;
@@ -79,6 +81,10 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	}
 	@Override
 	public void visitLeave(DeclarationNode node) {
+		boolean isImmutable=false;
+		if(node.getToken().isLextant(Keyword.IMM)) {
+			isImmutable= true;
+		}
 		IdentifierNode identifier = (IdentifierNode) node.child(0);
 		ParseNode initializer = node.child(1);
 		
@@ -86,7 +92,27 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		node.setType(declarationType);
 		
 		identifier.setType(declarationType);
-		addBinding(identifier, declarationType);
+		addBinding(identifier, declarationType, isImmutable);
+	}
+	@Override
+	public void visitLeave(AssignmentNode node) {
+		IdentifierNode identifier = (IdentifierNode) node.child(0);
+		if(identifier.getBinding().getIsImmutable()) {
+			logError("assignment on immutable");
+		}
+		ParseNode initializer = node.child(1);
+
+		Type assignmentType = initializer.getType();
+		List<Type> typeList = new ArrayList<Type>();
+        typeList.add(identifier.getType());
+        typeList.add(assignmentType);
+
+		if(identifier.getType() != assignmentType) {
+			typeCheckError(node,typeList);
+		}
+		node.setType(assignmentType);
+
+		
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -221,9 +247,9 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		ParseNode parent = node.getParent();
 		return (parent instanceof DeclarationNode) && (node == parent.child(0));
 	}
-	private void addBinding(IdentifierNode identifierNode, Type type) {
+	private void addBinding(IdentifierNode identifierNode, Type type, boolean isImmutable) {
 		Scope scope = identifierNode.getLocalScope();
-		Binding binding = scope.createBinding(identifierNode, type);
+		Binding binding = scope.createBinding(identifierNode, type,isImmutable);
 		identifierNode.setBinding(binding);
 	}
 	

@@ -1,0 +1,6 @@
+main{
+	mut first := 1.23;
+	print first $n;
+	first := 20.5;
+	print first $n;
+}

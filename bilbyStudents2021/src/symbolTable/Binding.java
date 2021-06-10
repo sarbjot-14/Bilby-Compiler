@@ -10,13 +10,15 @@ public class Binding {
 	private TextLocation textLocation;
 	private MemoryLocation memoryLocation;
 	private String lexeme;
+	private boolean isImmutable ;
 	
-	public Binding(Type type, TextLocation location, MemoryLocation memoryLocation, String lexeme) {
+	public Binding(Type type, TextLocation location, MemoryLocation memoryLocation, String lexeme, boolean isImmutable) {
 		super();
 		this.type = type;
 		this.textLocation = location;
 		this.memoryLocation = memoryLocation;
 		this.lexeme = lexeme;
+		this.isImmutable = isImmutable;
 	}
 	
 
@@ -41,6 +43,9 @@ public class Binding {
 	public void generateAddress(ASMCodeFragment code) {
 		memoryLocation.generateAddress(code, "%% " + lexeme);
 	}
+	public boolean getIsImmutable() {
+		return isImmutable;
+	}
 	
 ////////////////////////////////////////////////////////////////////////////////////
 //Null Binding object
@@ -55,7 +60,7 @@ public class Binding {
 			super(PrimitiveType.ERROR,
 					TextLocation.nullInstance(),
 					MemoryLocation.nullInstance(),
-					"the-null-binding");
+					"the-null-binding",false);
 		}
 		public static NullBinding getInstance() {
 			if(instance==null)

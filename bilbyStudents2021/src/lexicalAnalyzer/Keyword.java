@@ -13,6 +13,7 @@ public enum Keyword implements Lextant {
 	MAIN("main"),
 	CAST("as"),
 	FLOAT("float"),
+	MUT("mut"),
 	INT("int"),
 	CHAR("char"),
 	BOOL("bool"),
