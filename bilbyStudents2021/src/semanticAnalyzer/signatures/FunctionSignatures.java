@@ -11,6 +11,8 @@ import asmCodeGenerator.operators.EqualsCodeGeneratorInt;
 import asmCodeGenerator.operators.GreaterCodeGenerator;
 import asmCodeGenerator.operators.GreaterThanEqualCodeGeneratorFloat;
 import asmCodeGenerator.operators.GreaterThanEqualCodeGeneratorInt;
+import asmCodeGenerator.operators.IntToBoolCodeGenerator;
+import asmCodeGenerator.operators.IntToCharCodeGenerator;
 import asmCodeGenerator.operators.LessCodeGenerator;
 import asmCodeGenerator.operators.LessThanEqualCodeGeneratorFloat;
 import asmCodeGenerator.operators.LessThanEqualCodeGeneratorInt;
@@ -144,6 +146,25 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				new FunctionSignature(new NotEqualsCodeGeneratorInt(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),CHARACTER,CHARACTER,BOOLEAN),
 				new FunctionSignature(new NotEqualsCodeGeneratorInt(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),BOOLEAN,BOOLEAN,BOOLEAN),
 				new FunctionSignature(new NotEqualsCodeGeneratorFloat(ASMOpcode.FSubtract, ASMOpcode.JumpFPos,ASMOpcode.JumpFalse, ASMOpcode.Duplicate, ASMOpcode.ConvertI), FLOAT, FLOAT, BOOLEAN)
+		);
+		new FunctionSignatures(Punctuator.CAST, 
+				new FunctionSignature(ASMOpcode.ConvertF, INTEGER,FLOAT, FLOAT),
+
+				new FunctionSignature(ASMOpcode.ConvertI, FLOAT,INTEGER, INTEGER),
+				
+				new FunctionSignature(ASMOpcode.Nop, CHARACTER,INTEGER, INTEGER),
+				new FunctionSignature(new IntToCharCodeGenerator(ASMOpcode.BTAnd), INTEGER,CHARACTER, CHARACTER),
+				//new FunctionSignature(ASMOpcode.ConvertF, INTEGER,FLOAT, FLOAT),
+				new FunctionSignature(new IntToBoolCodeGenerator(ASMOpcode.JumpFalse), INTEGER,BOOLEAN, BOOLEAN),
+				
+				new FunctionSignature(new IntToBoolCodeGenerator(ASMOpcode.JumpFalse), CHARACTER,BOOLEAN, BOOLEAN),				
+				new FunctionSignature(ASMOpcode.Nop, INTEGER,INTEGER, INTEGER),
+				new FunctionSignature(ASMOpcode.Nop, FLOAT,FLOAT, FLOAT),
+				new FunctionSignature(ASMOpcode.Nop, CHARACTER,CHARACTER, CHARACTER),
+				new FunctionSignature(ASMOpcode.Nop, BOOLEAN,BOOLEAN, BOOLEAN),
+				new FunctionSignature(ASMOpcode.Nop, STRING,STRING, STRING)
+				
+				
 		);
 													
 		

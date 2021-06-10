@@ -1,0 +1,15 @@
+main{
+	%Integer and character may be cast to boolean (zero yields false, nonzero yields true).
+	imm first := 0;
+	print [first as bool] $n;
+	
+	imm second := 1;
+	print [second as bool] $n;
+	
+	
+	imm third := 333;
+	print [third as bool] $n;
+	
+
+	
+}

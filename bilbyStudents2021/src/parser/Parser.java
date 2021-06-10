@@ -5,6 +5,7 @@ import java.util.Arrays;
 import logging.BilbyLogger;
 import parseTree.*;
 import parseTree.nodeTypes.BooleanConstantNode;
+import parseTree.nodeTypes.CastNode;
 import parseTree.nodeTypes.CharacterConstantNode;
 import parseTree.nodeTypes.MainBlockNode;
 import parseTree.nodeTypes.DeclarationNode;
@@ -19,6 +20,7 @@ import parseTree.nodeTypes.ProgramNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
+import parseTree.nodeTypes.TypeNode;
 import tokens.*;
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
@@ -321,15 +323,37 @@ public class Parser {
 		if(!startsBracketExpression(nowReading)) {
 			return syntaxErrorNode("bracket expression");
 		}
-		expect(Punctuator.OPEN_BRACE_PAREN);
-		ParseNode left = parseExpression();
-		expect(Punctuator.CLOSE_BRACE_PAREN);
-		return left;
+		if(nowReading.isLextant(Punctuator.OPEN_BRACE_PAREN)) {
+			expect(Punctuator.OPEN_BRACE_PAREN);
+			ParseNode left = parseExpression();
+			expect(Punctuator.CLOSE_BRACE_PAREN);
+			return left;
+		}
+		else {
+			expect(Punctuator.OPEN_BRACKET);
+			
+			ParseNode left = parseExpression();
+			
+			readToken();
+			ParseNode castNode = new CastNode(previouslyRead);
+			 
+			readToken();
+			ParseNode rightType = new TypeNode(previouslyRead);
+			
+			
+			castNode.appendChild(left);
+			castNode.appendChild(rightType);
+			
+		
+			expect(Punctuator.CLOSE_BRACKET);
+			return castNode;
+		}
+		
 	
 	}
 	
 	private boolean startsBracketExpression(Token token) {
-		return token.isLextant(Punctuator.OPEN_BRACE_PAREN);
+		return token.isLextant(Punctuator.OPEN_BRACE_PAREN) || token.isLextant(Punctuator.OPEN_BRACKET);
 	}
 	
 

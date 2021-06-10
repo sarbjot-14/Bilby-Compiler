@@ -4,10 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import lexicalAnalyzer.Lextant;
+import lexicalAnalyzer.Punctuator;
 import logging.BilbyLogger;
 import parseTree.ParseNode;
 import parseTree.ParseNodeVisitor;
 import parseTree.nodeTypes.BooleanConstantNode;
+import parseTree.nodeTypes.CastNode;
 import parseTree.nodeTypes.CharacterConstantNode;
 import parseTree.nodeTypes.MainBlockNode;
 import parseTree.nodeTypes.DeclarationNode;
@@ -22,6 +24,7 @@ import parseTree.nodeTypes.ProgramNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
+import parseTree.nodeTypes.TypeNode;
 import semanticAnalyzer.signatures.FunctionSignature;
 import semanticAnalyzer.signatures.FunctionSignatures;
 import semanticAnalyzer.types.PrimitiveType;
@@ -118,6 +121,19 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		LextantToken token = (LextantToken) node.getToken();
 		return token.getLextant();
 	}
+	@Override
+	public void visitLeave(TypeNode node) {
+		
+		node.setType(PrimitiveType.fromToken(node.typeToken()));
+		
+		//Primitive.fromToken
+			// switch on lextant
+			// key words : int, float, bool
+		
+		// Another way to do it is add contructor to Prmitive with keyword/lextant of that type
+			// then search lextant from that token
+			// basically loop through all prmitive types and see if type token is correct token
+	}
 
 
 	///////////////////////////////////////////////////////////////////////////
@@ -154,6 +170,39 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	}
 	@Override
 	public void visit(TabNode node) {
+	}
+	@Override
+	public void visitLeave(CastNode node) {
+		
+		List<Type> childTypes;  
+		if(node.nChildren() == 1) {
+			ParseNode child = node.child(0);
+			childTypes = Arrays.asList(child.getType());
+			System.out.println(child.getType());
+			
+		}
+		else {
+			assert node.nChildren() == 2;
+			ParseNode left  = node.child(0);
+			ParseNode right = node.child(1);
+			
+			
+			
+			childTypes = Arrays.asList(left.getType(), right.getType());		
+		}
+		
+		//Lextant operator = operatorFor(node);
+		FunctionSignature signature = FunctionSignatures.signature(Punctuator.CAST, childTypes);
+		
+		if(signature.accepts(childTypes)) {
+			node.setType(signature.resultType()); // why?
+			node.setSignature(signature);
+		}
+		else {
+			typeCheckError(node, childTypes);
+			node.setType(PrimitiveType.ERROR);
+		}
+		
 	}
 	///////////////////////////////////////////////////////////////////////////
 	// IdentifierNodes, with helper methods

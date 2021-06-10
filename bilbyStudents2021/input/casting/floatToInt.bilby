@@ -1,0 +1,7 @@
+main{
+	imm nickel := 11.5;
+	print [nickel as int] $n;
+	
+	
+	
+}

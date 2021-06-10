@@ -1,0 +1,17 @@
+main{
+	
+	imm first := #A;
+	print [first as int] $n;
+	
+	imm second := #!;
+	print [second as int] $n;
+	%33
+	
+	imm third := #};
+	print [third as int] $n;
+	%125
+	
+	
+	
+	
+}
