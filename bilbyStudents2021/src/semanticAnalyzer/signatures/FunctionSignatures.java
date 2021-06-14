@@ -21,6 +21,7 @@ import asmCodeGenerator.operators.LessCodeGenerator;
 import asmCodeGenerator.operators.LessFloatCodeGenerator;
 import asmCodeGenerator.operators.LessThanEqualCodeGeneratorFloat;
 import asmCodeGenerator.operators.LessThanEqualCodeGeneratorInt;
+import asmCodeGenerator.operators.NotCodeGenerator;
 import asmCodeGenerator.operators.NotEqualsCodeGeneratorFloat;
 import asmCodeGenerator.operators.NotEqualsCodeGeneratorInt;
 import lexicalAnalyzer.Punctuator;
@@ -178,6 +179,9 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		
 		new FunctionSignatures(Punctuator.OR, 
 				new FunctionSignature(new BooleanOrCodeGenerator(),BOOLEAN,BOOLEAN,BOOLEAN)
+		);
+		new FunctionSignatures(Punctuator.NOT, 
+				new FunctionSignature(new NotCodeGenerator(),BOOLEAN,BOOLEAN)
 		);
 													
 		

@@ -1,0 +1,5 @@
+main{
+	% comparison should be done first, then and, then or
+	print true && true == 2>1 $n;
+	
+}
