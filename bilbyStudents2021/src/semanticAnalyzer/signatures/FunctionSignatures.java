@@ -8,9 +8,11 @@ import java.util.Map;
 import asmCodeGenerator.codeStorage.ASMOpcode;
 import asmCodeGenerator.operators.EqualsCodeGeneratorFloat;
 import asmCodeGenerator.operators.EqualsCodeGeneratorInt;
+import asmCodeGenerator.operators.FloatDivideCodeGenerator;
 import asmCodeGenerator.operators.GreaterCodeGenerator;
 import asmCodeGenerator.operators.GreaterThanEqualCodeGeneratorFloat;
 import asmCodeGenerator.operators.GreaterThanEqualCodeGeneratorInt;
+import asmCodeGenerator.operators.IntDivideCodeGenerator;
 import asmCodeGenerator.operators.IntToBoolCodeGenerator;
 import asmCodeGenerator.operators.IntToCharCodeGenerator;
 import asmCodeGenerator.operators.LessCodeGenerator;
@@ -106,7 +108,8 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		new FunctionSignatures(Punctuator.DIVIDE,
 			    new FunctionSignature(ASMOpcode.Nop, INTEGER, INTEGER),
 			    new FunctionSignature(ASMOpcode.Nop, FLOAT, FLOAT),
-			    new FunctionSignature(ASMOpcode.Divide, INTEGER, INTEGER, INTEGER),
+			    new FunctionSignature(new IntDivideCodeGenerator(ASMOpcode.FSubtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate), INTEGER, INTEGER, INTEGER),
+			    new FunctionSignature(new FloatDivideCodeGenerator(ASMOpcode.FSubtract, ASMOpcode.JumpFPos, ASMOpcode.JumpFZero, ASMOpcode.Duplicate), FLOAT, FLOAT,FLOAT),
 			    new FunctionSignature(ASMOpcode.FDivide, FLOAT, FLOAT, FLOAT)
 			);
 		

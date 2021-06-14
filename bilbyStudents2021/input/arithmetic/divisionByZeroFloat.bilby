@@ -1,6 +1,5 @@
 main{
-	
-	
+
 	mut divideerr := 30.0/0.0;
 
 }

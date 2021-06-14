@@ -20,6 +20,7 @@ public class RunTime {
 	
 	public static final String GENERAL_RUNTIME_ERROR = "$$general-runtime-error";
 	public static final String INTEGER_DIVIDE_BY_ZERO_RUNTIME_ERROR = "$$i-divide-by-zero";
+	public static final String FLOAT_DIVIDE_BY_ZERO_RUNTIME_ERROR = "$$f-divide-by-zero";
 	
 
 	private ASMCodeFragment environmentASM() {
@@ -71,6 +72,7 @@ public class RunTime {
 		
 		generalRuntimeError(frag);
 		integerDivideByZeroError(frag);
+		floatDivideByZeroError(frag);
 		
 		return frag;
 	}
@@ -94,6 +96,16 @@ public class RunTime {
 		
 		frag.add(Label, INTEGER_DIVIDE_BY_ZERO_RUNTIME_ERROR);
 		frag.add(PushD, intDivideByZeroMessage);
+		frag.add(Jump, GENERAL_RUNTIME_ERROR);
+	}
+	private void floatDivideByZeroError(ASMCodeFragment frag) {
+		String floatDivideByZeroMessage = "$errors-float-divide-by-zero";
+		
+		frag.add(DLabel, floatDivideByZeroMessage);
+		frag.add(DataS, "float divide by zero");
+		
+		frag.add(Label, FLOAT_DIVIDE_BY_ZERO_RUNTIME_ERROR);
+		frag.add(PushD, floatDivideByZeroMessage);
 		frag.add(Jump, GENERAL_RUNTIME_ERROR);
 	}
 	

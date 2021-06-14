@@ -1,0 +1,3 @@
+4
+0
+Runtime error: integer divide by zero
