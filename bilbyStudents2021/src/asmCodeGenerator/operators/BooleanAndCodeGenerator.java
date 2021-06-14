@@ -1,12 +1,10 @@
 package asmCodeGenerator.operators;
 
 import static asmCodeGenerator.codeStorage.ASMOpcode.Jump;
-import static asmCodeGenerator.codeStorage.ASMOpcode.JumpPos;
 import static asmCodeGenerator.codeStorage.ASMOpcode.Label;
 import static asmCodeGenerator.codeStorage.ASMOpcode.PushI;
+import static asmCodeGenerator.codeStorage.ASMOpcode.PStack;
 import static asmCodeGenerator.codeStorage.ASMOpcode.JumpFalse;
-import static asmCodeGenerator.codeStorage.ASMOpcode.Duplicate;
-
 
 import java.util.List;
 
@@ -16,15 +14,16 @@ import asmCodeGenerator.codeStorage.ASMCodeFragment.CodeType;
 import asmCodeGenerator.codeStorage.ASMOpcode;
 import parseTree.ParseNode;
 
-public class LessCodeGenerator implements SimpleCodeGenerator {
-	private ASMOpcode subtractOpcode;
-	private ASMOpcode jumpPosOpcode;
+public class BooleanAndCodeGenerator implements SimpleCodeGenerator {
+
+	
 
 
-	public LessCodeGenerator(ASMOpcode subtractOpcode, ASMOpcode jumpPosOpcode) {
+
+	public BooleanAndCodeGenerator() {
 		super();
-		this.subtractOpcode = subtractOpcode;
-		this.jumpPosOpcode = jumpPosOpcode;
+
+	
 	}
 
 
@@ -43,17 +42,20 @@ public class LessCodeGenerator implements SimpleCodeGenerator {
 		ASMCodeFragment code = new ASMCodeFragment(CodeType.GENERATES_VALUE);
 
 		code.add(Label, startLabel);
-		for(ASMCodeFragment fragment: args) {
-			code.append(fragment);
-		}
 
-		code.add(Label, subLabel);
-		code.add(subtractOpcode);
-		code.add(Duplicate);
 		
-		code.add(jumpPosOpcode, falseLabel);
+		//code.add(PStack);
+		
+
+		/*
+		 * Code in operstaor and that short circuits
+		 * 
+		 */
+
+		code.append(args.get(0));
 		code.add(JumpFalse, falseLabel);
-		code.add(Jump, trueLabel);
+		code.append(args.get(1));
+		code.add(JumpFalse, falseLabel);
 
 		code.add(Label, trueLabel);
 		code.add(PushI, 1);

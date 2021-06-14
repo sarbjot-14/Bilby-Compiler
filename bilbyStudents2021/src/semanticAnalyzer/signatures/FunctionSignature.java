@@ -96,6 +96,8 @@ public class FunctionSignature {
 	private static FunctionSignature greaterThanEqualSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN);
 	private static FunctionSignature lessSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN);
 	private static FunctionSignature lessThanEqualSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN);
+	private static FunctionSignature booleanAndSignature = new FunctionSignature(1, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN);
+	private static FunctionSignature booleanOrSignature = new FunctionSignature(1, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN);
 	// the switch here is ugly compared to polymorphism.  This should perhaps be a method on Lextant.
 	public static FunctionSignature signatureOf(Lextant lextant) {
 		assert(lextant instanceof Punctuator);	
@@ -109,6 +111,8 @@ public class FunctionSignature {
 		case GREATER_THAN_EQUAL:	return greaterThanEqualSignature;
 		case LESS:	return lessSignature;
 		case LESS_THAN_EQUAL:	return lessThanEqualSignature;
+		case AND:	return booleanAndSignature;
+		case OR:	return booleanOrSignature;
 
 		default:
 			return neverMatchedSignature;

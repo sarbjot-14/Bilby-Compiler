@@ -1,1 +1,2 @@
-Runtime error: float divide by zero
+true
+false

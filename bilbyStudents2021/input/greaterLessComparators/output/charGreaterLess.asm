@@ -176,7 +176,9 @@
         PushI        71                        
         Label        -compare-5-sub            
         Subtract                               
+        Duplicate                              
         JumpPos      -compare-5-false          
+        JumpFalse    -compare-5-false          
         Jump         -compare-5-true           
         Label        -compare-5-true           
         PushI        1                         
@@ -200,7 +202,9 @@
         PushI        67                        
         Label        -compare-7-sub            
         Subtract                               
+        Duplicate                              
         JumpPos      -compare-7-false          
+        JumpFalse    -compare-7-false          
         Jump         -compare-7-true           
         Label        -compare-7-true           
         PushI        1                         

@@ -274,7 +274,7 @@ public class Parser {
 		}
 		
 		ParseNode left = parseAdditiveExpression();
-		if(nowReading.isLextant(Punctuator.GREATER, Punctuator.GREATER_THAN_EQUAL,Punctuator.LESS,Punctuator.LESS_THAN_EQUAL, Punctuator.EQUALS,Punctuator.NOT_EQUALS  )) {
+		if(nowReading.isLextant(Punctuator.GREATER, Punctuator.GREATER_THAN_EQUAL,Punctuator.LESS,Punctuator.LESS_THAN_EQUAL, Punctuator.EQUALS,Punctuator.NOT_EQUALS, Punctuator.AND, Punctuator.OR  )) {
 			Token compareToken = nowReading;
 			readToken();
 			ParseNode right = parseAdditiveExpression();

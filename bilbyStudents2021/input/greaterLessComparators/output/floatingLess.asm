@@ -128,7 +128,9 @@
         PushF        2.340000                  
         Label        -compare-1-sub            
         FSubtract                              
+        Duplicate                              
         JumpFPos     -compare-1-false          
+        JumpFZero    -compare-1-false          
         Jump         -compare-1-true           
         Label        -compare-1-true           
         PushI        1                         
@@ -152,7 +154,9 @@
         PushF        1.230000                  
         Label        -compare-3-sub            
         FSubtract                              
+        Duplicate                              
         JumpFPos     -compare-3-false          
+        JumpFZero    -compare-3-false          
         Jump         -compare-3-true           
         Label        -compare-3-true           
         PushI        1                         
@@ -167,6 +171,32 @@
         Label        -print-boolean-4-true     
         PushD        $boolean-true-string      
         Label        -print-boolean-4-join     
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        Label        -compare-5-start          
+        PushF        2.340000                  
+        PushF        2.340000                  
+        Label        -compare-5-sub            
+        FSubtract                              
+        Duplicate                              
+        JumpFPos     -compare-5-false          
+        JumpFZero    -compare-5-false          
+        Jump         -compare-5-true           
+        Label        -compare-5-true           
+        PushI        1                         
+        Jump         -compare-5-join           
+        Label        -compare-5-false          
+        PushI        0                         
+        Jump         -compare-5-join           
+        Label        -compare-5-join           
+        JumpTrue     -print-boolean-6-true     
+        PushD        $boolean-false-string     
+        Jump         -print-boolean-6-join     
+        Label        -print-boolean-6-true     
+        PushD        $boolean-true-string      
+        Label        -print-boolean-6-join     
         PushD        $print-format-boolean     
         Printf                                 
         PushD        $print-format-newline     

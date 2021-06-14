@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import asmCodeGenerator.codeStorage.ASMOpcode;
+import asmCodeGenerator.operators.BooleanAndCodeGenerator;
+import asmCodeGenerator.operators.BooleanOrCodeGenerator;
 import asmCodeGenerator.operators.EqualsCodeGeneratorFloat;
 import asmCodeGenerator.operators.EqualsCodeGeneratorInt;
 import asmCodeGenerator.operators.FloatDivideCodeGenerator;
@@ -16,6 +18,7 @@ import asmCodeGenerator.operators.IntDivideCodeGenerator;
 import asmCodeGenerator.operators.IntToBoolCodeGenerator;
 import asmCodeGenerator.operators.IntToCharCodeGenerator;
 import asmCodeGenerator.operators.LessCodeGenerator;
+import asmCodeGenerator.operators.LessFloatCodeGenerator;
 import asmCodeGenerator.operators.LessThanEqualCodeGeneratorFloat;
 import asmCodeGenerator.operators.LessThanEqualCodeGeneratorInt;
 import asmCodeGenerator.operators.NotEqualsCodeGeneratorFloat;
@@ -127,7 +130,7 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		);
 		new FunctionSignatures(Punctuator.LESS, 
 				new FunctionSignature(new LessCodeGenerator(ASMOpcode.Subtract, ASMOpcode.JumpPos),INTEGER,INTEGER,BOOLEAN),
-				new FunctionSignature(new LessCodeGenerator(ASMOpcode.FSubtract, ASMOpcode.JumpFPos), FLOAT, FLOAT, BOOLEAN),
+				new FunctionSignature(new LessFloatCodeGenerator(ASMOpcode.FSubtract, ASMOpcode.JumpFPos), FLOAT, FLOAT, BOOLEAN),
 				new FunctionSignature(new LessCodeGenerator(ASMOpcode.Subtract, ASMOpcode.JumpPos),CHARACTER,CHARACTER,BOOLEAN)
 		);
 		new FunctionSignatures(Punctuator.LESS_THAN_EQUAL, 
@@ -157,7 +160,6 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				
 				new FunctionSignature(ASMOpcode.Nop, CHARACTER,INTEGER, INTEGER),
 				new FunctionSignature(new IntToCharCodeGenerator(ASMOpcode.BTAnd), INTEGER,CHARACTER, CHARACTER),
-				//new FunctionSignature(ASMOpcode.ConvertF, INTEGER,FLOAT, FLOAT),
 				new FunctionSignature(new IntToBoolCodeGenerator(ASMOpcode.JumpFalse), INTEGER,BOOLEAN, BOOLEAN),
 				
 				new FunctionSignature(new IntToBoolCodeGenerator(ASMOpcode.JumpFalse), CHARACTER,BOOLEAN, BOOLEAN),				
@@ -168,6 +170,14 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				new FunctionSignature(ASMOpcode.Nop, STRING,STRING, STRING)
 				
 				
+		);
+		
+		new FunctionSignatures(Punctuator.AND, 
+				new FunctionSignature(new BooleanAndCodeGenerator(),BOOLEAN,BOOLEAN,BOOLEAN)
+		);
+		
+		new FunctionSignatures(Punctuator.OR, 
+				new FunctionSignature(new BooleanOrCodeGenerator(),BOOLEAN,BOOLEAN,BOOLEAN)
 		);
 													
 		

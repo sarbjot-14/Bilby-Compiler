@@ -1,6 +1,4 @@
 main{
-	
-	
-	mut divideerr := 30.0/0.0;
-
+	print 2<3 $n;
+	print 2<2 $n;
 }

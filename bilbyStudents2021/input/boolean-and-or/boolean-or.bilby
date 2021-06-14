@@ -1,0 +1,12 @@
+main{
+	print true || true $n;
+	print false || true $n;
+	print true || false $n;
+	print false || false $n;
+	
+	print (2==2) || (46==46) $n;
+	
+	print (2==2) || (46!=46) $n;
+	
+	print (2<2) || (46.0>46.0) $n;
+}

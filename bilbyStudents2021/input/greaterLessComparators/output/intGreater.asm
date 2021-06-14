@@ -171,4 +171,28 @@
         Printf                                 
         PushD        $print-format-newline     
         Printf                                 
+        Label        -compare-5-start          
+        PushI        2                         
+        PushI        2                         
+        Label        -compare-5-sub            
+        Subtract                               
+        JumpPos      -compare-5-true           
+        Jump         -compare-5-false          
+        Label        -compare-5-true           
+        PushI        1                         
+        Jump         -compare-5-join           
+        Label        -compare-5-false          
+        PushI        0                         
+        Jump         -compare-5-join           
+        Label        -compare-5-join           
+        JumpTrue     -print-boolean-6-true     
+        PushD        $boolean-false-string     
+        Jump         -print-boolean-6-join     
+        Label        -print-boolean-6-true     
+        PushD        $boolean-true-string      
+        Label        -print-boolean-6-join     
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
         Halt                                   

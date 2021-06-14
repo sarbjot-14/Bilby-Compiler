@@ -4,7 +4,7 @@ import static asmCodeGenerator.codeStorage.ASMOpcode.Jump;
 import static asmCodeGenerator.codeStorage.ASMOpcode.JumpPos;
 import static asmCodeGenerator.codeStorage.ASMOpcode.Label;
 import static asmCodeGenerator.codeStorage.ASMOpcode.PushI;
-import static asmCodeGenerator.codeStorage.ASMOpcode.JumpFalse;
+import static asmCodeGenerator.codeStorage.ASMOpcode.JumpFZero;
 import static asmCodeGenerator.codeStorage.ASMOpcode.Duplicate;
 
 
@@ -16,12 +16,12 @@ import asmCodeGenerator.codeStorage.ASMCodeFragment.CodeType;
 import asmCodeGenerator.codeStorage.ASMOpcode;
 import parseTree.ParseNode;
 
-public class LessCodeGenerator implements SimpleCodeGenerator {
+public class LessFloatCodeGenerator implements SimpleCodeGenerator {
 	private ASMOpcode subtractOpcode;
 	private ASMOpcode jumpPosOpcode;
 
 
-	public LessCodeGenerator(ASMOpcode subtractOpcode, ASMOpcode jumpPosOpcode) {
+	public LessFloatCodeGenerator(ASMOpcode subtractOpcode, ASMOpcode jumpPosOpcode) {
 		super();
 		this.subtractOpcode = subtractOpcode;
 		this.jumpPosOpcode = jumpPosOpcode;
@@ -52,7 +52,7 @@ public class LessCodeGenerator implements SimpleCodeGenerator {
 		code.add(Duplicate);
 		
 		code.add(jumpPosOpcode, falseLabel);
-		code.add(JumpFalse, falseLabel);
+		code.add(JumpFZero, falseLabel);
 		code.add(Jump, trueLabel);
 
 		code.add(Label, trueLabel);
