@@ -180,6 +180,12 @@ public class Parser {
 		expect(Punctuator.CLOSE_BRACE_PAREN);
 		ParseNode block = parseBlockStatement(); 
 		
+		if(nowReading.isLextant(Keyword.ELSE)) {
+			expect(Keyword.ELSE);
+			ParseNode elseBlock = parseBlockStatement(); 
+			return IfNode.withChildren(ifToken, condition, block,elseBlock);
+		}
+		
 		return IfNode.withChildren(ifToken, condition, block);
 		
 //		if(true){

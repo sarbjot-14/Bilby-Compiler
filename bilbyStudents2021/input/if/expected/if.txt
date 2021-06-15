@@ -1,0 +1,2 @@
+if worked true
+if worked true with equality condition

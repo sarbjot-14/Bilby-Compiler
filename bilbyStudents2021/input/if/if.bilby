@@ -1,0 +1,7 @@
+main{
+	if(true){print "if worked true" $n;}
+	if(false){print "if failed false" $n;}
+	if(2==2){print "if worked true with equality condition" $n;}
+	
+
+}

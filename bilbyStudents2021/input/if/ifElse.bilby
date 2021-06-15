@@ -13,11 +13,14 @@ main{
 	print "else failed" $n;
 	}
 	
-	if(2==2){
-	print "if passed true" $n;
+	if(2!=2){
+	print "if failed false" $n;
 	}
 	else{
-	print "else failed" $n;
+		print "else passed " $n;
+		if(true){
+			print "else if passed" $n;
+		}
 	}
 
 }

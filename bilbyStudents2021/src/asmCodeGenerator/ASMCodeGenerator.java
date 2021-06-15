@@ -314,12 +314,22 @@ public class ASMCodeGenerator {
 
 			// push block statement
 			ParseNode blockStatement = node.getChildren().get(1);
-			ASMCodeFragment arg2 = removeValueCode(booleanConditional);
+			ASMCodeFragment arg2 =removeVoidCode(blockStatement);
 			code.append(arg2);
+			String endElse = new Labeller("endElse").newLabel("");
+			code.add(Jump, endElse);
+			
 			
 			// push end if label
-			code.add(Label, endIf);
+			code.add(Label, endIf);	
 			
+			// add else block
+			if(node.getChildren().size()==3) {
+				ParseNode elseStatement = node.getChildren().get(2);
+				ASMCodeFragment arg3 =removeVoidCode(elseStatement);
+				code.append(arg3);
+			}
+			code.add(Label, endElse);
 
 		}
 		///////////////////////////////////////////////////////////////////////////
