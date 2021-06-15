@@ -13,6 +13,7 @@ import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.ErrorNode;
 import parseTree.nodeTypes.FloatingConstantNode;
 import parseTree.nodeTypes.IdentifierNode;
+import parseTree.nodeTypes.IfNode;
 import parseTree.nodeTypes.IntegerConstantNode;
 import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.OperatorNode;
@@ -99,7 +100,7 @@ public class Parser {
 	///////////////////////////////////////////////////////////
 	// statements
 	
-	// statement-> declaration | printStmt | blockStatement  | assignmentStatement
+	// statement-> declaration | printStmt | blockStatement  | assignmentStatement | ifStatement
 	private ParseNode parseStatement() {
 		if(!startsStatement(nowReading)) {
 			return syntaxErrorNode("statement");
@@ -116,12 +117,15 @@ public class Parser {
 		if(startsAssignmentStatement(nowReading)) {
 			return parseAssignmentStatement();
 		}
+		if(startsIfStatement(nowReading)) {
+			return parseIfStatement();
+		}
 		// add if and other things
 		return syntaxErrorNode("statement");
 	}
 	private boolean startsStatement(Token token) {
 		return startsPrintStatement(token) ||
-				startsDeclaration(token) || startsBlockStatement(token)||startsAssignmentStatement(token);
+				startsDeclaration(token) || startsBlockStatement(token)||startsAssignmentStatement(token) ||startsIfStatement(token) ;
 	}
 	private boolean startsAssignmentStatement(Token token) {
 		return startsIdentifier(token);
@@ -159,9 +163,49 @@ public class Parser {
 		expect(Punctuator.TERMINATOR);
 		return result;
 	}
+	private boolean startsIfStatement(Token token) {
+		return token.isLextant(Keyword.IF);
+	}
+	
+	// ifStatement ->    IF (expression) blockStatement ( ELSE blockStatement) ?
+	private ParseNode parseIfStatement() {
+		if(!startsIfStatement(nowReading)) {
+			return syntaxErrorNode("if statement");
+		}
+		Token ifToken = nowReading;
+		readToken();
+		
+		expect(Punctuator.OPEN_BRACE_PAREN);
+		ParseNode condition = parseExpression(); 
+		expect(Punctuator.CLOSE_BRACE_PAREN);
+		ParseNode block = parseBlockStatement(); 
+		
+		return IfNode.withChildren(ifToken, condition, block);
+		
+//		if(true){
+//			print "true" $n;
+//		}
+//		
+//		// declaration -> IMM identifier := expression TERMINATOR
+//		private ParseNode parseDeclaration() {
+//			if(!startsDeclaration(nowReading) ) {
+//				return syntaxErrorNode("declaration");
+//			}
+//			Token declarationToken = nowReading;
+//			readToken();
+//			
+//			ParseNode identifier = parseIdentifier();
+//			expect(Punctuator.ASSIGN);
+//			ParseNode initializer = parseExpression();
+//			expect(Punctuator.TERMINATOR);
+//			
+//			return DeclarationNode.withChildren(declarationToken, identifier, initializer);
+//		}
+		//return result;
+	}
 	private boolean startsPrintStatement(Token token) {
 		return token.isLextant(Keyword.PRINT);
-	}	
+	}
 
 	// This adds the printExpressions it parses to the children of the given parent
 	// printExpressionList -> printSeparator* (expression printSeparator+)* expression? (note that this is nullable)

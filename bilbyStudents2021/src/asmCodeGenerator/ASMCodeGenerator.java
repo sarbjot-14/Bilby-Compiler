@@ -20,6 +20,7 @@ import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.FloatingConstantNode;
 import parseTree.nodeTypes.AssignmentNode;
 import parseTree.nodeTypes.IdentifierNode;
+import parseTree.nodeTypes.IfNode;
 import parseTree.nodeTypes.IntegerConstantNode;
 import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.OperatorNode;
@@ -241,6 +242,7 @@ public class ASMCodeGenerator {
 			Type type = node.getType();
 			code.add(opcodeForStore(type));
 		}
+		
 		private ASMOpcode opcodeForStore(Type type) {
 			if(type == PrimitiveType.INTEGER) {
 				return StoreI;
@@ -294,6 +296,30 @@ public class ASMCodeGenerator {
 			else {
 				throw new RuntimeException("Varient unimplemented in ASMCodeGenerator Operator Nde");
 			}
+
+		}
+		///////////////////////////////////////////////////////////////////////////
+		// if else
+		public void visitLeave(IfNode node) {
+			newVoidCode(node);
+			
+			// push boolean conditional
+			ParseNode booleanConditional = node.getChildren().get(0);
+			ASMCodeFragment arg1 = removeValueCode(booleanConditional);
+			code.append(arg1);
+			
+			// check conditional and jump over block statement
+			String endIf = new Labeller("endIf").newLabel("");
+			code.add(JumpFalse, endIf);
+
+			// push block statement
+			ParseNode blockStatement = node.getChildren().get(1);
+			ASMCodeFragment arg2 = removeValueCode(booleanConditional);
+			code.append(arg2);
+			
+			// push end if label
+			code.add(Label, endIf);
+			
 
 		}
 		///////////////////////////////////////////////////////////////////////////

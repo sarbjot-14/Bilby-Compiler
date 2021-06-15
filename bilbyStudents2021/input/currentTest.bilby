@@ -1,8 +1,5 @@
 main{
-	print !true $n;
-	print !false $n;
-	print !(4<6) $n;
+	if(true){print "if worked" $n;}
 	
-	
-	
+
 }
