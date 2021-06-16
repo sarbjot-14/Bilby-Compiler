@@ -31,6 +31,7 @@ import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
 import parseTree.nodeTypes.TypeNode;
+import parseTree.nodeTypes.WhileNode;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
@@ -330,6 +331,37 @@ public class ASMCodeGenerator {
 				code.append(arg3);
 			}
 			code.add(Label, endElse);
+
+		}
+		///////////////////////////////////////////////////////////////////////////
+		// while
+		public void visitLeave(WhileNode node) {
+			newVoidCode(node);
+
+			// start of while condition
+			String startWhile = new Labeller("startWhile").newLabel("");
+			code.add(Label, startWhile);	
+			
+			// check boolean conditional
+			ParseNode booleanConditional = node.getChildren().get(0);
+			ASMCodeFragment arg1 = removeValueCode(booleanConditional);
+			code.append(arg1);
+			
+			// check conditional and jump over block statement
+			String endWhile = new Labeller("endWhile").newLabel("");
+			code.add(JumpFalse, endWhile);
+			
+			// run block statement
+			ParseNode blockStatement = node.getChildren().get(1);
+			ASMCodeFragment arg2 =removeVoidCode(blockStatement);
+			code.append(arg2);
+
+			
+			// jump to start of start of boolean condition
+			code.add(Jump, startWhile);
+			
+			// end
+			code.add(Label, endWhile);
 
 		}
 		///////////////////////////////////////////////////////////////////////////

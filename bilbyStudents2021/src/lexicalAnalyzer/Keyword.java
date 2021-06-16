@@ -19,6 +19,7 @@ public enum Keyword implements Lextant {
 	BOOL("bool"),
 	IF("if"),
 	ELSE("else"),
+	WHILE("while"),
 	
 	NULL_KEYWORD("");
 

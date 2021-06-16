@@ -1,23 +1,8 @@
 main{
-	if(false){
-	print "if failed false" $n;
-	}
-	else{
-	print "else worked" $n;
+	mut count := 0;
+	while (count < 5) {
+		print count $n;
 	}
 	
-	if(true){
-	print "if passed true" $n;
-	}
-	else{
-	print "else failed" $n;
-	}
-	
-	if(2==2){
-	print "if passed true" $n;
-	}
-	else{
-	print "else failed" $n;
-	}
 
 }

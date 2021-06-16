@@ -23,6 +23,7 @@ import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
 import parseTree.nodeTypes.TypeNode;
+import parseTree.nodeTypes.WhileNode;
 import tokens.*;
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
@@ -100,7 +101,7 @@ public class Parser {
 	///////////////////////////////////////////////////////////
 	// statements
 	
-	// statement-> declaration | printStmt | blockStatement  | assignmentStatement | ifStatement
+	// statement-> declaration | printStmt | blockStatement  | assignmentStatement | ifStatement | whileStatement
 	private ParseNode parseStatement() {
 		if(!startsStatement(nowReading)) {
 			return syntaxErrorNode("statement");
@@ -120,12 +121,15 @@ public class Parser {
 		if(startsIfStatement(nowReading)) {
 			return parseIfStatement();
 		}
+		if(startsWhileStatement(nowReading)) {
+			return parseWhileStatement();
+		}
 		// add if and other things
 		return syntaxErrorNode("statement");
 	}
 	private boolean startsStatement(Token token) {
 		return startsPrintStatement(token) ||
-				startsDeclaration(token) || startsBlockStatement(token)||startsAssignmentStatement(token) ||startsIfStatement(token) ;
+				startsDeclaration(token) || startsBlockStatement(token)||startsAssignmentStatement(token) ||startsIfStatement(token) ||startsWhileStatement(token) ;
 	}
 	private boolean startsAssignmentStatement(Token token) {
 		return startsIdentifier(token);
@@ -185,29 +189,34 @@ public class Parser {
 			ParseNode elseBlock = parseBlockStatement(); 
 			return IfNode.withChildren(ifToken, condition, block,elseBlock);
 		}
+		else {
+			return IfNode.withChildren(ifToken, condition, block);
+		}
 		
-		return IfNode.withChildren(ifToken, condition, block);
 		
-//		if(true){
-//			print "true" $n;
-//		}
-//		
-//		// declaration -> IMM identifier := expression TERMINATOR
-//		private ParseNode parseDeclaration() {
-//			if(!startsDeclaration(nowReading) ) {
-//				return syntaxErrorNode("declaration");
-//			}
-//			Token declarationToken = nowReading;
-//			readToken();
-//			
-//			ParseNode identifier = parseIdentifier();
-//			expect(Punctuator.ASSIGN);
-//			ParseNode initializer = parseExpression();
-//			expect(Punctuator.TERMINATOR);
-//			
-//			return DeclarationNode.withChildren(declarationToken, identifier, initializer);
-//		}
-		//return result;
+	}
+	private boolean startsWhileStatement(Token token) {
+		return token.isLextant(Keyword.WHILE);
+	}
+	
+	// whileStatement ->    while (expression) blockStatement
+	private ParseNode parseWhileStatement() {
+		if(!startsWhileStatement(nowReading)) {
+			return syntaxErrorNode("while statement");
+		}
+		Token whileToken = nowReading;
+		readToken();
+		
+		expect(Punctuator.OPEN_BRACE_PAREN);
+		ParseNode condition = parseExpression(); 
+		expect(Punctuator.CLOSE_BRACE_PAREN);
+		ParseNode block = parseBlockStatement(); 
+		
+		
+		return WhileNode.withChildren(whileToken, condition, block);
+	
+		
+		
 	}
 	private boolean startsPrintStatement(Token token) {
 		return token.isLextant(Keyword.PRINT);
