@@ -2,6 +2,7 @@ main{
 	mut count := 0;
 	while (count < 5) {
 		print count $n;
+		count := count +1;
 	}
 	
 
