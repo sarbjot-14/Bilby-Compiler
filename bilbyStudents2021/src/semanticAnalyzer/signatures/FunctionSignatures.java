@@ -24,8 +24,12 @@ import asmCodeGenerator.operators.LessThanEqualCodeGeneratorInt;
 import asmCodeGenerator.operators.NotCodeGenerator;
 import asmCodeGenerator.operators.NotEqualsCodeGeneratorFloat;
 import asmCodeGenerator.operators.NotEqualsCodeGeneratorInt;
+import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Punctuator;
+import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.Type;
+import semanticAnalyzer.types.TypeVariable;
+
 import static semanticAnalyzer.types.PrimitiveType.*;
 
 
@@ -182,6 +186,15 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		);
 		new FunctionSignatures(Punctuator.NOT, 
 				new FunctionSignature(new NotCodeGenerator(),BOOLEAN,BOOLEAN)
+		);
+		
+		TypeVariable S = new TypeVariable("S");
+		new FunctionSignatures(Keyword.ALLOC, 
+				new FunctionSignature(ASMOpcode.Nop,new Array(S),INTEGER, new Array(S))
+		);
+		
+		new FunctionSignatures(Punctuator.INDEXING, 
+				new FunctionSignature(ASMOpcode.Nop,new Array(S),INTEGER, S)
 		);
 													
 		

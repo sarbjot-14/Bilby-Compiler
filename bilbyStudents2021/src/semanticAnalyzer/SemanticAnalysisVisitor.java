@@ -29,6 +29,7 @@ import parseTree.nodeTypes.TabNode;
 import parseTree.nodeTypes.TypeNode;
 import semanticAnalyzer.signatures.FunctionSignature;
 import semanticAnalyzer.signatures.FunctionSignatures;
+import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
@@ -136,7 +137,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		FunctionSignature signature = FunctionSignatures.signature(operator, childTypes);
 		
 		if(signature.accepts(childTypes)) {
-			node.setType(signature.resultType());
+			node.setType(signature.resultType().concreteType()); // get rid of type variables
 			node.setSignature(signature);
 		}
 		else {
@@ -148,11 +149,21 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		LextantToken token = (LextantToken) node.getToken();
 		return token.getLextant();
 	}
+	
+	
 	@Override
 	public void visitLeave(TypeNode node) {
-		
-		node.setType(PrimitiveType.fromToken(node.typeToken()));
-		
+		if(node.isArray()) {
+			Type subtype = node.child(0).getType();
+			Type arrayType = new Array(subtype);
+			node.setType(arrayType);
+		}
+		else {
+			node.setType(node.typeFromToken());
+		}
+		//-----
+		//node.setType(PrimitiveType.fromToken(node.typeToken()));
+		//-----
 		//Primitive.fromToken
 			// switch on lextant
 			// key words : int, float, bool

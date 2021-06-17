@@ -2,11 +2,15 @@ package parseTree.nodeTypes;
 
 import parseTree.ParseNode;
 import parseTree.ParseNodeVisitor;
+import semanticAnalyzer.types.PrimitiveType;
+import semanticAnalyzer.types.Type;
 
 import org.w3c.dom.Node;
 
+import inputHandler.Locator;
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
+import lexicalAnalyzer.Punctuator;
 import tokens.LextantToken;
 import tokens.Token;
 
@@ -36,11 +40,14 @@ public class TypeNode extends ParseNode {
 	////////////////////////////////////////////////////////////
 	// convenience factory
 	
-	public static TypeNode withChildren(Token token, ParseNode declaredName, ParseNode initializer) {
+	public static TypeNode withChildren(Token token, ParseNode type) {
 		TypeNode node = new TypeNode(token);
-		node.appendChild(declaredName);
-		node.appendChild(initializer);
+		node.appendChild(type);
 		return node;
+	}
+	
+	public static TypeNode make(Token token) {
+		return new TypeNode(token);
 	}
 	
 	
@@ -56,5 +63,14 @@ public class TypeNode extends ParseNode {
 	public Token typeToken() {
 		return this.token;
 		
+	}
+
+	public boolean isArray() {
+		
+		return this.typeToken().isLextant(Punctuator.OPEN_BRACKET);
+	}
+
+	public Type typeFromToken() {
+		return PrimitiveType.fromToken(this.typeToken());
 	}
 }

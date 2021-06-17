@@ -311,8 +311,9 @@ public class Parser {
 	// additiveExpression       -> multiplicativeExpression [ADDOP multiplicativeExpression]*  (left-assoc)
 	// multiplicativeExpression -> unaryExpression [MULTOP unaryExpression]*  (left-assoc)
 	// unaryExpression			-> UNARYOP* unaryExpression | atomicExpression
+	// indexingExpression       -> atomicExpression ([expression])*
 	// atomicExpression         -> bracketExpression | literal
-	// bracketExpression       -> (expression) | [ expression CAST type ]
+	// bracketExpression       -> (expression) | [ expression CAST type ] | ALLOC [type] (expression)
 	// literal                  -> intConstant | identifier | booleanConstant | characterConstant | stringConstant | floatConstant 
 
 	// expr  -> comparisonExpression
@@ -405,7 +406,7 @@ public class Parser {
 	}
 	
 	// bracketExpression       -> (expression) | [ expression CAST type ]
-	
+	// ALLOC [type] (expression)
 	private ParseNode parseBracketExpression() {
 		if(!startsBracketExpression(nowReading)) {
 			return syntaxErrorNode("bracket expression");
@@ -416,7 +417,19 @@ public class Parser {
 			expect(Punctuator.CLOSE_BRACE_PAREN);
 			return left;
 		}
-		else {
+		else if(nowReading.isLextant(Keyword.ALLOC)) {
+			Token allocToken = nowReading;
+			expect(Keyword.ALLOC);
+			if(!nowReading.isLextant(Punctuator.OPEN_BRACKET)) {
+				return syntaxErrorNode("array type");
+			}
+			ParseNode type = parseType();
+			expect(Punctuator.OPEN_BRACE_PAREN);
+			ParseNode expression = parseExpression();
+			expect(Punctuator.CLOSE_BRACE_PAREN);
+			return  OperatorNode.withChildren(allocToken,type, expression);
+		}
+		else if(nowReading.isLextant(Punctuator.OPEN_BRACKET)) {
 			expect(Punctuator.OPEN_BRACKET);
 			
 			ParseNode left = parseExpression();
@@ -436,11 +449,13 @@ public class Parser {
 			return castNode;
 		}
 		
+		
+		return syntaxErrorNode("bracked Expression not implemented");
 	
 	}
 	
 	private boolean startsBracketExpression(Token token) {
-		return token.isLextant(Punctuator.OPEN_BRACE_PAREN) || token.isLextant(Punctuator.OPEN_BRACKET);
+		return token.isLextant(Punctuator.OPEN_BRACE_PAREN) || token.isLextant(Punctuator.OPEN_BRACKET) || token.isLextant(Keyword.ALLOC);
 	}
 	
 
@@ -459,12 +474,34 @@ public class Parser {
 			return OperatorNode.withChildren(operatorToken, child);
         }
         else {
-        	return parseAtomicExpression();
+        	return parseIndexingExpression();
         }
         		
 	}
+	
 	private boolean startsUnaryExpression(Token token) {
-		return (token.isLextant(Punctuator.SUBTRACT,Punctuator.ADD, Punctuator.NOT) || startsAtomicExpression(nowReading) );
+		return (token.isLextant(Punctuator.SUBTRACT,Punctuator.ADD, Punctuator.NOT) || startsIndexingExpression(nowReading) );
+	}
+	
+	// indexingExpression -> atomicExpression ([ expression ])* 
+	private ParseNode parseIndexingExpression() {
+		if(!startsIndexingExpression(nowReading)) {
+			return syntaxErrorNode("index expression");
+		}
+		ParseNode left = parseAtomicExpression();
+		while(nowReading.isLextant(Punctuator.OPEN_BRACKET)) {
+			Token bracketToken = nowReading;
+			expect(Punctuator.OPEN_BRACKET);
+			ParseNode right = parseExpression();
+			expect(Punctuator.CLOSE_BRACKET);
+			Token indexingToken = LextantToken.make(bracketToken, bracketToken.getLexeme(), Punctuator.INDEXING);
+			left = OperatorNode.withChildren(indexingToken, left, right);
+		}
+		return left;
+	}
+	
+	private boolean startsIndexingExpression(Token token) {
+		return startsAtomicExpression(token);
 	}
 	
 	// literal   -> intConstant | identifier | booleanConstant | characterConstant | stringConstant | floatConstant
@@ -574,7 +611,28 @@ public class Parser {
 		previouslyRead = nowReading;
 		nowReading = scanner.next();
 	}	
+	// type ->  [type] | BOOL | CHAR | FLOAT | INT | STRING
+	private ParseNode parseType() {
+		if(!startsType(nowReading)) {
+			return syntaxErrorNode("type");
+		}
+		Token typeToken = nowReading;
+		readToken();
+		if(typeToken.isLextant(Punctuator.OPEN_BRACKET)) {
+			ParseNode child = parseType();
+			expect(Punctuator.CLOSE_BRACKET);
+			return TypeNode.withChildren(typeToken,child);
+		}
+		else {
+			
+			return TypeNode.make(typeToken);
+		}
+		
+	}
 	
+	private boolean startsType(Token token) {
+		return token.isLextant(Keyword.BOOL, Keyword.CHAR, Keyword.INT, Keyword.FLOAT, Keyword.STRING, Punctuator.OPEN_BRACKET);
+	}
 	// if the current token is one of the given lextants, read the next token.
 	// otherwise, give a syntax error and read next token (to avoid endless looping).
 	private void expect(Lextant ...lextants ) {

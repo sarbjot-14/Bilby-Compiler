@@ -1,6 +1,6 @@
 main{
-	if(6-3){print "should be error" $n;}
-
+	%if(6-3){print "should be error" $n;}%
+	error
 	
 
 }

@@ -1,5 +1,8 @@
 package semanticAnalyzer.types;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import tokens.Token;
 
 public enum PrimitiveType implements Type {
@@ -48,5 +51,17 @@ public enum PrimitiveType implements Type {
 		else {
 			return PrimitiveType.ERROR;
 		}
+	}
+	
+	public boolean equivalent(Type otherType) {
+		return this.equals(otherType);
+	}
+	@Override
+	public Collection<TypeVariable> getTypeVariables() {
+		return new ArrayList<TypeVariable>();
+	}
+	@Override
+	public Type concreteType() {
+		return this;
 	}
 }
