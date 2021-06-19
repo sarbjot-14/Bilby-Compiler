@@ -1,6 +1,7 @@
 main{
-	imm a := alloc [int](4+8);
-	imm b := a[3-1];
+	imm a := alloc [int](6);
+	print a $n;
+	%imm b := a[3-1];
 	
 
 }

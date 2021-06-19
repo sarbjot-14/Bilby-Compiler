@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import asmCodeGenerator.codeStorage.ASMOpcode;
+import asmCodeGenerator.operators.AllocCodeGenerator;
 import asmCodeGenerator.operators.BooleanAndCodeGenerator;
 import asmCodeGenerator.operators.BooleanOrCodeGenerator;
 import asmCodeGenerator.operators.EqualsCodeGeneratorFloat;
@@ -190,7 +191,7 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		
 		TypeVariable S = new TypeVariable("S");
 		new FunctionSignatures(Keyword.ALLOC, 
-				new FunctionSignature(ASMOpcode.Nop,new Array(S),INTEGER, new Array(S))
+				new FunctionSignature(new AllocCodeGenerator(),new Array(S),INTEGER, new Array(S))
 		);
 		
 		new FunctionSignatures(Punctuator.INDEXING, 

@@ -7,6 +7,7 @@ public class RunTime {
 	public static final String INTEGER_PRINT_FORMAT   = "$print-format-integer";
 	public static final String CHARACTER_PRINT_FORMAT   = "$print-format-character";
 	public static final String STRING_PRINT_FORMAT   = "$print-format-string";
+	public static final String ARRAY_PRINT_FORMAT   = "$print-format-array";
 	public static final String FLOATING_PRINT_FORMAT =  "$print-format-floating";
 	public static final String BOOLEAN_PRINT_FORMAT   = "$print-format-boolean";
 	public static final String NEWLINE_PRINT_FORMAT   = "$print-format-newline";
@@ -25,6 +26,7 @@ public class RunTime {
 
 	private ASMCodeFragment environmentASM() {
 		ASMCodeFragment result = new ASMCodeFragment(GENERATES_VOID);
+		
 		result.append(jumpToMain());
 		result.append(stringsForPrintf());
 		result.append(runtimeErrors());

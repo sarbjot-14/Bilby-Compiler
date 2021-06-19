@@ -8,6 +8,7 @@ import java.util.Map;
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import asmCodeGenerator.codeStorage.ASMOpcode;
 import asmCodeGenerator.operators.SimpleCodeGenerator;
+import asmCodeGenerator.runtime.MemoryManager;
 import asmCodeGenerator.runtime.RunTime;
 import lexicalAnalyzer.Lextant;
 import lexicalAnalyzer.Punctuator;
@@ -32,6 +33,7 @@ import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
 import parseTree.nodeTypes.TypeNode;
 import parseTree.nodeTypes.WhileNode;
+import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
@@ -54,11 +56,11 @@ public class ASMCodeGenerator {
 	
 	public ASMCodeFragment makeASM() {
 		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
-		
+		code.append(MemoryManager.codeForInitialization());
 		code.append( RunTime.getEnvironment() );
 		code.append( globalVariableBlockASM() );
 		code.append( programASM() );
-//		code.append( MemoryManager.codeForAfterApplication() );
+		code.append( MemoryManager.codeForAfterApplication() );
 		
 		return code;
 	}
@@ -162,7 +164,10 @@ public class ASMCodeGenerator {
 			}
 			else if(node.getType() == PrimitiveType.STRING) {
 				code.add(LoadI);
-//				String stringLabel = new Labeller("pstring").newLabel("");
+
+			}
+			else if(node.getType() instanceof Array) {
+				code.add(LoadI);
 
 			}
 			else {
@@ -260,6 +265,10 @@ public class ASMCodeGenerator {
 			if(type == PrimitiveType.CHARACTER) {
 				return StoreC;
 			}
+			if(type instanceof Array) {
+				return StoreI;
+			}
+			
 			assert false: "Type " + type + " unimplemented in opcodeForStore()";
 			return null;
 		}
@@ -269,8 +278,6 @@ public class ASMCodeGenerator {
 		// expressions
 		public void visitLeave(OperatorNode node) {
 			newValueCode(node);
-			
-			
 			
 			Object variant = node.getSignature().getVariant();
 			if(variant instanceof ASMOpcode) {
@@ -445,6 +452,8 @@ public class ASMCodeGenerator {
 //			 Step 5 with a PushD (if you've labelled the data with a DLabel).   
 //			 Step 5 is not a "return" but rather leaving the data address on the stack.
 		}
+		
+	
 	}
 
 }
