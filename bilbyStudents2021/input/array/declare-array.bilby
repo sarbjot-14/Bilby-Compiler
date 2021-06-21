@@ -1,6 +1,12 @@
 main{
-	imm a := alloc [int](4+8);
-	imm b := a[3-1];
+	imm a := alloc [int](3);
+	print a $n;
+	
+	imm b := alloc [int](3+5);
+	print b $n;
+	
+	imm c := alloc [int](2+1);
+	print c $n;
 	
 
 }

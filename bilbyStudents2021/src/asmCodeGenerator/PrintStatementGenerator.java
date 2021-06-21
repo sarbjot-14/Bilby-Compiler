@@ -51,6 +51,8 @@ public class PrintStatementGenerator {
 		
 		
 		if(node.getType() instanceof Array) {
+			
+			
 			code.append(visitor.removeValueCode(node));
 			convertToPointerIfArray(node);
 			
@@ -58,13 +60,12 @@ public class PrintStatementGenerator {
 			
 			String lenStorage= labeller.newLabel("storage-for-arrayLength");
 			String typeSizeStorage= labeller.newLabel("storage-for-subTypeSize");
-			String startLoop = labeller.newLabel("start-loop");
-			String exitLoop = labeller.newLabel("exit-loop");
-			String counter = labeller.newLabel("counter");
+			String startLoop = labeller.newLabel("start-loop-print");
+			String exitLoop = labeller.newLabel("exit-loop-print");
+			String counter = labeller.newLabel("counter-print");
 			
 			// [&subtypeSize]
 			// store subtype size
-			//
 			code.add(Duplicate);// [&subtypeSize, &subtypeSize]
 			code.add(LoadI); // [&subtypeSize, subtypeSize]
 			code.add(DLabel, typeSizeStorage);
@@ -90,7 +91,6 @@ public class PrintStatementGenerator {
 			code.add(DataI,0);
 			code.add(PushD, lenStorage); // [&len, len, &lenStorage]
 			code.add(Exchange);  // [&len,  "storage-for-arrayLength", len]
-			
 			code.add(StoreI);  // [&len]
 			
 						
@@ -98,7 +98,7 @@ public class PrintStatementGenerator {
 			code.add(PushI, 91); 
 			code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
 			code.add(Printf);
-			
+			//code.add(PStack);
 			
 			
 			// loop and print
@@ -109,6 +109,7 @@ public class PrintStatementGenerator {
 			code.add(LoadI);
 			code.add(PushD,counter);
 			code.add(LoadI);
+			//code.add(PStack);
 			code.add(Subtract);
 			code.add(JumpFalse,exitLoop);
 			

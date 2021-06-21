@@ -1,15 +1,7 @@
 package asmCodeGenerator.operators;
 
-import static asmCodeGenerator.codeStorage.ASMOpcode.Jump;
-import static asmCodeGenerator.codeStorage.ASMOpcode.Label;
-import static asmCodeGenerator.codeStorage.ASMOpcode.PushI;
-import static asmCodeGenerator.codeStorage.ASMOpcode.PStack;
-import static asmCodeGenerator.codeStorage.ASMOpcode.JumpTrue;
-import static asmCodeGenerator.codeStorage.ASMOpcode.DataI;
-import static asmCodeGenerator.codeStorage.ASMOpcode.Call;
-import static asmCodeGenerator.codeStorage.ASMOpcode.StoreI;
-import static asmCodeGenerator.codeStorage.ASMOpcode.Duplicate;
-import static asmCodeGenerator.codeStorage.ASMOpcode.Add;
+import static asmCodeGenerator.codeStorage.ASMOpcode.*;
+
 
 import java.util.List;
 
@@ -23,6 +15,7 @@ import parseTree.ParseNode;
 import parseTree.nodeTypes.IntegerConstantNode;
 import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
+import semanticAnalyzer.types.Type;
 
 public class AllocCodeGenerator implements SimpleCodeGenerator {
 
@@ -41,13 +34,17 @@ public class AllocCodeGenerator implements SimpleCodeGenerator {
 	public ASMCodeFragment generate(ParseNode node, List<ASMCodeFragment> args) {
 	
 
-		Labeller labeller = new Labeller("compare");
+		Labeller labeller = new Labeller("alloc");
 
 		String startLabel = labeller.newLabel("start");
 		String subLabel   = labeller.newLabel("sub");
 		String trueLabel  = labeller.newLabel("true");
 		String falseLabel = labeller.newLabel("false");
 		String joinLabel  = labeller.newLabel("join");
+		String exitLoop  = labeller.newLabel("exit");
+		String lenStorage= labeller.newLabel("storage-for-arrayLength");
+		String counter= labeller.newLabel("counter");
+		String startLoop= labeller.newLabel("loop");
 
 		ASMCodeFragment code = new ASMCodeFragment(CodeType.GENERATES_VALUE);
 
@@ -57,19 +54,38 @@ public class AllocCodeGenerator implements SimpleCodeGenerator {
 		 * Code in 
 		 * 
 		 */
-		// call memory manager
+		
+//		System.out.println(node.getChildren().get(1).getType());
+//		int element = 0;
+//		if(node.getChildren().get(1).getType() == PrimitiveType.FLOAT) {
+//			element =  (double)element ;
+//		}
+//		else {
+//			
+//		}
+		
+		// put asm code for expression that resolves to length of the array
+		code.append(args.get(1));
+		code.add(Duplicate);
+		// save the len in a variable
+		code.add(DLabel, lenStorage);
+		code.add(DataI, 0);
+		code.add(PushD,lenStorage);
+		code.add(Exchange);  // ["storage-for-arrayLength", lenSize]
+		code.add(StoreI);  
 		// push size of record
 		int size = node.getChildren().get(0).getType().getSize();
-		IntegerConstantNode len = (IntegerConstantNode) node.getChildren().get(1); // fix for general expression
+		code.add(PushI, size);
+		code.add(Multiply);
+		code.add(PushI,16);
+		code.add(Add);
+			
 		
-		int sizeOfRecord = 16 + len.getValue()*size;
-		//call memory manager
-		code.add(PushI,sizeOfRecord);
+//		//call memory manager
 		code.add(Call,MemoryManager.MEM_MANAGER_ALLOCATE);
 		
 		// type identifier
-		code.add(Duplicate);
-		// [&record]
+		code.add(Duplicate);// [&record]
 		code.add(PushI, 5);
 		code.add(StoreI);
 		
@@ -91,19 +107,51 @@ public class AllocCodeGenerator implements SimpleCodeGenerator {
 		code.add(Duplicate);
 		code.add(PushI, 12);
 		code.add(Add);
-		code.add(PushI, len.getValue());
+		code.add(PushD,lenStorage);
+		code.add(LoadI);
+		code.add(StoreI);
+		
+		// store counter
+		code.add(DLabel, counter);
+		code.add(DataI,0);
+		code.add(PushD,counter);
+		code.add(PushI,0);
+		code.add(StoreI);
+		
+		// start loop
+		code.add(Label,startLoop);
+		code.add(PushD,lenStorage);
+		code.add(LoadI);
+		code.add(PushD,counter);
+		code.add(LoadI);
+		code.add(Subtract);
+		code.add(JumpFalse,exitLoop);
+		
+		
+		//Elements
+		code.add(Duplicate);
+		code.add(PushD,counter);
+		code.add(LoadI);
+		code.add(PushI,size);
+		code.add(Multiply);
+		code.add(PushI,16);
+		code.add(Add);
+		code.add(Add);
+		code.add(PushI, 0);
 		code.add(StoreI);
 		
 		
 		
-		//Elements
-		for(int i = 0; i< len.getValue(); i++) {
-			code.add(Duplicate);
-			code.add(PushI, 16+i*size);
-			code.add(Add);
-			code.add(PushI, 0);
-			code.add(StoreI);
-		}
+		// update len
+		code.add(PushD,counter);
+		code.add(Duplicate); // [&lenStorage, &counter]
+		code.add(LoadI); // [&lenStorage, counter]
+		code.add(PushI,1);
+		code.add(Add);
+		code.add(StoreI);
+		code.add(Jump,startLoop);
+		code.add(Label,exitLoop);
+		
 		
 		
 		return code;
