@@ -123,6 +123,7 @@ public class PrintStatementGenerator {
 			code.add(Add); // [&len,&elemPos] 
 			//code.add(PStack); 
 			code.add(LoadI);
+			//System.out.println((((Array) node.getType()).infoString())); fix this
 			code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
 			code.add(Printf);
 			

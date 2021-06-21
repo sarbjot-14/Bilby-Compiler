@@ -23,7 +23,7 @@ public class Array implements Type {
 		return "[" + getSubtype() + "]";
 	}
 
-	private Type getSubtype() {
+	public Type getSubtype() {
 		return subtype;
 	}
 	
