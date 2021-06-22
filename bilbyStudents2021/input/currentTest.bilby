@@ -1,4 +1,9 @@
 main{
-	%imm integers := [11,12,13,14,15];
+	imm b := [11,12,13];
+	
+	%print b $n;
+	%print 3 $s$s 4 $ 5$t7$n;
+	%imm a := alloc [int](4);
+	%print a $n;
 
 }

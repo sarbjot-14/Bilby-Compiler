@@ -138,7 +138,7 @@ public class AllocCodeGenerator implements SimpleCodeGenerator {
 		code.add(Add);
 		code.add(Add);
 		if(node.getChildren().get(1).getType() == PrimitiveType.FLOAT) {
-			code.add(PushI, 0.0);
+			code.add(PushF, 0.0);
 		}
 		else if(node.getChildren().get(1).getType() == PrimitiveType.CHARACTER) { //fix this?
 			code.add(PushI, (char)0  );
