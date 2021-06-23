@@ -1,4 +1,19 @@
 main{
 	%imm integers := [11,12,13,14,15];
+	%imm b := alloc [int](3+5);
+	%print b $n;
+	
+	imm c := alloc [float](3+5);
+	print c $n;
+	
+%	imm d := alloc [bool](3+5);
+%	print d $n;
+	
+	imm e := alloc [char](3+5);
+	print e $n;
+	
+%	imm f := alloc [string](3+5);
+%	print f $n;
+	print "helloWorld" $n;
 
 }

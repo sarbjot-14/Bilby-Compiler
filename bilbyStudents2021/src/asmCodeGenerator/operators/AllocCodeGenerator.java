@@ -55,14 +55,10 @@ public class AllocCodeGenerator implements SimpleCodeGenerator {
 		 * 
 		 */
 		
-//		System.out.println(node.getChildren().get(1).getType());
-//		int element = 0;
-//		if(node.getChildren().get(1).getType() == PrimitiveType.FLOAT) {
-//			element =  (double)element ;
-//		}
-//		else {
-//			
-//		}
+		int size = node.getChildren().get(0).getChildren().get(0).getType().getSize();
+		//PrimitiveType theType = (PrimitiveType) node.getChildren().get(0).getType();
+		//System.out.println(node.getChildren().get(0).getChildren().get(0).getType().getSize());
+		//System.out.println(size);
 		
 		// put asm code for expression that resolves to length of the array
 		code.append(args.get(1));
@@ -74,7 +70,6 @@ public class AllocCodeGenerator implements SimpleCodeGenerator {
 		code.add(Exchange);  // ["storage-for-arrayLength", lenSize]
 		code.add(StoreI);  
 		// push size of record
-		int size = node.getChildren().get(0).getType().getSize();
 		code.add(PushI, size);
 		code.add(Multiply);
 		code.add(PushI,16);
@@ -132,24 +127,29 @@ public class AllocCodeGenerator implements SimpleCodeGenerator {
 		code.add(Duplicate);
 		code.add(PushD,counter);
 		code.add(LoadI);
+		//System.out.println(size);
 		code.add(PushI,size);
 		code.add(Multiply);
 		code.add(PushI,16);
 		code.add(Add);
 		code.add(Add);
 		if(node.getChildren().get(1).getType() == PrimitiveType.FLOAT) {
-			code.add(PushI, 0.0);
+			code.add(PushF, 0.0);
+			code.add(StoreF);
 		}
-		else if(node.getChildren().get(1).getType() == PrimitiveType.CHARACTER) { //fix this?
-			code.add(PushI, (char)0  );
+		else if(node.getChildren().get(1).getType() == PrimitiveType.CHARACTER) { 
+			code.add(PushI, 0);
+			code.add(StoreC);
 		}
 		else if(node.getChildren().get(1).getType() == PrimitiveType.BOOLEAN) { //fix this?
 			code.add(PushI, 0);
+			code.add(StoreC);
 		}
 		else{ //integer, pointer to string, pointer to array
 			code.add(PushI, 0);
+			code.add(StoreI);
 		}
-		code.add(StoreI);
+		
 		
 		
 		

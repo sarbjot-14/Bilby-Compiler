@@ -28,6 +28,12 @@ public class Array implements Type {
 	}
 	
 	@Override
+	public String toString() {
+		
+		return "ARRAY[" + subtype + "]"; // fix this
+	}
+	
+	@Override
 	public boolean equivalent(Type otherType) {
 		if(otherType instanceof Array) {
 			Array otherArray = (Array)otherType;

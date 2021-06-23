@@ -109,22 +109,49 @@ public class PrintStatementGenerator {
 			code.add(LoadI);
 			code.add(PushD,counter);
 			code.add(LoadI);
-			//code.add(PStack);
+		    code.add(PStack);
 			code.add(Subtract);
 			code.add(JumpFalse,exitLoop);
 			
 			// print element
-			code.add(Duplicate); //[&len,&len]   (one less than element
+			code.add(Duplicate); //[&len,&len]   (one less than start of elements in record
 			code.add(PushD,typeSizeStorage);  
 			code.add(LoadI); // [&len,&len, typeSize] 
 			code.add(PushD,counter);  
 			code.add(LoadI);   // [&len,&len, typeSize, counter] 
 			code.add(Multiply);
 			code.add(Add); // [&len,&elemPos] 
-			//code.add(PStack); 
-			code.add(LoadI);
-			//System.out.println((((Array) node.getType()).infoString())); fix this
-			code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
+			code.add(PStack); 
+			//code.add(LoadI);
+			
+			System.out.println(node.getType().infoString()); 
+			
+			if(node.getType().infoString().equals("[ARRAY[INTEGER]]")) {
+				//System.out.println(node.getType()); 
+				code.add(LoadI);
+				code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
+			}
+			else if(node.getType().infoString().equals( "[ARRAY[FLOAT]]")) {
+				//System.out.println(node.getType()); 
+				code.add(LoadF);
+				code.add(PushD, RunTime.FLOATING_PRINT_FORMAT);
+			}
+			else if(node.getType().infoString().equals( "[ARRAY[BOOLEAN]]")) {
+				code.add(LoadC);
+				code.add(PushD, RunTime.BOOLEAN_PRINT_FORMAT);
+			}
+			else if(node.getType().infoString().equals( "[ARRAY[CHARACTER]]")) {
+				code.add(LoadC);
+				code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
+			}
+			else if(node.getType().infoString().equals( "[ARRAY[STRING]]")) {
+				code.add(LoadI);
+				code.add(PushD, RunTime.STRING_PRINT_FORMAT);
+			}
+			else {
+				System.out.println("errorrrr");
+			}
+			
 			code.add(Printf);
 			
 			
@@ -162,6 +189,7 @@ public class PrintStatementGenerator {
 			code.add(PushI, 93);
 			code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
 			code.add(Printf);
+			code.add(Pop);
 			
 			
 		}
