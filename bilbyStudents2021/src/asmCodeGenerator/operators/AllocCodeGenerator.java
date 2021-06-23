@@ -69,6 +69,7 @@ public class AllocCodeGenerator implements SimpleCodeGenerator {
 		code.add(PushD,lenStorage);
 		code.add(Exchange);  // ["storage-for-arrayLength", lenSize]
 		code.add(StoreI);  
+		
 		// push size of record
 		code.add(PushI, size);
 		code.add(Multiply);
@@ -76,7 +77,7 @@ public class AllocCodeGenerator implements SimpleCodeGenerator {
 		code.add(Add);
 			
 		
-//		//call memory manager
+		//call memory manager
 		code.add(Call,MemoryManager.MEM_MANAGER_ALLOCATE);
 		
 		// type identifier
@@ -110,15 +111,18 @@ public class AllocCodeGenerator implements SimpleCodeGenerator {
 		code.add(DLabel, counter);
 		code.add(DataI,0);
 		code.add(PushD,counter);
-		code.add(PushI,0);
+		code.add(PushI,1);
 		code.add(StoreI);
 		
 		// start loop
 		code.add(Label,startLoop);
 		code.add(PushD,lenStorage);
 		code.add(LoadI);
+		code.add(PushI,size);
+		code.add(Multiply);
 		code.add(PushD,counter);
 		code.add(LoadI);
+		//code.add(PStack);
 		code.add(Subtract);
 		code.add(JumpFalse,exitLoop);
 		
@@ -133,23 +137,34 @@ public class AllocCodeGenerator implements SimpleCodeGenerator {
 		code.add(PushI,16);
 		code.add(Add);
 		code.add(Add);
-		if(node.getChildren().get(1).getType() == PrimitiveType.FLOAT) {
-			code.add(PushF, 0.0);
-			code.add(StoreF);
-		}
-		else if(node.getChildren().get(1).getType() == PrimitiveType.CHARACTER) { 
-			code.add(PushI, 0);
-			code.add(StoreC);
-		}
-		else if(node.getChildren().get(1).getType() == PrimitiveType.BOOLEAN) { //fix this?
-			code.add(PushI, 0);
-			code.add(StoreC);
-		}
-		else{ //integer, pointer to string, pointer to array
-			code.add(PushI, 0);
-			code.add(StoreI);
-		}
 		
+		code.add(PushI, 0);
+		code.add(StoreC);
+		//----------
+//		if(node.getChildren().get(1).getType() == PrimitiveType.FLOAT) {
+////			code.add(PushF, 0.0);
+////			code.add(StoreF);
+//			code.add(PushI, 0);
+//			code.add(StoreC);
+//			code.add(PushI, 0);
+//			code.add(StoreC);
+//			code.add(PushI, 0);
+//		
+//			
+//		}
+//		else if(node.getChildren().get(1).getType() == PrimitiveType.CHARACTER) { 
+//			code.add(PushI, 0);
+//			code.add(StoreC);
+//		}
+//		else if(node.getChildren().get(1).getType() == PrimitiveType.BOOLEAN) { //fix this?
+//			code.add(PushI, 0);
+//			code.add(StoreC);
+//		}
+//		else{ //integer, pointer to string, pointer to array
+//			code.add(PushI, 0);
+//			code.add(StoreI);
+//		}
+		///--------
 		
 		
 		

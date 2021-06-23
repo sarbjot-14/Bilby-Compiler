@@ -109,7 +109,7 @@ public class PrintStatementGenerator {
 			code.add(LoadI);
 			code.add(PushD,counter);
 			code.add(LoadI);
-		    code.add(PStack);
+		    //code.add(PStack);
 			code.add(Subtract);
 			code.add(JumpFalse,exitLoop);
 			
@@ -121,8 +121,8 @@ public class PrintStatementGenerator {
 			code.add(LoadI);   // [&len,&len, typeSize, counter] 
 			code.add(Multiply);
 			code.add(Add); // [&len,&elemPos] 
-			code.add(PStack); 
-			//code.add(LoadI);
+			//code.add(PStack); 
+		
 			
 			System.out.println(node.getType().infoString()); 
 			
