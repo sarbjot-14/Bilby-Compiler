@@ -1,0 +1,7 @@
+main{
+	imm g := alloc [int](-3);
+	print g $n;
+
+
+}
+

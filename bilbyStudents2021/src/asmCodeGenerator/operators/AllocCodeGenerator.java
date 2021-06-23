@@ -10,6 +10,7 @@ import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import asmCodeGenerator.codeStorage.ASMCodeFragment.CodeType;
 import asmCodeGenerator.codeStorage.ASMOpcode;
 import asmCodeGenerator.runtime.MemoryManager;
+import asmCodeGenerator.runtime.RunTime;
 import lexicalAnalyzer.Keyword;
 import parseTree.ParseNode;
 import parseTree.nodeTypes.IntegerConstantNode;
@@ -56,12 +57,11 @@ public class AllocCodeGenerator implements SimpleCodeGenerator {
 		 */
 		
 		int size = node.getChildren().get(0).getChildren().get(0).getType().getSize();
-		//PrimitiveType theType = (PrimitiveType) node.getChildren().get(0).getType();
-		//System.out.println(node.getChildren().get(0).getChildren().get(0).getType().getSize());
-		//System.out.println(size);
 		
 		// put asm code for expression that resolves to length of the array
 		code.append(args.get(1));
+		code.add(Duplicate);
+		code.add(JumpNeg, RunTime.NEGATIVE_ARRAY_LENGTH_RUNTIME_ERROR );
 		code.add(Duplicate);
 		// save the len in a variable
 		code.add(DLabel, lenStorage);
@@ -111,7 +111,7 @@ public class AllocCodeGenerator implements SimpleCodeGenerator {
 		code.add(DLabel, counter);
 		code.add(DataI,0);
 		code.add(PushD,counter);
-		code.add(PushI,1);
+		code.add(PushI,0);
 		code.add(StoreI);
 		
 		// start loop
@@ -119,10 +119,13 @@ public class AllocCodeGenerator implements SimpleCodeGenerator {
 		code.add(PushD,lenStorage);
 		code.add(LoadI);
 		code.add(PushI,size);
+		code.add(Duplicate);
+		code.add(Subtract);
 		code.add(Multiply);
 		code.add(PushD,counter);
 		code.add(LoadI);
 		//code.add(PStack);
+		//code.add(Halt);
 		code.add(Subtract);
 		code.add(JumpFalse,exitLoop);
 		
@@ -131,7 +134,6 @@ public class AllocCodeGenerator implements SimpleCodeGenerator {
 		code.add(Duplicate);
 		code.add(PushD,counter);
 		code.add(LoadI);
-		//System.out.println(size);
 		code.add(PushI,size);
 		code.add(Multiply);
 		code.add(PushI,16);
@@ -140,33 +142,6 @@ public class AllocCodeGenerator implements SimpleCodeGenerator {
 		
 		code.add(PushI, 0);
 		code.add(StoreC);
-		//----------
-//		if(node.getChildren().get(1).getType() == PrimitiveType.FLOAT) {
-////			code.add(PushF, 0.0);
-////			code.add(StoreF);
-//			code.add(PushI, 0);
-//			code.add(StoreC);
-//			code.add(PushI, 0);
-//			code.add(StoreC);
-//			code.add(PushI, 0);
-//		
-//			
-//		}
-//		else if(node.getChildren().get(1).getType() == PrimitiveType.CHARACTER) { 
-//			code.add(PushI, 0);
-//			code.add(StoreC);
-//		}
-//		else if(node.getChildren().get(1).getType() == PrimitiveType.BOOLEAN) { //fix this?
-//			code.add(PushI, 0);
-//			code.add(StoreC);
-//		}
-//		else{ //integer, pointer to string, pointer to array
-//			code.add(PushI, 0);
-//			code.add(StoreI);
-//		}
-		///--------
-		
-		
 		
 		// update len
 		code.add(PushD,counter);

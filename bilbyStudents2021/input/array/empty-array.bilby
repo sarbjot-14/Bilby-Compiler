@@ -1,7 +1,7 @@
 main{
 	imm a := alloc [int](4);
 	
-	%imm b := a[3-1];
+	imm b := a[3-1];
 	
 
 }

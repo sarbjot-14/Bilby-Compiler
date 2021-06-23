@@ -10,6 +10,7 @@ public class Array implements Type {
 	
 	
 	public Array(Type subtype) {
+		
 		this.subtype =subtype;
 	}
 	
@@ -37,7 +38,7 @@ public class Array implements Type {
 	public boolean equivalent(Type otherType) {
 		if(otherType instanceof Array) {
 			Array otherArray = (Array)otherType;
-			return subtype.equivalent(otherArray);
+			return subtype.equivalent(otherArray.getSubtype());
 					
 		}
 		return false;

@@ -51,6 +51,7 @@ public class TypeVariable implements Type {
 	@Override
 	public Type concreteType() {
 		// take type variable out of it and return type constraint
+		
 		return typeConstraint.concreteType();
 	}
 

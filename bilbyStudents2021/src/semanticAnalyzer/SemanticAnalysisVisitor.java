@@ -122,6 +122,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	public void visitLeave(OperatorNode node) {
 		List<Type> childTypes;  
 		if(node.nChildren() == 1) {
+			
 			ParseNode child = node.child(0);
 			childTypes = Arrays.asList(child.getType());
 		}
@@ -216,7 +217,6 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		if(node.nChildren() == 1) {
 			ParseNode child = node.child(0);
 			childTypes = Arrays.asList(child.getType());
-			//System.out.println(child.getType());
 			
 		}
 		else {

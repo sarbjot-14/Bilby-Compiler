@@ -63,6 +63,7 @@ public class PrintStatementGenerator {
 			String startLoop = labeller.newLabel("start-loop-print");
 			String exitLoop = labeller.newLabel("exit-loop-print");
 			String counter = labeller.newLabel("counter-print");
+			String skipCharPrint = labeller.newLabel("skip-char-print");
 			
 			// [&subtypeSize]
 			// store subtype size
@@ -98,7 +99,6 @@ public class PrintStatementGenerator {
 			code.add(PushI, 91); 
 			code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
 			code.add(Printf);
-			//code.add(PStack);
 			
 			
 			// loop and print
@@ -109,9 +109,10 @@ public class PrintStatementGenerator {
 			code.add(LoadI);
 			code.add(PushD,counter);
 			code.add(LoadI);
-		    //code.add(PStack);
+			//code.add(PStack);
 			code.add(Subtract);
 			code.add(JumpFalse,exitLoop);
+			
 			
 			// print element
 			code.add(Duplicate); //[&len,&len]   (one less than start of elements in record
@@ -119,41 +120,59 @@ public class PrintStatementGenerator {
 			code.add(LoadI); // [&len,&len, typeSize] 
 			code.add(PushD,counter);  
 			code.add(LoadI);   // [&len,&len, typeSize, counter] 
+			//code.add(PStack);
 			code.add(Multiply);
 			code.add(Add); // [&len,&elemPos] 
-			//code.add(PStack); 
+			//code.add(PStack);
+			
+			
+			//System.out.println("here %c",65);
+			
 		
 			
-			System.out.println(node.getType().infoString()); 
-			
-			if(node.getType().infoString().equals("[ARRAY[INTEGER]]")) {
-				//System.out.println(node.getType()); 
-				code.add(LoadI);
-				code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
-			}
-			else if(node.getType().infoString().equals( "[ARRAY[FLOAT]]")) {
-				//System.out.println(node.getType()); 
-				code.add(LoadF);
-				code.add(PushD, RunTime.FLOATING_PRINT_FORMAT);
-			}
-			else if(node.getType().infoString().equals( "[ARRAY[BOOLEAN]]")) {
+		
+			Array myArray = (Array)node.getType();
+			if(myArray.getSubtype() ==PrimitiveType.BOOLEAN) {
 				code.add(LoadC);
+				//code.add(PStack);
+				convertToStringIfBoolean(myArray.getSubtype());
 				code.add(PushD, RunTime.BOOLEAN_PRINT_FORMAT);
+				code.add(Printf);
+				
 			}
-			else if(node.getType().infoString().equals( "[ARRAY[CHARACTER]]")) {
+			else if(myArray.getSubtype() ==PrimitiveType.FLOAT) {
+				code.add(LoadF);
+				//convertToStringIfBoolean(myArray.getSubtype());
+				code.add(PushD, RunTime.FLOATING_PRINT_FORMAT);
+				code.add(Printf);
+				
+			}
+			else if(myArray.getSubtype() ==PrimitiveType.CHARACTER) {
 				code.add(LoadC);
+				code.add(Duplicate);
+				code.add(JumpFalse,skipCharPrint);
+				//code.add(PStack);
 				code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
+				code.add(Printf);
+				code.add(Label,skipCharPrint);
+				code.add(Pop);
+				
 			}
-			else if(node.getType().infoString().equals( "[ARRAY[STRING]]")) {
+			else if(myArray.getSubtype() ==PrimitiveType.STRING) {
 				code.add(LoadI);
+				//convertToStringIfBoolean(myArray.getSubtype());
+				convertToPointerIfString(myArray.getSubtype());
 				code.add(PushD, RunTime.STRING_PRINT_FORMAT);
+				code.add(Printf);
+				
 			}
-			else {
-				System.out.println("errorrrr");
+			else if(myArray.getSubtype() ==PrimitiveType.INTEGER) {
+				code.add(LoadI);
+				//convertToStringIfBoolean(myArray.getSubtype());
+				code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
+				code.add(Printf);
+				
 			}
-			
-			code.add(Printf);
-			
 			
 			
 			
@@ -197,22 +216,21 @@ public class PrintStatementGenerator {
 			String format = printFormat(node.getType());
 
 			code.append(visitor.removeValueCode(node));
-			convertToStringIfBoolean(node);
-			convertToPointerIfString(node);
+			convertToStringIfBoolean(node.getType());
+			convertToPointerIfString(node.getType());
 			code.add(PushD, format);
 			code.add(Printf);
 		}		
 		
 	}
-	private void convertToStringIfBoolean(ParseNode node) {
-		if(node.getType() != PrimitiveType.BOOLEAN) {
+	private void convertToStringIfBoolean(Type type) {
+		if(type != PrimitiveType.BOOLEAN) {
 			return;
 		}
 		
 		Labeller labeller = new Labeller("print-boolean");
 		String trueLabel = labeller.newLabel("true");
 		String endLabel = labeller.newLabel("join");
-
 		code.add(JumpTrue, trueLabel);
 		code.add(PushD, RunTime.BOOLEAN_FALSE_STRING);
 		code.add(Jump, endLabel);
@@ -220,8 +238,8 @@ public class PrintStatementGenerator {
 		code.add(PushD, RunTime.BOOLEAN_TRUE_STRING);
 		code.add(Label, endLabel);
 	}
-	private void convertToPointerIfString(ParseNode node) {
-		if(node.getType() != PrimitiveType.STRING) {
+	private void convertToPointerIfString(Type type) {
+		if(type != PrimitiveType.STRING) {
 			return;
 		}
 		// add 12 bytes to arg which is on stack
