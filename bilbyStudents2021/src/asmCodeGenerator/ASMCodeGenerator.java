@@ -19,6 +19,7 @@ import parseTree.nodeTypes.CharacterConstantNode;
 import parseTree.nodeTypes.MainBlockNode;
 import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.FloatingConstantNode;
+import parseTree.nodeTypes.ArrayNode;
 import parseTree.nodeTypes.AssignmentNode;
 import parseTree.nodeTypes.IdentifierNode;
 import parseTree.nodeTypes.IfNode;
@@ -407,6 +408,73 @@ public class ASMCodeGenerator {
 			else {
 				throw new RuntimeException("Varient unimplemented in ASMCodeGenerator Operator Nde");
 			}
+		}
+		public void visitLeave(ArrayNode node) {
+			newValueCode(node);
+			int arrayLength = node.getChildren().size();
+			int subTypeSize = node.child(0).getType().getSize();
+			
+			// push size of record
+			code.add(PushI, arrayLength);
+			code.add(PushI, subTypeSize);
+			code.add(Multiply);
+			code.add(PushI,16);
+			code.add(Add);
+			
+			//call memory manager
+			code.add(Call,MemoryManager.MEM_MANAGER_ALLOCATE);
+			code.add(Duplicate);
+			//code.add(PStack);
+			
+			// type identifier
+			code.add(Duplicate);// [&record]
+			code.add(PushI, 5);
+			code.add(StoreI);
+			
+			// status
+			code.add(Duplicate);
+			code.add(PushI, 4);
+			code.add(Add);
+			code.add(PushI, 4);
+			code.add(StoreI);
+			
+			// Subtype size
+			code.add(Duplicate);
+			code.add(PushI, 8);
+			code.add(Add);
+			code.add(PushI, subTypeSize);
+			code.add(StoreI);
+			
+			// Length
+			code.add(Duplicate);
+			code.add(PushI, 12);
+			code.add(Add);
+			code.add(PushI,arrayLength);
+			code.add(StoreI);
+			
+			
+			code.add(PushI, 16); // beginning of elements
+			code.add(Add);
+			code.add(Duplicate);
+			
+			
+			List<ParseNode> elements = node.getChildren();
+			//ParseNode elementNode = null;
+			for(int i = 0; i< arrayLength;i++) {
+				//code.add(PStack);
+				code.append(removeValueCode(elements.get(i)));
+				
+				//code.add(StoreI); // fix this
+				code.add(opcodeForStore(node.getChildren().get(1).getType()));
+				code.add(PushI,subTypeSize); 
+				code.add(Add);
+				code.add(Duplicate);
+			}
+			code.add(Pop);
+			code.add(Pop);
+			//code.add(PStack);
+			
+			
 		}
 		///////////////////////////////////////////////////////////////////////////
 		// leaf nodes (ErrorNode not necessary)

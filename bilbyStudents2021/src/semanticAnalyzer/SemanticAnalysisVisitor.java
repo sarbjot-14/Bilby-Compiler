@@ -15,6 +15,7 @@ import parseTree.nodeTypes.CharacterConstantNode;
 import parseTree.nodeTypes.StatementBlockNode;
 import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.ErrorNode;
+import parseTree.nodeTypes.ArrayNode;
 import parseTree.nodeTypes.AssignmentNode;
 import parseTree.nodeTypes.FloatingConstantNode;
 import parseTree.nodeTypes.IdentifierNode;
@@ -145,6 +146,13 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			typeCheckError(node, childTypes);
 			node.setType(PrimitiveType.ERROR);
 		}
+	}
+	@Override
+	public void visitLeave(ArrayNode node) {
+		Type subtype = node.child(0).getType();
+		Type arrayType = new Array(subtype);
+		node.setType(arrayType);
+
 	}
 	private Lextant operatorFor(OperatorNode node) {
 		LextantToken token = (LextantToken) node.getToken();

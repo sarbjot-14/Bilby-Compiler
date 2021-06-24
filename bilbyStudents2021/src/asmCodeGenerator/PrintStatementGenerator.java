@@ -155,7 +155,7 @@ public class PrintStatementGenerator {
 				code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
 				code.add(Printf);
 				code.add(Label,skipCharPrint);
-				code.add(Pop);
+				//code.add(Pop);
 				
 			}
 			else if(myArray.getSubtype() ==PrimitiveType.STRING) {
@@ -252,6 +252,7 @@ public class PrintStatementGenerator {
 		if(! (node.getType() instanceof Array)) {
 			return;
 		}
+		
 		// add 8 which points to Subtype size
 		code.add(PushI, 8);
 		code.add(Add);

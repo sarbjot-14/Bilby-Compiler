@@ -20,6 +20,7 @@ import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.ProgramNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StatementBlockNode;
+import parseTree.nodeTypes.ArrayNode;
 
 // Visitor pattern with pre- and post-order visits
 public interface ParseNodeVisitor {
@@ -58,6 +59,9 @@ public interface ParseNodeVisitor {
 	
 	void visitEnter(WhileNode node);
 	void visitLeave(WhileNode node);
+	
+	void visitEnter(ArrayNode node);
+	void visitLeave(ArrayNode node);
 
 
 	// leaf nodes: visitLeaf only
@@ -73,6 +77,7 @@ public interface ParseNodeVisitor {
 	void visit(TabNode node);
 	void visit(TypeNode node);
 	void visit(CastNode node);
+	void visit(ArrayNode node);
 
 	
 	public static class Default implements ParseNodeVisitor
@@ -159,6 +164,13 @@ public interface ParseNodeVisitor {
 			defaultVisitLeave(node);
 		}
 		
+		public void visitEnter(ArrayNode node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(ArrayNode node) {
+			defaultVisitLeave(node);
+		}
+		
 
 		public void visit(BooleanConstantNode node) {
 			defaultVisitForLeaf(node);
@@ -202,8 +214,12 @@ public interface ParseNodeVisitor {
 		public void visit(WhileNode node) {
 			defaultVisitForLeaf(node);
 		}
+		public void visit(ArrayNode node) {
+			defaultVisitForLeaf(node);
+		}
 	
 	}
+
 
 
 	

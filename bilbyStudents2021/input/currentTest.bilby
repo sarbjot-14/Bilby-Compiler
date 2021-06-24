@@ -1,7 +1,20 @@
 main{
-	imm g := alloc [char](0);
-	print g $n;
-
+	
+	
+	imm integers := [11,12,13,14,15];
+	print integers $n;
+	
+	imm f := [11.7,12.4,13.3,14.9,15.4];
+	print f $n;
+	
+	imm c := [#Y,#M,#c,#A];
+	print c $n;
+	
+	imm b := [true,false,true,true];
+	print b $n;
+	
+	imm s := ["compilers","are","great"];
+	print s $n;
 	
 
 }

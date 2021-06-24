@@ -38,10 +38,6 @@ public class AllocCodeGenerator implements SimpleCodeGenerator {
 		Labeller labeller = new Labeller("alloc");
 
 		String startLabel = labeller.newLabel("start");
-		String subLabel   = labeller.newLabel("sub");
-		String trueLabel  = labeller.newLabel("true");
-		String falseLabel = labeller.newLabel("false");
-		String joinLabel  = labeller.newLabel("join");
 		String exitLoop  = labeller.newLabel("exit");
 		String lenStorage= labeller.newLabel("storage-for-arrayLength");
 		String counter= labeller.newLabel("counter");
@@ -139,7 +135,6 @@ public class AllocCodeGenerator implements SimpleCodeGenerator {
 		code.add(PushI,16);
 		code.add(Add);
 		code.add(Add);
-		
 		code.add(PushI, 0);
 		code.add(StoreC);
 		
@@ -152,6 +147,8 @@ public class AllocCodeGenerator implements SimpleCodeGenerator {
 		code.add(StoreI);
 		code.add(Jump,startLoop);
 		code.add(Label,exitLoop);
+		//code.add(PStack);
+		
 		
 		
 		

@@ -24,6 +24,7 @@ import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
 import parseTree.nodeTypes.TypeNode;
 import parseTree.nodeTypes.WhileNode;
+import parseTree.nodeTypes.ArrayNode;
 import tokens.*;
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
@@ -405,8 +406,7 @@ public class Parser {
 		return startsLiteral(token) || startsBracketExpression(token);
 	}
 	
-	// bracketExpression       -> (expression) | [ expression CAST type ]
-	// ALLOC [type] (expression)
+	// bracketExpression       -> (expression) | [ expression CAST type ] | ALLOC [type] (expression) | [expressionList ]
 	private ParseNode parseBracketExpression() {
 		if(!startsBracketExpression(nowReading)) {
 			return syntaxErrorNode("bracket expression");
@@ -430,23 +430,42 @@ public class Parser {
 			return  OperatorNode.withChildren(allocToken,type, expression);
 		}
 		else if(nowReading.isLextant(Punctuator.OPEN_BRACKET)) {
+			ParseNode result = new ArrayNode(nowReading);
 			expect(Punctuator.OPEN_BRACKET);
 			
-			ParseNode left = parseExpression();
-			
-			readToken();
-			ParseNode castNode = new CastNode(previouslyRead);
-			 
-			readToken();
-			ParseNode rightType = new TypeNode(previouslyRead);
-			
-			
-			castNode.appendChild(left);
-			castNode.appendChild(rightType);
-			
-		
-			expect(Punctuator.CLOSE_BRACKET);
-			return castNode;
+
+
+			ParseNode left = parseExpression(); //[expression as type ]
+
+			if(nowReading.isLextant(Keyword.CAST)) {
+				readToken();
+				ParseNode castNode = new CastNode(previouslyRead);
+
+				readToken();
+				ParseNode rightType = new TypeNode(previouslyRead);
+
+
+				castNode.appendChild(left);
+				castNode.appendChild(rightType);
+
+				expect(Punctuator.CLOSE_BRACKET);
+				return castNode;
+			}
+			else if(nowReading.isLextant(Punctuator.COMMA,Punctuator.CLOSE_BRACKET)) {
+
+				//ParseNode result = new ArrayNode(new Token(Punctuator.OPEN_BRACKET));
+
+				//expect(Keyword.PRINT);
+				result = parseArrayExpressionList(result,left);// pass it parent. Put all of expression list as children of result (parent)
+				// result is parent
+
+				expect(Punctuator.CLOSE_BRACKET);
+
+				return result;
+			}
+			else {
+				syntaxError(nowReading, "not a cast or expressionlist");
+			}
 		}
 		
 		
@@ -456,6 +475,30 @@ public class Parser {
 	
 	private boolean startsBracketExpression(Token token) {
 		return token.isLextant(Punctuator.OPEN_BRACE_PAREN) || token.isLextant(Punctuator.OPEN_BRACKET) || token.isLextant(Keyword.ALLOC);
+	}
+	
+	// arrayExpression			-> [expressionList]
+	private ParseNode parseArrayExpressionList(ParseNode parent,ParseNode firstElement) {
+
+		//			if(!startsArrayExpressionList() ) {
+		//				return syntaxErrorNode("incorrect array expression list");
+		//			}
+		parent.appendChild(firstElement);
+
+		while(nowReading.isLextant(Punctuator.COMMA)) {
+			expect(Punctuator.COMMA);
+			if(!startsExpression(nowReading)) {
+				return syntaxErrorNode("incorrect array expression list");
+			}
+			parent.appendChild(parseExpression());
+		}	
+
+		return parent;
+
+	}
+
+	private boolean startsArrayExpressionList(Token token) {
+		return startsExpression(token);
 	}
 	
 
