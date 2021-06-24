@@ -12,7 +12,6 @@ main{
 	print e $n;
 	
 	
-	
 %	imm f := alloc [string](3+5);
 %	print f $n;
 

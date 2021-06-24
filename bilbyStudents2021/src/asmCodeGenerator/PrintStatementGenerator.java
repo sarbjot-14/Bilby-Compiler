@@ -64,6 +64,7 @@ public class PrintStatementGenerator {
 			String exitLoop = labeller.newLabel("exit-loop-print");
 			String counter = labeller.newLabel("counter-print");
 			String skipCharPrint = labeller.newLabel("skip-char-print");
+			String skipPop = labeller.newLabel("skip-pop");
 			
 			// [&subtypeSize]
 			// store subtype size
@@ -151,11 +152,15 @@ public class PrintStatementGenerator {
 				code.add(LoadC);
 				code.add(Duplicate);
 				code.add(JumpFalse,skipCharPrint);
+				
 				//code.add(PStack);
 				code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
 				code.add(Printf);
+				code.add(Jump,skipPop);
 				code.add(Label,skipCharPrint);
-				//code.add(Pop);
+				code.add(Pop);
+				code.add(Label,skipPop);
+				
 				
 			}
 			else if(myArray.getSubtype() ==PrimitiveType.STRING) {
