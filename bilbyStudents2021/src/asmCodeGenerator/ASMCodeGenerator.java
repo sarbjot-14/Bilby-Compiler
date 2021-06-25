@@ -423,8 +423,8 @@ public class ASMCodeGenerator {
 			
 			//call memory manager
 			code.add(Call,MemoryManager.MEM_MANAGER_ALLOCATE);
-			code.add(Duplicate);
 			//code.add(PStack);
+			code.add(Duplicate);
 			
 			// type identifier
 			code.add(Duplicate);// [&record]

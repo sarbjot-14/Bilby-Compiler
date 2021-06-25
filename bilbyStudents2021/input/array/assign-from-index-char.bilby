@@ -1,0 +1,17 @@
+main{
+	imm integers := [#a,#b,#x,#y,#z];
+	
+	imm a := integers[0];
+	
+	print a $n;
+	
+	imm b := integers[3-1];
+	
+	print b $n;
+	
+	imm c := integers[4];
+	
+	print c $n;
+	
+
+}

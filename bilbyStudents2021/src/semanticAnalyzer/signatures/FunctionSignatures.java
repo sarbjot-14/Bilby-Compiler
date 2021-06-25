@@ -15,6 +15,7 @@ import asmCodeGenerator.operators.FloatDivideCodeGenerator;
 import asmCodeGenerator.operators.GreaterCodeGenerator;
 import asmCodeGenerator.operators.GreaterThanEqualCodeGeneratorFloat;
 import asmCodeGenerator.operators.GreaterThanEqualCodeGeneratorInt;
+import asmCodeGenerator.operators.IndexingCodeGenerator;
 import asmCodeGenerator.operators.IntDivideCodeGenerator;
 import asmCodeGenerator.operators.IntToBoolCodeGenerator;
 import asmCodeGenerator.operators.IntToCharCodeGenerator;
@@ -195,7 +196,7 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		);
 		
 		new FunctionSignatures(Punctuator.INDEXING, 
-				new FunctionSignature(ASMOpcode.Nop,new Array(S),INTEGER, S)
+				new FunctionSignature(new IndexingCodeGenerator(),new Array(S),INTEGER, S)
 		);
 													
 		

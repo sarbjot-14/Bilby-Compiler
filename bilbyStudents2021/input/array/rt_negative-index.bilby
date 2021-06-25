@@ -1,9 +1,9 @@
 main{
 	imm integers := [11,12,13,14,15];
 	
-	imm b := integers[3-1];
+
+	imm b := integers[5];
 	
-	print b $n;
 	
 
 }

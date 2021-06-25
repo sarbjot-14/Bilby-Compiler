@@ -168,6 +168,39 @@
         Label        $$negative-length-array   
         PushD        $errors-negative-length-array 
         Jump         $$general-runtime-error   
+        DLabel       $indexing-out-of-bounds-array 
+        DataC        105                       %% "indexing out of bounds array"
+        DataC        110                       
+        DataC        100                       
+        DataC        101                       
+        DataC        120                       
+        DataC        105                       
+        DataC        110                       
+        DataC        103                       
+        DataC        32                        
+        DataC        111                       
+        DataC        117                       
+        DataC        116                       
+        DataC        32                        
+        DataC        111                       
+        DataC        102                       
+        DataC        32                        
+        DataC        98                        
+        DataC        111                       
+        DataC        117                       
+        DataC        110                       
+        DataC        100                       
+        DataC        115                       
+        DataC        32                        
+        DataC        97                        
+        DataC        114                       
+        DataC        114                       
+        DataC        97                        
+        DataC        121                       
+        DataC        0                         
+        Label        $$out-of-bounds-indexing  
+        PushD        $indexing-out-of-bounds-array 
+        Jump         $$general-runtime-error   
         DLabel       $usable-memory-start      
         DLabel       $global-memory-block      
         DataZ        0                         
