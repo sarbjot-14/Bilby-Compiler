@@ -1,0 +1,14 @@
+main{
+	imm integers := [11,12,13,14,15];
+	
+	integers[0] :=  0;
+	
+	integers[1] :=  22;
+	
+	integers[4] :=  555;
+	
+    print integers $n;
+    
+   
+
+}

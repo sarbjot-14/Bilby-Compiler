@@ -74,6 +74,7 @@ public class PrintStatementGenerator {
 			code.add(DataI, 0);
 			code.add(PushD,typeSizeStorage);
 			code.add(Exchange);  // [&subtypeSize,  "storage-for-subTypeSize", subtypeSize]
+			//code.add(PStack);
 			code.add(StoreI);  // [&subtypeSize]
 			
 			

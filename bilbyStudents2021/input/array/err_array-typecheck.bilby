@@ -1,0 +1,8 @@
+main{
+	imm intarray := [7, 5];
+	imm chararray := [#a, #z];
+	mut r := intarray;
+	r := chararray;
+    
+   
+}

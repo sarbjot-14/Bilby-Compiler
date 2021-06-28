@@ -23,6 +23,7 @@ import parseTree.nodeTypes.ArrayNode;
 import parseTree.nodeTypes.AssignmentNode;
 import parseTree.nodeTypes.IdentifierNode;
 import parseTree.nodeTypes.IfNode;
+import parseTree.nodeTypes.IndexAssignmentNode;
 import parseTree.nodeTypes.IntegerConstantNode;
 import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.OperatorNode;
@@ -238,7 +239,7 @@ public class ASMCodeGenerator {
 			code.add(opcodeForStore(type));
 		}
 		public void visitLeave(AssignmentNode node) {
-			// refactor?
+			
 			newVoidCode(node);
 			ASMCodeFragment lvalue = removeAddressCode(node.child(0));	
 			ASMCodeFragment rvalue = removeValueCode(node.child(1));
@@ -247,6 +248,86 @@ public class ASMCodeGenerator {
 			code.append(rvalue);
 
 			Type type = node.getType();
+			code.add(opcodeForStore(type));
+		}
+		public void visitLeave(IndexAssignmentNode node) {
+			
+			newVoidCode(node);
+			ASMCodeFragment lvalue = removeValueCode(node.child(0));	
+			ASMCodeFragment index = removeValueCode(node.child(1));	
+			ASMCodeFragment rvalue = removeValueCode(node.child(2));
+			
+			Labeller labeller = new Labeller("indexingAssign");
+			
+			String subTypeSize= labeller.newLabel("subTypeSize");
+			String trueLabel  = labeller.newLabel("true");
+			String joinLabel  = labeller.newLabel("join");
+			
+			// save the identifer
+			String identifier = labeller.newLabel("identifier");
+			code.add(DLabel, identifier);
+			code.add(DataI, 0);
+			code.add(PushD, identifier);
+			code.append(lvalue); 
+			//code.add(PStack);
+			code.add(StoreI); 
+			
+			// save the index
+			String indexVar = labeller.newLabel("index");
+			code.add(DLabel, indexVar);
+			code.add(DataI, 0);
+			code.add(PushD, indexVar);
+			code.append(index); 
+			code.add(StoreI); 
+						
+
+			
+			code.add(PushD,identifier);
+			code.add(LoadI);
+	
+			
+			// get length for out of bounds check
+			code.add(Duplicate);
+			code.add(PushI, 12);
+			code.add(Add);
+			code.add(LoadI);
+			// do runtime check for index
+			code.add(PushD,indexVar);
+			code.add(LoadI);
+			code.add(JumpNeg,trueLabel); // if negative throw runtime error
+			code.add(PushD,indexVar);
+			code.add(LoadI);
+			code.add(Subtract);
+			code.add(Duplicate);
+			code.add(JumpFalse,trueLabel);
+			code.add(JumpNeg,trueLabel);
+
+	
+			code.add(Jump,joinLabel);
+			code.add(Label, trueLabel);
+			code.add(Jump, RunTime.INDEXING_RUNTIME_ERROR );
+			code.add(Label, joinLabel);
+			
+		
+			
+			//code.add(PStack);
+			code.add(PushI, 8); 
+			code.add(Add);
+			code.add(Duplicate);
+			code.add(LoadI);  // [&subTypeSize, subTypeSize]
+		
+			code.add(PushD,indexVar);
+			code.add(LoadI); // [&subTypeSize, subTypeSize, index]
+			code.add(Multiply);  // [&subTypeSize, byteToIndex]
+			code.add(Exchange); 
+			
+			code.add(PushI,8); 
+			code.add(Add);   // [ byteToIndex, &elements]
+			code.add(Add); // [&indexedElement]
+			code.append(rvalue);
+	
+
+			Type type = node.getChildren().get(2).getType();   // need to fix this!!!
 			code.add(opcodeForStore(type));
 		}
 		
@@ -461,7 +542,6 @@ public class ASMCodeGenerator {
 			List<ParseNode> elements = node.getChildren();
 			//ParseNode elementNode = null;
 			for(int i = 0; i< arrayLength;i++) {
-				//code.add(PStack);
 				code.append(removeValueCode(elements.get(i)));
 				
 				//code.add(StoreI); // fix this
@@ -472,7 +552,6 @@ public class ASMCodeGenerator {
 			}
 			code.add(Pop);
 			code.add(Pop);
-			//code.add(PStack);
 			
 			
 		}

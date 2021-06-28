@@ -14,6 +14,7 @@ import parseTree.nodeTypes.ErrorNode;
 import parseTree.nodeTypes.FloatingConstantNode;
 import parseTree.nodeTypes.IdentifierNode;
 import parseTree.nodeTypes.IfNode;
+import parseTree.nodeTypes.IndexAssignmentNode;
 import parseTree.nodeTypes.IntegerConstantNode;
 import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.OperatorNode;
@@ -136,22 +137,38 @@ public class Parser {
 		return startsIdentifier(token);
 	}
 
-	// assignmentStatement → target := expression   TERMINATOR
+	// assignmentStatement → target := expression   TERMINATOR 
 	// target → identifier
 	private ParseNode parseAssignmentStatement() {
 		if(!startsAssignmentStatement(nowReading)) {
 			return syntaxErrorNode("assignment");
 		}
-		//Token assignmentToken = LextantToken.make(new LocatedChar('a',new TextLocation("assign",0,0)), "assign", Keyword.forLexeme("assign"));
-		//readToken();
 
 		ParseNode identifier = parseIdentifier();
-		Token assignmentToken = nowReading;
-		readToken();
-		ParseNode initializer = parseExpression();
-		expect( Punctuator.TERMINATOR);
+		
+		if(nowReading.isLextant(Punctuator.OPEN_BRACKET)) {
+			expect(Punctuator.OPEN_BRACKET);
+			ParseNode index = parseExpression();
+			expect(Punctuator.CLOSE_BRACKET);
+			Token assignmentToken = nowReading;
+			readToken();
+			
+			ParseNode initializer = parseExpression();
+			expect( Punctuator.TERMINATOR);
+			
+			return IndexAssignmentNode.withChildren(assignmentToken, identifier,index, initializer);
+			
+		}
+		else {
+			Token assignmentToken = nowReading;
+			readToken();
+			ParseNode initializer = parseExpression();
+			expect( Punctuator.TERMINATOR);
 
-		return AssignmentNode.withChildren(assignmentToken, identifier, initializer);
+			return AssignmentNode.withChildren(assignmentToken, identifier, initializer);
+		}
+		
+		
 	}
 	
 	// printStmt -> PRINT printExpressionList TERMINATOR

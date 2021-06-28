@@ -109,10 +109,24 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
         typeList.add(identifier.getType());
         typeList.add(assignmentType);
 
-		if(identifier.getType() != assignmentType) {
-			typeCheckError(node,typeList);
+        if(identifier.getType() instanceof Array && assignmentType instanceof Array) {
+        	Array assignmentArray = (Array) assignmentType;
+        	Array identifierArray = (Array) identifier.getType();
+        	if(assignmentArray.getSubtype() == identifierArray.getSubtype()) {
+        		node.setType(assignmentType);
+        	}
+        	else {
+        		typeCheckError(node,typeList);
+        	}
+        }
+        else if(identifier.getType() == assignmentType) {
+        	node.setType(assignmentType);
+			
 		}
-		node.setType(assignmentType);
+        else {
+        	typeCheckError(node,typeList);
+        }
+        
 
 		
 	}

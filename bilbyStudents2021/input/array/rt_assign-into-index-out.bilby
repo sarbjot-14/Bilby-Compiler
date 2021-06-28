@@ -1,10 +1,10 @@
 main{
 	imm integers := [11,12,13,14,15];
 	
-	imm a := integers[-1];
 	
-
+	integers[5] :=  555;
 	
-	
+    print integers $n;
+		
 
 }

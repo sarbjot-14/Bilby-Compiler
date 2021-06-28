@@ -1,0 +1,16 @@
+main{
+	imm integers := [11,12,13,14,15];
+	
+	imm integers_copy := integers;
+	
+    print integers_copy $n;
+    
+    integers_copy[2] := 22222222;
+    
+    
+    print integers $n;
+    
+    print integers_copy $n;
+   
+
+}
