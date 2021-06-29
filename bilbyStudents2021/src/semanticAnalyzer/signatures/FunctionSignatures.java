@@ -68,6 +68,28 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		return !acceptingSignature(types).isNull();
 	}
 
+	public List<PromotedSignature> leastLevelPromotions(List<Type> actuals) {
+		List<PromotedSignature> allPromotions = PromotedSignature.makeAll(this,actuals);
+		
+		List<List<PromotedSignature>> byNumPromotions = new ArrayList<>();
+		// make a list of each promotion level
+		for(int i=0; i<=actuals.size();i++) {
+			byNumPromotions.add(new ArrayList<PromotedSignature>());
+			
+		}
+		// sort them into lists
+		for(PromotedSignature promotedSignature :allPromotions) {
+			byNumPromotions.get(promotedSignature.numPromotions()).add(promotedSignature);
+		}
+		
+		// return first one that isnt empty, or empty 
+		for(int i=0; i<actuals.size();i++) {
+			if(!byNumPromotions.get(i).isEmpty()) {
+				return byNumPromotions.get(i);
+			}
+		}
+		return byNumPromotions.get(0); //empty list
+	}
 	
 	/////////////////////////////////////////////////////////////////////////////////
 	// access to FunctionSignatures by key object.
@@ -220,5 +242,9 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		// required code.
 
 	}
+
+
+
+	
 
 }

@@ -361,11 +361,15 @@ public class ASMCodeGenerator {
 		public void visitLeave(OperatorNode node) {
 			newValueCode(node);
 			
-			Object variant = node.getSignature().getVariant();
+			Object variant = node.getPromotedSignature().getVariant();
 			if(variant instanceof ASMOpcode) {
+				//
 				for(ParseNode child:node.getChildren()) {
 					ASMCodeFragment arg = removeValueCode(child);
+					// code from promotion that applies to that arg (fix)
+					
 					code.append(arg);
+					// then code.append the code
 				}
 				code.add((ASMOpcode)variant);
 					
@@ -374,9 +378,11 @@ public class ASMCodeGenerator {
 			else if(variant instanceof SimpleCodeGenerator) {
 				SimpleCodeGenerator generator = (SimpleCodeGenerator)variant;
 				List<ASMCodeFragment> args = new ArrayList<>();
+				//
 				for(ParseNode child:node.getChildren()) {
 					ASMCodeFragment arg = removeValueCode(child);
 					args.add(arg);
+					// add code of promotion to argument code  (fix)
 				}
 				
 				ASMCodeFragment generated = generator.generate(node, args);

@@ -30,6 +30,7 @@ import parseTree.nodeTypes.TabNode;
 import parseTree.nodeTypes.TypeNode;
 import semanticAnalyzer.signatures.FunctionSignature;
 import semanticAnalyzer.signatures.FunctionSignatures;
+import semanticAnalyzer.signatures.PromotedSignature;
 import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Type;
@@ -135,6 +136,34 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	// expressions
 	@Override
 	public void visitLeave(OperatorNode node) {
+		List<Type> childTypes = childTypes(node);
+		Lextant operator = operatorFor(node);
+		
+		FunctionSignatures signatures = FunctionSignatures.signaturesOf(operator);
+		
+		List<PromotedSignature> promotedSignatures = signatures.leastLevelPromotions(childTypes);
+		
+		if(promotedSignatures.isEmpty()){
+			typeCheckError(node,childTypes);
+			node.setType(PrimitiveType.ERROR);
+			
+		}
+		else if(promotedSignatures.size() > 1){
+			multipleInterpretationError(node,childTypes);
+			node.setType(PrimitiveType.ERROR);
+			
+		}
+		else {
+			PromotedSignature promotedSignature = promotedSignatures.get(0);
+			node.setType(promotedSignature.resultTye());
+			node.setPromotedSignature(promotedSignature);
+			
+		}
+		
+	}
+
+
+	private List<Type> childTypes(OperatorNode node) {
 		List<Type> childTypes;  
 		if(node.nChildren() == 1) {
 			
@@ -148,18 +177,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			
 			childTypes = Arrays.asList(left.getType(), right.getType());		
 		}
-		
-		Lextant operator = operatorFor(node);
-		FunctionSignature signature = FunctionSignatures.signature(operator, childTypes);
-		
-		if(signature.accepts(childTypes)) {
-			node.setType(signature.resultType().concreteType()); // get rid of type variables
-			node.setSignature(signature);
-		}
-		else {
-			typeCheckError(node, childTypes);
-			node.setType(PrimitiveType.ERROR);
-		}
+		return childTypes;
 	}
 	@Override
 	public void visitLeave(ArrayNode node) {
@@ -289,6 +307,14 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	///////////////////////////////////////////////////////////////////////////
 	// error logging/printing
 
+	private void multipleInterpretationError(OperatorNode node, List<Type> childTypes) {
+		Token token = node.getToken();
+
+		logError("operator " + token.getLexeme() + " has multiple interpretations " 
+				+ childTypes  + " at " + token.getLocation());
+
+	}
+	
 	private void typeCheckError(ParseNode node, List<Type> operandTypes) {
 		Token token = node.getToken();
 		
