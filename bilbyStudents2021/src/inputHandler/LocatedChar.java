@@ -63,4 +63,36 @@ public class LocatedChar implements Locator {
 		return Character.isWhitespace(character);
 	}
 
+
+
+	public boolean startsIdentifier() {
+		// new: identifier → [ a..zA..Z_@ ][ a..zA..Z_@0..9 ] *
+		boolean startsIdentifier = false;
+		if(Character.isLowerCase(character) || Character.isUpperCase(character) ) {
+			startsIdentifier = true;
+		}
+		if(character.charValue() == '_' || character.charValue() == '@'  ) {
+			startsIdentifier = true;
+		}
+		
+		return false;
+	}
+
+
+	public boolean isIdentifierChar() {
+		// new: identifier → [ a..zA..Z_@ ][ a..zA..Z_@0..9 ] *
+		boolean startsIdentifier = false;
+		if(Character.isLowerCase(character) || Character.isUpperCase(character) ) {
+			startsIdentifier = true;
+		}
+		if(character.charValue() == '_' || character.charValue() == '@'  ) {
+			startsIdentifier = true;
+		}
+		if(character.charValue() >= '0' || character.charValue() <= '9'  ) {
+			startsIdentifier = true;
+		}
+
+		return false;
+	}
+
 }
