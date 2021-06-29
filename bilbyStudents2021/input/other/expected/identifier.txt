@@ -1,1 +1,7 @@
-Couldn't read file "/home/sarbjot/Desktop/cmpt379/bilbyCompiler/bilbyStudents2021/input/other/output/identifier.asm"
+1
+2
+3
+4
+5
+6
+7

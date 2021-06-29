@@ -1,6 +1,26 @@
 main {
+	% new: identifier → [ a..zA..Z_@ ][ a..zA..Z_@0..9 ] *
 
-	imm aA := 3;
 	
-    
+	imm aA := 1;
+	print aA $n;
+	
+	imm Aa := 2;
+	print Aa $n;
+	
+	imm @ := 3;
+	print @ $n;
+	
+	imm a0 := 4;
+	print a0 $n;
+	
+	imm a9 := 5;
+	print a9 $n;
+	
+	imm _8 := 6;
+	print _8 $n;
+	
+	imm Z_ := 7;
+	print Z_ $n;
+
 }
