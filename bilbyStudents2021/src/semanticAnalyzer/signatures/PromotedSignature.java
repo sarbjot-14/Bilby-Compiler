@@ -9,7 +9,7 @@ import semanticAnalyzer.types.Type;
 
 public class PromotedSignature {
 
-	private List<Promotion> promotions;
+	public List<Promotion> promotions;
 	private FunctionSignature signature;
 	private Type resultType;
 	
@@ -23,7 +23,7 @@ public class PromotedSignature {
 	}
 	
 	
-	public Type resultTye() {
+	public Type resultType() {
 		return resultType;
 	}
 
@@ -69,11 +69,47 @@ public class PromotedSignature {
 		}
 		else if(actuals.size() ==2) {
 			
+			Type actualFirst = actuals.get(0);
+			Type actualSecond = actuals.get(1);
+			Type promotedActualFirst = actuals.get(0);
+			Type promotedActualSecond = actuals.get(1);
+			for(Promotion promotion: Promotion.values()) {
+
+				for(Promotion promotionTwo: Promotion.values()) {
+
+					if(promotion.applies(actualFirst)) {
+						promotedActualFirst = promotion.apply(actualFirst);
+						if(promotionTwo.applies(actualSecond) ) {
+//							System.out.println(actualSecond);
+//							System.out.println(promotionTwo);
+							promotedActualSecond = promotionTwo.apply(actualSecond);
+//							System.out.println(promotedActualSecond);
+//							System.out.println("next");
+							
+							PromotedSignature promotedSignature = tryTypes(functionSignature, promotion,promotionTwo, promotedActualFirst,promotedActualSecond);
+							if(promotedSignature != nullInstance()) {
+//								System.out.println(promotedSignature.promotions.get(0));
+//								System.out.println(promotedSignature.promotions.get(1));
+//								System.out.println("next");
+								result.add(promotedSignature);
+							}
+							
+						}
+						
+					}
+
+
+
+				}
+			}
+			//System.out.format("result size in makeAll() is %d \n",result.size());
+			return result;
+			
 		}
 		else {
 			throw new RuntimeException("makeAll called with more than two actuals");
 		}
-		return null;
+		
 	}
 
 	// need a try type that will take two promotions (fix)
@@ -87,6 +123,20 @@ public class PromotedSignature {
 		}
 	}
 	
+	private static PromotedSignature tryTypes(FunctionSignature functionSignature, Promotion promotion, Promotion promotionTwo, Type promotedActualFirst,Type promotedActualSecond) {
+		
+		if(functionSignature.accepts(Arrays.asList(promotedActualFirst,promotedActualSecond))) {
+//			System.out.println(promotedActualSecond);
+//			System.out.println(promotionTwo);
+			
+			return new PromotedSignature(functionSignature, Arrays.asList(promotion,promotionTwo));
+		}
+		else {
+			return nullInstance();
+		}
+	}
+	
+	
 	static private PromotedSignature nullInstance = null;
 	private static PromotedSignature nullInstance() {
 		if(nullInstance == null) {
@@ -97,8 +147,8 @@ public class PromotedSignature {
 
 
 	public Object getVariant() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return signature.getVariant();
 	}
 
 	

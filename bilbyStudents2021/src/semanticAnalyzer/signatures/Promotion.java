@@ -17,7 +17,7 @@ public enum Promotion {
 	ASMOpcode opcode;
 	
 	
-	private Promotion(Type actual,Type prmoted,ASMOpcode opcode) {
+	private Promotion(Type actual,Type promoted,ASMOpcode opcode) {
 		this.actual = actual;
 		this.promoted= promoted;
 		this.opcode = opcode;
@@ -38,7 +38,7 @@ public enum Promotion {
 		return promoted;
 	}
 	
-	ASMCodeFragment codeFor() {
+	public ASMCodeFragment codeFor() {
 		ASMCodeFragment result = new ASMCodeFragment(ASMCodeFragment.CodeType.GENERATES_VALUE) ;
 		result.add(opcode);
 		return result;

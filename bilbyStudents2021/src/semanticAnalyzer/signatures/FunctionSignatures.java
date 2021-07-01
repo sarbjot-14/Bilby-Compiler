@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import asmCodeGenerator.codeStorage.ASMOpcode;
 import asmCodeGenerator.operators.AllocCodeGenerator;
@@ -70,7 +71,9 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 
 	public List<PromotedSignature> leastLevelPromotions(List<Type> actuals) {
 		List<PromotedSignature> allPromotions = PromotedSignature.makeAll(this,actuals);
+		// allPromotions is all the promotions we can apply to the actual signature?
 		
+	
 		List<List<PromotedSignature>> byNumPromotions = new ArrayList<>();
 		// make a list of each promotion level
 		for(int i=0; i<=actuals.size();i++) {

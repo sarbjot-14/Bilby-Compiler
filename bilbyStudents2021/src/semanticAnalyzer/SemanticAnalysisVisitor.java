@@ -149,13 +149,17 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			
 		}
 		else if(promotedSignatures.size() > 1){
+			for(int i =0 ; i< promotedSignatures.size(); i++) {
+//				System.out.println(promotedSignatures.get(i).promotions.get(0));
+//				System.out.println(promotedSignatures.get(i).promotions.get(1));
+			}
 			multipleInterpretationError(node,childTypes);
 			node.setType(PrimitiveType.ERROR);
 			
 		}
 		else {
 			PromotedSignature promotedSignature = promotedSignatures.get(0);
-			node.setType(promotedSignature.resultTye());
+			node.setType(promotedSignature.resultType());
 			node.setPromotedSignature(promotedSignature);
 			
 		}

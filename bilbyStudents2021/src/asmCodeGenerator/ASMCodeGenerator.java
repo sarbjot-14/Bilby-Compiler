@@ -35,6 +35,7 @@ import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
 import parseTree.nodeTypes.TypeNode;
 import parseTree.nodeTypes.WhileNode;
+import semanticAnalyzer.signatures.Promotion;
 import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Type;
@@ -327,7 +328,7 @@ public class ASMCodeGenerator {
 			code.append(rvalue);
 	
 
-			Type type = node.getChildren().get(2).getType();   // need to fix this!!!
+			Type type = node.getChildren().get(2).getType();  
 			code.add(opcodeForStore(type));
 		}
 		
@@ -362,17 +363,28 @@ public class ASMCodeGenerator {
 			newValueCode(node);
 			
 			Object variant = node.getPromotedSignature().getVariant();
+			System.out.println(variant);
 			if(variant instanceof ASMOpcode) {
-				//
-				for(ParseNode child:node.getChildren()) {
-					ASMCodeFragment arg = removeValueCode(child);
-					// code from promotion that applies to that arg (fix)
-					
-					code.append(arg);
-					// then code.append the code
+
+				ASMCodeFragment arg = removeValueCode(node.getChildren().get(0));
+
+				code.append(arg);
+				Promotion promotionFirst = node.getPromotedSignature().promotions.get(0);
+				ASMCodeFragment promoCode = promotionFirst.codeFor();
+				code.append(promoCode);
+
+				if(node.getChildren().size() ==2) {
+					// Second argument
+					ASMCodeFragment argTwo = removeValueCode(node.getChildren().get(1));
+
+					code.append(argTwo);
+					Promotion promotionSecond = node.getPromotedSignature().promotions.get(1);
+					ASMCodeFragment promoCodeTwo = promotionSecond.codeFor();
+					code.append(promoCodeTwo);
+					code.add((ASMOpcode)variant);
 				}
-				code.add((ASMOpcode)variant);
-					
+				
+
 			}
 			
 			else if(variant instanceof SimpleCodeGenerator) {
@@ -549,8 +561,7 @@ public class ASMCodeGenerator {
 			//ParseNode elementNode = null;
 			for(int i = 0; i< arrayLength;i++) {
 				code.append(removeValueCode(elements.get(i)));
-				
-				//code.add(StoreI); // fix this
+			
 				code.add(opcodeForStore(node.getChildren().get(1).getType()));
 				code.add(PushI,subTypeSize); 
 				code.add(Add);
