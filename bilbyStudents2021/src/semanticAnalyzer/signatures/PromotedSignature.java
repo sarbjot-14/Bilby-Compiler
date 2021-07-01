@@ -44,7 +44,7 @@ public class PromotedSignature {
 		for(FunctionSignature functionSignature:functionSignatures) {
 			all.addAll(makeAll(functionSignature,actuals));
 		}
-		return null;
+		return all;
 	}
 
 
@@ -55,18 +55,17 @@ public class PromotedSignature {
 		// if size == 2 need two nested for Promotion.values  (fix)
 		// one for first actual and one for second actual
 		if(actuals.size() == 1) {
-			Type actual = actuals.get(0);
-			// create promoted signature if applies
-			for(Promotion promotion:Promotion.values()) {
-				if(promotion.applies(actual)) {
-					PromotedSignature promotedSignature = tryType(functionSignature, promotion);
-					if(promotedSignature != nullInstance()) {
-						result.add(promotedSignature);
-					}
-					
-				}
-			}
-			return result;
+            Type actual = actuals.get(0);
+            for(Promotion promotion: Promotion.values()) {
+                if(promotion.applies(actual)) {
+                    Type promotedActual = promotion.apply(actual);
+                    PromotedSignature promotedSignature = tryTypes(functionSignature, promotion, promotedActual);
+                    if(promotedSignature != nullInstance()) {
+                        result.add(promotedSignature);
+                    }
+                }
+            }
+            return result;
 		}
 		else if(actuals.size() ==2) {
 			
@@ -79,15 +78,15 @@ public class PromotedSignature {
 
 	// need a try type that will take two promotions (fix)
 	// also need promoted type of both arguments in array list
-	private static PromotedSignature tryType(FunctionSignature functionSignature, Promotion promotion) {
-		if(functionSignature.accepts(Arrays.asList(promotion.promotedType()))){ // here 
-			return new PromotedSignature(functionSignature,new Arrays.asList(promotion)); // and here
+	private static PromotedSignature tryTypes(FunctionSignature functionSignature, Promotion promotion, Type promotedActual) {
+		if(functionSignature.accepts(Arrays.asList(promotedActual))) {
+			return new PromotedSignature(functionSignature, Arrays.asList(promotion));
 		}
 		else {
 			return nullInstance();
 		}
-		
 	}
+	
 	static private PromotedSignature nullInstance = null;
 	private static PromotedSignature nullInstance() {
 		if(nullInstance == null) {

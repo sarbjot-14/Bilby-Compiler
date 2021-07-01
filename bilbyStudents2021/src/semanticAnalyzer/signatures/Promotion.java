@@ -28,6 +28,12 @@ public enum Promotion {
 		return type == actual || this.equals(NONE);
 	}
 	
+	public Type apply(Type actual) {
+
+		return (this == NONE) ? actual : promoted;
+
+	}
+	
 	public Type promotedType() {
 		return promoted;
 	}
