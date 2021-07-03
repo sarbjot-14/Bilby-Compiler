@@ -1,0 +1,4 @@
+main {
+    imm resultthree := 86 == 86.0;
+    print resultthree $n;
+}

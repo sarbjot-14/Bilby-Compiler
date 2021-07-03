@@ -1,0 +1,1 @@
+Bad operand type for StoreI instruction at location 40.
