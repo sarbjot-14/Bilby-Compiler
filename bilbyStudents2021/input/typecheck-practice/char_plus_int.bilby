@@ -1,5 +1,0 @@
-main {
-    imm result := #R + 14; 
-    print result $n;
-    % 82 +14
-}

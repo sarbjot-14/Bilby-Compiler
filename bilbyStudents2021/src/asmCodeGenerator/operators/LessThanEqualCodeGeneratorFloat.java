@@ -4,6 +4,7 @@ import static asmCodeGenerator.codeStorage.ASMOpcode.Jump;
 import static asmCodeGenerator.codeStorage.ASMOpcode.JumpPos;
 import static asmCodeGenerator.codeStorage.ASMOpcode.Label;
 import static asmCodeGenerator.codeStorage.ASMOpcode.PushI;
+import static asmCodeGenerator.codeStorage.ASMOpcode.*;
 
 import java.util.List;
 
@@ -16,16 +17,16 @@ import parseTree.ParseNode;
 public class LessThanEqualCodeGeneratorFloat implements SimpleCodeGenerator {
 	private ASMOpcode subtractOpcode;
 	private ASMOpcode jumpPosOpcode;
-	private ASMOpcode jumpFalseOpcode;
+	private ASMOpcode jumpFZeroOpcode;
 	private ASMOpcode duplicateOpcode;
 	private ASMOpcode convertI;
 
 
-	public LessThanEqualCodeGeneratorFloat(ASMOpcode subtractOpcode, ASMOpcode jumpPosOpcode, ASMOpcode jumpFalseOpcode, ASMOpcode duplicateOpcode, ASMOpcode convertI) {
+	public LessThanEqualCodeGeneratorFloat(ASMOpcode subtractOpcode, ASMOpcode jumpPosOpcode, ASMOpcode jumpFZeroOpcode, ASMOpcode duplicateOpcode, ASMOpcode convertI) {
 		super();
 		this.subtractOpcode = subtractOpcode;
 		this.jumpPosOpcode = jumpPosOpcode;
-		this.jumpFalseOpcode = jumpFalseOpcode;
+		this.jumpFZeroOpcode = jumpFZeroOpcode;
 		this.duplicateOpcode = duplicateOpcode;
 		this.convertI = convertI;
 	}
@@ -35,13 +36,14 @@ public class LessThanEqualCodeGeneratorFloat implements SimpleCodeGenerator {
 	public ASMCodeFragment generate(ParseNode node, List<ASMCodeFragment> args) {
 	
 
-		Labeller labeller = new Labeller("compare");
+		Labeller labeller = new Labeller("lessThanEquals");
 
 		String startLabel = labeller.newLabel("start");
 		String subLabel   = labeller.newLabel("sub");
 		String trueLabel  = labeller.newLabel("true");
 		String falseLabel = labeller.newLabel("false");
 		String joinLabel  = labeller.newLabel("join");
+		String trueZeroLabel  = labeller.newLabel("trueZero");
 
 		ASMCodeFragment code = new ASMCodeFragment(CodeType.GENERATES_VALUE);
 
@@ -53,11 +55,15 @@ public class LessThanEqualCodeGeneratorFloat implements SimpleCodeGenerator {
 		code.add(Label, subLabel);
 		code.add(subtractOpcode);
 		code.add(duplicateOpcode);
-		code.add(convertI);
-		code.add(jumpFalseOpcode, trueLabel); // needs int not float
+		code.add(jumpFZeroOpcode, trueZeroLabel); 
 		code.add(jumpPosOpcode, falseLabel);
 		code.add(Jump, trueLabel);
-
+		
+		
+		code.add(Label, trueZeroLabel);
+		code.add(Pop);
+		code.add(PushI, 1);
+		code.add(Jump, joinLabel);
 		code.add(Label, trueLabel);
 		code.add(PushI, 1);
 		code.add(Jump, joinLabel);

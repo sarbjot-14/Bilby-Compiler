@@ -1,4 +1,0 @@
-false
-false
-true
-Bad operand type for StoreI instruction at location 127.

@@ -4,6 +4,7 @@ import static asmCodeGenerator.codeStorage.ASMOpcode.Jump;
 import static asmCodeGenerator.codeStorage.ASMOpcode.JumpPos;
 import static asmCodeGenerator.codeStorage.ASMOpcode.Label;
 import static asmCodeGenerator.codeStorage.ASMOpcode.PushI;
+import static asmCodeGenerator.codeStorage.ASMOpcode.*;
 
 import java.util.List;
 
@@ -15,17 +16,17 @@ import parseTree.ParseNode;
 
 public class EqualsCodeGeneratorFloat implements SimpleCodeGenerator {
 	private ASMOpcode subtractOpcode;
-	private ASMOpcode jumpPosOpcode;
-	private ASMOpcode jumpFalseOpcode;
+	private ASMOpcode jumpFPosOpcode;
+	private ASMOpcode jumpFZeroOpcode; 
 	private ASMOpcode duplicateOpcode;
 	private ASMOpcode convertI;
 
 
-	public EqualsCodeGeneratorFloat(ASMOpcode subtractOpcode, ASMOpcode jumpPosOpcode, ASMOpcode jumpFalseOpcode, ASMOpcode duplicateOpcode, ASMOpcode convertI) {
+	public EqualsCodeGeneratorFloat(ASMOpcode subtractOpcode, ASMOpcode jumpFPosOpcode, ASMOpcode jumpFZeroOpcode, ASMOpcode duplicateOpcode, ASMOpcode convertI) {
 		super();
 		this.subtractOpcode = subtractOpcode;
-		this.jumpPosOpcode = jumpPosOpcode;
-		this.jumpFalseOpcode = jumpFalseOpcode;
+		this.jumpFPosOpcode = jumpFPosOpcode; // takes a string operand. Pops the top (floating) and Jumps if it is positive.
+		this.jumpFZeroOpcode = jumpFZeroOpcode; // takes a string operand. Pops top value (integer) from stack, does Jump if value=0
 		this.duplicateOpcode = duplicateOpcode;
 		this.convertI = convertI;
 	}
@@ -44,7 +45,6 @@ public class EqualsCodeGeneratorFloat implements SimpleCodeGenerator {
 		String joinLabel  = labeller.newLabel("join");
 
 		ASMCodeFragment code = new ASMCodeFragment(CodeType.GENERATES_VALUE);
-
 		code.add(Label, startLabel);
 		for(ASMCodeFragment fragment: args) {
 			code.append(fragment);
@@ -52,9 +52,7 @@ public class EqualsCodeGeneratorFloat implements SimpleCodeGenerator {
 
 		code.add(Label, subLabel);
 		code.add(subtractOpcode);
-		code.add(duplicateOpcode);
-		code.add(convertI);
-		code.add(jumpFalseOpcode, trueLabel); // needs int not float
+		code.add(jumpFZeroOpcode, trueLabel); 
 		
 		code.add(Jump, falseLabel);
 

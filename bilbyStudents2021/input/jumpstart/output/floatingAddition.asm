@@ -206,7 +206,9 @@
         DataZ        0                         
         Label        $$main                    
         PushF        1.230000                  
+        Nop                                    
         PushF        2.340000                  
+        Nop                                    
         FAdd                                   
         PushD        $print-format-floating    
         Printf                                 

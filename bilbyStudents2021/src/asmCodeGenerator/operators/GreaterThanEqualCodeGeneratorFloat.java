@@ -4,6 +4,7 @@ import static asmCodeGenerator.codeStorage.ASMOpcode.Jump;
 import static asmCodeGenerator.codeStorage.ASMOpcode.JumpPos;
 import static asmCodeGenerator.codeStorage.ASMOpcode.Label;
 import static asmCodeGenerator.codeStorage.ASMOpcode.PushI;
+import static asmCodeGenerator.codeStorage.ASMOpcode.*;
 
 import java.util.List;
 
@@ -16,16 +17,16 @@ import parseTree.ParseNode;
 public class GreaterThanEqualCodeGeneratorFloat implements SimpleCodeGenerator {
 	private ASMOpcode subtractOpcode;
 	private ASMOpcode jumpPosOpcode;
-	private ASMOpcode jumpFalseOpcode;
+	private ASMOpcode JumpFZero;
 	private ASMOpcode duplicateOpcode;
 	private ASMOpcode convertI;
 
 
-	public GreaterThanEqualCodeGeneratorFloat(ASMOpcode subtractOpcode, ASMOpcode jumpPosOpcode, ASMOpcode jumpFalseOpcode, ASMOpcode duplicateOpcode, ASMOpcode convertI) {
+	public GreaterThanEqualCodeGeneratorFloat(ASMOpcode subtractOpcode, ASMOpcode jumpPosOpcode, ASMOpcode JumpFZero, ASMOpcode duplicateOpcode, ASMOpcode convertI) {
 		super();
 		this.subtractOpcode = subtractOpcode;
 		this.jumpPosOpcode = jumpPosOpcode;
-		this.jumpFalseOpcode = jumpFalseOpcode;
+		this.JumpFZero = JumpFZero;
 		this.duplicateOpcode = duplicateOpcode;
 		this.convertI = convertI;
 	}
@@ -40,6 +41,7 @@ public class GreaterThanEqualCodeGeneratorFloat implements SimpleCodeGenerator {
 		String startLabel = labeller.newLabel("start");
 		String subLabel   = labeller.newLabel("sub");
 		String trueLabel  = labeller.newLabel("true");
+		String trueZeroLabel  = labeller.newLabel("trueZero");
 		String falseLabel = labeller.newLabel("false");
 		String joinLabel  = labeller.newLabel("join");
 
@@ -53,11 +55,17 @@ public class GreaterThanEqualCodeGeneratorFloat implements SimpleCodeGenerator {
 		code.add(Label, subLabel);
 		code.add(subtractOpcode);
 		code.add(duplicateOpcode);
-		code.add(convertI);
-		code.add(jumpFalseOpcode, trueLabel); // needs int not float
+		//code.add(PStack);
+		code.add(JumpFZero, trueZeroLabel); 
+		//code.add(PStack);
+		//code.add(duplicateOpcode);
 		code.add(jumpPosOpcode, trueLabel);
 		code.add(Jump, falseLabel);
 
+		code.add(Label, trueZeroLabel);
+		code.add(Pop);
+		code.add(PushI, 1);
+		code.add(Jump, joinLabel);
 		code.add(Label, trueLabel);
 		code.add(PushI, 1);
 		code.add(Jump, joinLabel);
@@ -65,6 +73,7 @@ public class GreaterThanEqualCodeGeneratorFloat implements SimpleCodeGenerator {
 		code.add(PushI, 0);
 		code.add(Jump, joinLabel);
 		code.add(Label, joinLabel);
+		//code.add(PStack);
 		return code;
 	}
 

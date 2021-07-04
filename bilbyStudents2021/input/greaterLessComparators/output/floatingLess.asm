@@ -205,22 +205,28 @@
         DLabel       $global-memory-block      
         DataZ        0                         
         Label        $$main                    
-        Label        -compare-1-start          
+        Label        -less-float-1-start       
         PushF        1.230000                  
+        Nop                                    
         PushF        2.340000                  
-        Label        -compare-1-sub            
+        Nop                                    
+        Label        -less-float-1-sub         
         FSubtract                              
         Duplicate                              
-        JumpFPos     -compare-1-false          
-        JumpFZero    -compare-1-false          
-        Jump         -compare-1-true           
-        Label        -compare-1-true           
-        PushI        1                         
-        Jump         -compare-1-join           
-        Label        -compare-1-false          
+        JumpFPos     -less-float-1-falseZero   
+        JumpFZero    -less-float-1-false       
+        Jump         -less-float-1-true        
+        Label        -less-float-1-falseZero   
+        Pop                                    
         PushI        0                         
-        Jump         -compare-1-join           
-        Label        -compare-1-join           
+        Jump         -less-float-1-join        
+        Label        -less-float-1-true        
+        PushI        1                         
+        Jump         -less-float-1-join        
+        Label        -less-float-1-false       
+        PushI        0                         
+        Jump         -less-float-1-join        
+        Label        -less-float-1-join        
         JumpTrue     -print-boolean-2-true     
         PushD        $boolean-false-string     
         Jump         -print-boolean-2-join     
@@ -231,22 +237,28 @@
         Printf                                 
         PushD        $print-format-newline     
         Printf                                 
-        Label        -compare-3-start          
+        Label        -less-float-3-start       
         PushF        2.340000                  
+        Nop                                    
         PushF        1.230000                  
-        Label        -compare-3-sub            
+        Nop                                    
+        Label        -less-float-3-sub         
         FSubtract                              
         Duplicate                              
-        JumpFPos     -compare-3-false          
-        JumpFZero    -compare-3-false          
-        Jump         -compare-3-true           
-        Label        -compare-3-true           
-        PushI        1                         
-        Jump         -compare-3-join           
-        Label        -compare-3-false          
+        JumpFPos     -less-float-3-falseZero   
+        JumpFZero    -less-float-3-false       
+        Jump         -less-float-3-true        
+        Label        -less-float-3-falseZero   
+        Pop                                    
         PushI        0                         
-        Jump         -compare-3-join           
-        Label        -compare-3-join           
+        Jump         -less-float-3-join        
+        Label        -less-float-3-true        
+        PushI        1                         
+        Jump         -less-float-3-join        
+        Label        -less-float-3-false       
+        PushI        0                         
+        Jump         -less-float-3-join        
+        Label        -less-float-3-join        
         JumpTrue     -print-boolean-4-true     
         PushD        $boolean-false-string     
         Jump         -print-boolean-4-join     
@@ -257,22 +269,28 @@
         Printf                                 
         PushD        $print-format-newline     
         Printf                                 
-        Label        -compare-5-start          
+        Label        -less-float-5-start       
         PushF        2.340000                  
+        Nop                                    
         PushF        2.340000                  
-        Label        -compare-5-sub            
+        Nop                                    
+        Label        -less-float-5-sub         
         FSubtract                              
         Duplicate                              
-        JumpFPos     -compare-5-false          
-        JumpFZero    -compare-5-false          
-        Jump         -compare-5-true           
-        Label        -compare-5-true           
-        PushI        1                         
-        Jump         -compare-5-join           
-        Label        -compare-5-false          
+        JumpFPos     -less-float-5-falseZero   
+        JumpFZero    -less-float-5-false       
+        Jump         -less-float-5-true        
+        Label        -less-float-5-falseZero   
+        Pop                                    
         PushI        0                         
-        Jump         -compare-5-join           
-        Label        -compare-5-join           
+        Jump         -less-float-5-join        
+        Label        -less-float-5-true        
+        PushI        1                         
+        Jump         -less-float-5-join        
+        Label        -less-float-5-false       
+        PushI        0                         
+        Jump         -less-float-5-join        
+        Label        -less-float-5-join        
         JumpTrue     -print-boolean-6-true     
         PushD        $boolean-false-string     
         Jump         -print-boolean-6-join     

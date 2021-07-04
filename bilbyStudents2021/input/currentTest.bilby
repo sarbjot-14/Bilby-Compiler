@@ -1,4 +1,14 @@
-main {
-    imm result := 8.8 + 52;
-    print result $n;
+main{
+	mut count := 0;
+	while (count < 5) {
+		print count $n;
+		count := count +1;
+	}
+	
+	count := 0;
+	while (count < -5) {
+		print count $n;
+		count := count +1;
+	}
+	
 }

@@ -207,7 +207,9 @@
         Label        $$main                    
         Label        -compare-1-start          
         PushI        1                         
+        Nop                                    
         PushI        2                         
+        Nop                                    
         Label        -compare-1-sub            
         Subtract                               
         Duplicate                              
@@ -233,7 +235,9 @@
         Printf                                 
         Label        -compare-3-start          
         PushI        22                        
+        Nop                                    
         PushI        11                        
+        Nop                                    
         Label        -compare-3-sub            
         Subtract                               
         Duplicate                              
@@ -259,7 +263,9 @@
         Printf                                 
         Label        -compare-5-start          
         PushI        25                        
+        Nop                                    
         PushI        25                        
+        Nop                                    
         Label        -compare-5-sub            
         Subtract                               
         Duplicate                              

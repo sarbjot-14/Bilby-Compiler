@@ -207,7 +207,9 @@
         Label        $$main                    
         Label        -compare-1-start          
         PushI        1                         
+        Nop                                    
         PushI        2                         
+        Nop                                    
         Label        -compare-1-sub            
         Subtract                               
         JumpPos      -compare-1-true           
@@ -231,7 +233,9 @@
         Printf                                 
         Label        -compare-3-start          
         PushI        2                         
+        Nop                                    
         PushI        1                         
+        Nop                                    
         Label        -compare-3-sub            
         Subtract                               
         JumpPos      -compare-3-true           
@@ -255,7 +259,9 @@
         Printf                                 
         Label        -compare-5-start          
         PushI        2                         
+        Nop                                    
         PushI        2                         
+        Nop                                    
         Label        -compare-5-sub            
         Subtract                               
         JumpPos      -compare-5-true           

@@ -207,7 +207,9 @@
         Label        $$main                    
         Label        -compare-1-start          
         PushF        1.230000                  
+        Nop                                    
         PushF        2.340000                  
+        Nop                                    
         Label        -compare-1-sub            
         FSubtract                              
         JumpFPos     -compare-1-true           
@@ -231,7 +233,9 @@
         Printf                                 
         Label        -compare-3-start          
         PushF        1.230000                  
+        Nop                                    
         PushF        1.230000                  
+        Nop                                    
         Label        -compare-3-sub            
         FSubtract                              
         JumpFPos     -compare-3-true           

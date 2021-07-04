@@ -42,6 +42,7 @@ public class PromotedSignature {
 		List<PromotedSignature> all = new ArrayList<PromotedSignature>();
 		// goes through all function signatures in function signatures, then add them all into a list
 		for(FunctionSignature functionSignature:functionSignatures) {
+			//System.out.println(functionSignature.whichVariant);
 			all.addAll(makeAll(functionSignature,actuals));
 		}
 		return all;
@@ -58,6 +59,7 @@ public class PromotedSignature {
             Type actual = actuals.get(0);
             for(Promotion promotion: Promotion.values()) {
                 if(promotion.applies(actual)) {
+                	//System.out.println(promotion);
                     Type promotedActual = promotion.apply(actual);
                     PromotedSignature promotedSignature = tryTypes(functionSignature, promotion, promotedActual);
                     if(promotedSignature != nullInstance()) {
@@ -74,17 +76,14 @@ public class PromotedSignature {
 			Type promotedActualFirst = actuals.get(0);
 			Type promotedActualSecond = actuals.get(1);
 			for(Promotion promotion: Promotion.values()) {
-
+				//System.out.println(promotion);
+			
 				for(Promotion promotionTwo: Promotion.values()) {
 
 					if(promotion.applies(actualFirst)) {
 						promotedActualFirst = promotion.apply(actualFirst);
 						if(promotionTwo.applies(actualSecond) ) {
-//							System.out.println(actualSecond);
-//							System.out.println(promotionTwo);
 							promotedActualSecond = promotionTwo.apply(actualSecond);
-//							System.out.println(promotedActualSecond);
-//							System.out.println("next");
 							
 							PromotedSignature promotedSignature = tryTypes(functionSignature, promotion,promotionTwo, promotedActualFirst,promotedActualSecond);
 							if(promotedSignature != nullInstance()) {
@@ -124,8 +123,8 @@ public class PromotedSignature {
 	}
 	
 	private static PromotedSignature tryTypes(FunctionSignature functionSignature, Promotion promotion, Promotion promotionTwo, Type promotedActualFirst,Type promotedActualSecond) {
-		
 		if(functionSignature.accepts(Arrays.asList(promotedActualFirst,promotedActualSecond))) {
+			//System.out.println("accepted");
 //			System.out.println(promotedActualSecond);
 //			System.out.println(promotionTwo);
 			

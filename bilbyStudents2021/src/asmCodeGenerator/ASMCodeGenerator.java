@@ -363,15 +363,17 @@ public class ASMCodeGenerator {
 			newValueCode(node);
 			
 			Object variant = node.getPromotedSignature().getVariant();
-			
-			if(variant instanceof ASMOpcode) {
-				// First argument
-				ASMCodeFragment arg = removeValueCode(node.getChildren().get(0));
-				code.append(arg);
-				Promotion promotionFirst = node.getPromotedSignature().promotions.get(0);
-				ASMCodeFragment promoCode = promotionFirst.codeFor();
-				code.append(promoCode);
 
+			if(variant instanceof ASMOpcode) {
+				if(node.getChildren().size() >=1) {
+					// First argument
+					ASMCodeFragment arg = removeValueCode(node.getChildren().get(0));
+					code.append(arg);
+					Promotion promotionFirst = node.getPromotedSignature().promotions.get(0);
+					ASMCodeFragment promoCode = promotionFirst.codeFor();
+					code.append(promoCode);
+					
+				}
 				if(node.getChildren().size() ==2) {
 					// Second argument
 					ASMCodeFragment argTwo = removeValueCode(node.getChildren().get(1));
@@ -381,8 +383,9 @@ public class ASMCodeGenerator {
 					ASMCodeFragment promoCodeTwo = promotionSecond.codeFor();
 					code.append(promoCodeTwo);
 					
-					code.add((ASMOpcode)variant);
+					
 				}
+				code.add((ASMOpcode)variant);
 				
 
 			}
@@ -398,12 +401,15 @@ public class ASMCodeGenerator {
 				arg.append(promoCode);
 				args.add(arg);
 				
-				//Second argument
-				ASMCodeFragment arg2 = removeValueCode(node.getChildren().get(1));
-				Promotion promotionSecond = node.getPromotedSignature().promotions.get(1);
-				ASMCodeFragment promoCode2 = promotionSecond.codeFor();
-				arg2.append(promoCode2);
-				args.add(arg2);
+				if(node.getChildren().size() == 2) {
+					//Second argument
+					ASMCodeFragment arg2 = removeValueCode(node.getChildren().get(1));
+					Promotion promotionSecond = node.getPromotedSignature().promotions.get(1);
+					ASMCodeFragment promoCode2 = promotionSecond.codeFor();
+					arg2.append(promoCode2);
+					args.add(arg2);
+				}
+				
 					
 				
 				

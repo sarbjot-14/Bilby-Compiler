@@ -16,16 +16,16 @@ import parseTree.ParseNode;
 public class NotEqualsCodeGeneratorFloat implements SimpleCodeGenerator {
 	private ASMOpcode subtractOpcode;
 	private ASMOpcode jumpPosOpcode;
-	private ASMOpcode jumpFalseOpcode;
+	private ASMOpcode fumpFZeroOpcode;
 	private ASMOpcode duplicateOpcode;
 	private ASMOpcode convertI;
 
 
-	public NotEqualsCodeGeneratorFloat(ASMOpcode subtractOpcode, ASMOpcode jumpPosOpcode, ASMOpcode jumpFalseOpcode, ASMOpcode duplicateOpcode, ASMOpcode convertI) {
+	public NotEqualsCodeGeneratorFloat(ASMOpcode subtractOpcode, ASMOpcode jumpPosOpcode, ASMOpcode fumpFZeroOpcode, ASMOpcode duplicateOpcode, ASMOpcode convertI) {
 		super();
 		this.subtractOpcode = subtractOpcode;
 		this.jumpPosOpcode = jumpPosOpcode;
-		this.jumpFalseOpcode = jumpFalseOpcode;
+		this.fumpFZeroOpcode = fumpFZeroOpcode;
 		this.duplicateOpcode = duplicateOpcode;
 		this.convertI = convertI;
 	}
@@ -52,9 +52,7 @@ public class NotEqualsCodeGeneratorFloat implements SimpleCodeGenerator {
 
 		code.add(Label, subLabel);
 		code.add(subtractOpcode);
-		code.add(duplicateOpcode);
-		code.add(convertI);
-		code.add(jumpFalseOpcode, falseLabel); // needs int not float
+		code.add(fumpFZeroOpcode, falseLabel); // needs int not float
 		code.add(Jump, trueLabel);
 
 		code.add(Label, trueLabel);

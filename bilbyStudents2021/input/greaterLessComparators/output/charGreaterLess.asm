@@ -207,7 +207,9 @@
         Label        $$main                    
         Label        -compare-1-start          
         PushI        71                        
+        Nop                                    
         PushI        67                        
+        Nop                                    
         Label        -compare-1-sub            
         Subtract                               
         JumpPos      -compare-1-true           
@@ -231,7 +233,9 @@
         Printf                                 
         Label        -compare-3-start          
         PushI        67                        
+        Nop                                    
         PushI        71                        
+        Nop                                    
         Label        -compare-3-sub            
         Subtract                               
         JumpPos      -compare-3-true           
@@ -253,22 +257,24 @@
         Printf                                 
         PushD        $print-format-newline     
         Printf                                 
-        Label        -compare-5-start          
+        Label        -lessInt-5-start          
         PushI        67                        
+        Nop                                    
         PushI        71                        
-        Label        -compare-5-sub            
+        Nop                                    
+        Label        -lessInt-5-sub            
         Subtract                               
         Duplicate                              
-        JumpPos      -compare-5-false          
-        JumpFalse    -compare-5-false          
-        Jump         -compare-5-true           
-        Label        -compare-5-true           
+        JumpPos      -lessInt-5-false          
+        JumpFalse    -lessInt-5-false          
+        Jump         -lessInt-5-true           
+        Label        -lessInt-5-true           
         PushI        1                         
-        Jump         -compare-5-join           
-        Label        -compare-5-false          
+        Jump         -lessInt-5-join           
+        Label        -lessInt-5-false          
         PushI        0                         
-        Jump         -compare-5-join           
-        Label        -compare-5-join           
+        Jump         -lessInt-5-join           
+        Label        -lessInt-5-join           
         JumpTrue     -print-boolean-6-true     
         PushD        $boolean-false-string     
         Jump         -print-boolean-6-join     
@@ -279,22 +285,24 @@
         Printf                                 
         PushD        $print-format-newline     
         Printf                                 
-        Label        -compare-7-start          
+        Label        -lessInt-7-start          
         PushI        71                        
+        Nop                                    
         PushI        67                        
-        Label        -compare-7-sub            
+        Nop                                    
+        Label        -lessInt-7-sub            
         Subtract                               
         Duplicate                              
-        JumpPos      -compare-7-false          
-        JumpFalse    -compare-7-false          
-        Jump         -compare-7-true           
-        Label        -compare-7-true           
+        JumpPos      -lessInt-7-false          
+        JumpFalse    -lessInt-7-false          
+        Jump         -lessInt-7-true           
+        Label        -lessInt-7-true           
         PushI        1                         
-        Jump         -compare-7-join           
-        Label        -compare-7-false          
+        Jump         -lessInt-7-join           
+        Label        -lessInt-7-false          
         PushI        0                         
-        Jump         -compare-7-join           
-        Label        -compare-7-join           
+        Jump         -lessInt-7-join           
+        Label        -lessInt-7-join           
         JumpTrue     -print-boolean-8-true     
         PushD        $boolean-false-string     
         Jump         -print-boolean-8-join     
@@ -307,7 +315,9 @@
         Printf                                 
         Label        -compare-9-start          
         PushI        71                        
+        Nop                                    
         PushI        71                        
+        Nop                                    
         Label        -compare-9-sub            
         Subtract                               
         Duplicate                              
@@ -333,7 +343,9 @@
         Printf                                 
         Label        -compare-11-start         
         PushI        67                        
+        Nop                                    
         PushI        71                        
+        Nop                                    
         Label        -compare-11-sub           
         Subtract                               
         Duplicate                              
@@ -359,7 +371,9 @@
         Printf                                 
         Label        -compare-13-start         
         PushI        67                        
+        Nop                                    
         PushI        67                        
+        Nop                                    
         Label        -compare-13-sub           
         Subtract                               
         Duplicate                              
@@ -385,7 +399,9 @@
         Printf                                 
         Label        -compare-15-start         
         PushI        67                        
+        Nop                                    
         PushI        71                        
+        Nop                                    
         Label        -compare-15-sub           
         Subtract                               
         Duplicate                              
