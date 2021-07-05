@@ -27,9 +27,11 @@ import asmCodeGenerator.operators.LessThanEqualCodeGeneratorInt;
 import asmCodeGenerator.operators.NotCodeGenerator;
 import asmCodeGenerator.operators.NotEqualsCodeGeneratorFloat;
 import asmCodeGenerator.operators.NotEqualsCodeGeneratorInt;
+import asmCodeGenerator.operators.RangeCodeGenerator;
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Punctuator;
 import semanticAnalyzer.types.Array;
+import semanticAnalyzer.types.Range;
 import semanticAnalyzer.types.Type;
 import semanticAnalyzer.types.TypeVariable;
 
@@ -222,6 +224,14 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		
 		new FunctionSignatures(Punctuator.INDEXING, 
 				new FunctionSignature(new IndexingCodeGenerator(),new Array(S),INTEGER, S)
+		);
+		
+		//TypeVariable R = new TypeVariable("R");
+		new FunctionSignatures(Punctuator.RANGE_DELIM, 
+				new FunctionSignature(new RangeCodeGenerator(),INTEGER,INTEGER,new Range(INTEGER)),
+				new FunctionSignature(new RangeCodeGenerator(),FLOAT,FLOAT,new Range(FLOAT)),
+				new FunctionSignature(new RangeCodeGenerator(),CHARACTER,CHARACTER,new Range(CHARACTER))
+				
 		);
 													
 		

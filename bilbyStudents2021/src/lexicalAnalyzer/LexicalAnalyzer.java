@@ -189,6 +189,11 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		appendSubsequentDigits(buffer);
 		if(input.peek().getCharacter() == DECIMAL_POINT) {
 			LocatedChar decimal_point = input.next();
+			// if is range then just return that int instead of mistaking as float
+			if(input.peek().getCharacter() == DECIMAL_POINT) {
+				input.pushback(decimal_point);
+				return IntegerConstantToken.make(firstChar, buffer.toString());
+			}
 			buffer.append(decimal_point.getCharacter());
 			if(input.peek().isDigit()) {
 				appendSubsequentDigits(buffer);

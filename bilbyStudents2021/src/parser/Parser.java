@@ -20,6 +20,7 @@ import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.OperatorNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.ProgramNode;
+import parseTree.nodeTypes.RangeNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
@@ -331,7 +332,7 @@ public class Parser {
 	// unaryExpression			-> UNARYOP* unaryExpression | atomicExpression
 	// indexingExpression       -> atomicExpression ([expression])*
 	// atomicExpression         -> bracketExpression | literal
-	// bracketExpression       -> (expression) | [ expression CAST type ] | ALLOC [type] (expression)
+	// bracketExpression       -> (expression) | [ expression CAST type ] | ALLOC [type] (expression) | < expression .. expression >
 	// literal                  -> intConstant | identifier | booleanConstant | characterConstant | stringConstant | floatConstant 
 
 	// expr  -> comparisonExpression
@@ -423,7 +424,7 @@ public class Parser {
 		return startsLiteral(token) || startsBracketExpression(token);
 	}
 	
-	// bracketExpression       -> (expression) | [ expression CAST type ] | ALLOC [type] (expression) | [expressionList ]
+	// bracketExpression       -> (expression) | [ expression CAST type ] | ALLOC [type] (expression) | [expressionList ] | < expression .. expression >
 	private ParseNode parseBracketExpression() {
 		if(!startsBracketExpression(nowReading)) {
 			return syntaxErrorNode("bracket expression");
@@ -484,6 +485,23 @@ public class Parser {
 				syntaxError(nowReading, "not a cast or expressionlist");
 			}
 		}
+		else if(nowReading.isLextant(Punctuator.LESS)) {
+			ParseNode rangeNode = new RangeNode(nowReading);
+			expect(Punctuator.LESS);
+			ParseNode expressionStart = parseExpression();
+			Token lessToken = nowReading;
+			expect(Punctuator.RANGE_DELIM);
+			ParseNode expressionEnd = parseAdditiveExpression(); 
+			expect(Punctuator.GREATER);
+			
+//			rangeNode.appendChild(expressionStart);
+//			rangeNode.appendChild(expressionEnd);
+			
+
+			
+			return OperatorNode.withChildren(lessToken, expressionStart , expressionEnd);
+			
+		}
 		
 		
 		return syntaxErrorNode("bracked Expression not implemented");
@@ -491,7 +509,7 @@ public class Parser {
 	}
 	
 	private boolean startsBracketExpression(Token token) {
-		return token.isLextant(Punctuator.OPEN_BRACE_PAREN) || token.isLextant(Punctuator.OPEN_BRACKET) || token.isLextant(Keyword.ALLOC);
+		return token.isLextant(Punctuator.OPEN_BRACE_PAREN) || token.isLextant(Punctuator.OPEN_BRACKET) || token.isLextant(Keyword.ALLOC) || token.isLextant(Punctuator.LESS) ;
 	}
 	
 	// arrayExpression			-> [expressionList]

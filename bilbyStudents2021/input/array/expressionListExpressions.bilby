@@ -1,0 +1,11 @@
+main{
+	
+	
+	  imm a := 3;
+        imm b := 15;  
+        imm i := [ a, b, a+4, b+16];
+        
+        print i $n;
+	
+
+}

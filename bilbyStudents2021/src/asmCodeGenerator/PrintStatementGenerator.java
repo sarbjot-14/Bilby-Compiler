@@ -13,12 +13,14 @@ import static asmCodeGenerator.codeStorage.ASMOpcode.DataI;
 import static asmCodeGenerator.codeStorage.ASMOpcode.*;
 
 import parseTree.ParseNode;
+import parseTree.nodeTypes.IdentifierNode;
 import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.TabNode;
 import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
+import semanticAnalyzer.types.Range;
 import semanticAnalyzer.types.Type;
 import asmCodeGenerator.ASMCodeGenerator.CodeVisitor;
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
@@ -46,7 +48,7 @@ public class PrintStatementGenerator {
 			}
 		}
 	}
-
+	
 	private void appendPrintCode(ParseNode node) {
 		
 		
@@ -215,6 +217,49 @@ public class PrintStatementGenerator {
 			code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
 			code.add(Printf);
 			code.add(Pop);
+			
+			
+		}
+		else if(node.getType() instanceof Range && node instanceof IdentifierNode ) {
+			code.append(visitor.removeValueCode(node));
+			//convertToPointerIfRange(node);
+			
+			Labeller labeller = new Labeller("print-range");
+			//String lenStorage= labeller.newLabel("storage-for-arrayLength");
+			
+			// print open brace
+			code.add(PushI, 60); 
+			code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
+			code.add(Printf);
+			
+			// lowend
+			code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
+			code.add(Printf);
+			
+			// print range delim
+			code.add(PushI, 46); 
+			code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
+			code.add(Printf);
+			code.add(PushI, 46); 
+			code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
+			code.add(Printf);
+			
+			// lowend
+			code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
+			code.add(Printf);
+			
+			
+
+			// print open brace
+			code.add(PushI, 62); 
+			code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
+			code.add(Printf);
+
+						
+			
+			
+			
+			
 			
 			
 		}

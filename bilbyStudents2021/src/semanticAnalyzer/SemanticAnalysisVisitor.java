@@ -24,6 +24,7 @@ import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.OperatorNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.ProgramNode;
+import parseTree.nodeTypes.RangeNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
@@ -185,6 +186,13 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	}
 	@Override
 	public void visitLeave(ArrayNode node) {
+		Type subtype = node.child(0).getType();
+		Type arrayType = new Array(subtype);
+		node.setType(arrayType);
+
+	}
+	@Override
+	public void visitLeave(RangeNode node) {
 		Type subtype = node.child(0).getType();
 		Type arrayType = new Array(subtype);
 		node.setType(arrayType);

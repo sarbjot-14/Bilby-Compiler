@@ -7,6 +7,7 @@ import java.util.Map;
 
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import asmCodeGenerator.codeStorage.ASMOpcode;
+import asmCodeGenerator.codeStorage.ASMCodeFragment.CodeType;
 import asmCodeGenerator.operators.SimpleCodeGenerator;
 import asmCodeGenerator.runtime.MemoryManager;
 import asmCodeGenerator.runtime.RunTime;
@@ -30,6 +31,7 @@ import parseTree.nodeTypes.OperatorNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.StatementBlockNode;
 import parseTree.nodeTypes.ProgramNode;
+import parseTree.nodeTypes.RangeNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
@@ -38,6 +40,7 @@ import parseTree.nodeTypes.WhileNode;
 import semanticAnalyzer.signatures.Promotion;
 import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
+import semanticAnalyzer.types.Range;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
 import symbolTable.Scope;
@@ -173,6 +176,15 @@ public class ASMCodeGenerator {
 				code.add(LoadI);
 
 			}
+			else if(node.getType() instanceof Range) {
+				code.add(Duplicate);
+				code.add(LoadI);
+				code.add(Exchange);
+				code.add(PushI,4);
+				code.add(Add);
+				code.add(LoadI);
+
+			}
 			else {
 				assert false : "node " + node;
 			}
@@ -236,8 +248,10 @@ public class ASMCodeGenerator {
 			code.append(lvalue);
 			code.append(rvalue);
 			
-			Type type = node.getType();
-			code.add(opcodeForStore(type));
+			
+			ASMCodeFragment storeFrag = generateStore(node);
+			code.append(storeFrag);
+			//code.add(opcodeForStore(type)); // fix get rid of
 		}
 		public void visitLeave(AssignmentNode node) {
 			
@@ -355,6 +369,69 @@ public class ASMCodeGenerator {
 			assert false: "Type " + type + " unimplemented in opcodeForStore()";
 			return null;
 		}
+		ASMCodeFragment generateStore(ParseNode node){
+			ASMCodeFragment code = new ASMCodeFragment(CodeType.GENERATES_VOID);
+			Type type = node.getType();
+			if(type == PrimitiveType.INTEGER) {
+				code.add(StoreI);
+				return code;
+			}
+			if(type == PrimitiveType.FLOAT) {
+				code.add(StoreF);
+				return code;
+			}
+			if(type == PrimitiveType.BOOLEAN) {
+				code.add(StoreI);
+				return code;
+			}
+			if(type == PrimitiveType.STRING) {
+				code.add(StoreI);
+				return code;
+			}
+			if(type == PrimitiveType.CHARACTER) {
+				code.add(StoreC);
+				return code;
+			}
+			if(type instanceof Array) {
+				code.add(StoreI);
+				return code;
+			}
+			if(type instanceof Range) {
+				Range rangeType = (Range) node.getChildren().get(0).getType();
+				//System.out.println(rangeType.getSubtype());
+				if(rangeType.getSubtype() == PrimitiveType.INTEGER) {
+					//code.add(PStack);
+					
+					code.add(DLabel,"highend"); // [&identifier, lowend, highend,]
+					code.add(DataI, 0);
+					code.add(PushD, "highend"); // 
+					code.add(Exchange); // [&identifier, lowend,&highend, highend]
+					
+					code.add(StoreI); // 
+					code.add(Exchange); // [lowend, &identifier]
+					code.add(Duplicate); // [lowend, &identifier, &identifier ]
+					
+					code.add(PushD,"highend");
+					code.add(LoadI);
+					//code.add(PStack);
+					code.add(StoreI);
+					
+					code.add(PushI,4);
+					code.add(Add);
+					code.add(Exchange);  // [&identifier+4,lowend ]
+					//code.add(PStack);
+					code.add(StoreI);
+					
+				}
+				
+				return code;
+			}
+			
+			assert false: "Type " + type + " unimplemented in opcodeForStore()";
+			return null;
+			
+		}
+		
 
 
 		///////////////////////////////////////////////////////////////////////////
@@ -578,7 +655,7 @@ public class ASMCodeGenerator {
 			for(int i = 0; i< arrayLength;i++) {
 				code.append(removeValueCode(elements.get(i)));
 			
-				code.add(opcodeForStore(node.getChildren().get(1).getType()));
+				code.add(opcodeForStore(node.getChildren().get(1).getType())); // change this to use array type
 				code.add(PushI,subTypeSize); 
 				code.add(Add);
 				code.add(Duplicate);

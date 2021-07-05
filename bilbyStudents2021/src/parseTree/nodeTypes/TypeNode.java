@@ -69,6 +69,10 @@ public class TypeNode extends ParseNode {
 		
 		return this.typeToken().isLextant(Punctuator.OPEN_BRACKET);
 	}
+	public boolean isRange() {
+
+		return this.typeToken().isLextant(Punctuator.LESS);
+	}
 
 	public Type typeFromToken() {
 		return PrimitiveType.fromToken(this.typeToken());
