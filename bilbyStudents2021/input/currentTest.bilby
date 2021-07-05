@@ -1,9 +1,7 @@
 main{
-	%mut array := [4,101];
-	
-	%imm b := alloc [int](3+5);
-    mut myRange := <14..101>;
+
+    mut myRange := <14.4..101.1>;
     
-    print myRange $n;
+    %print myRange $n;
    
 }

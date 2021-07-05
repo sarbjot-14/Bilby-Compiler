@@ -251,7 +251,7 @@ public class ASMCodeGenerator {
 			
 			ASMCodeFragment storeFrag = generateStore(node);
 			code.append(storeFrag);
-			//code.add(opcodeForStore(type)); // fix get rid of
+			
 		}
 		public void visitLeave(AssignmentNode node) {
 			
@@ -263,7 +263,8 @@ public class ASMCodeGenerator {
 			code.append(rvalue);
 
 			Type type = node.getType();
-			code.add(opcodeForStore(type));
+			ASMCodeFragment storeFrag = generateStore(node);
+			code.append(storeFrag);
 		}
 		public void visitLeave(IndexAssignmentNode node) {
 			
