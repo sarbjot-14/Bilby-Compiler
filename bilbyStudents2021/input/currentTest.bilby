@@ -1,14 +1,8 @@
 main{
-	mut count := 0;
-	while (count < 5) {
-		print count $n;
-		count := count +1;
-	}
+
+
+	imm i := [#g,#a,14];
+	print i $n;
 	
-	count := 0;
-	while (count < -5) {
-		print count $n;
-		count := count +1;
-	}
 	
 }

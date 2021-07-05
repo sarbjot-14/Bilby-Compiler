@@ -1,0 +1,15 @@
+main{
+
+	
+	imm i := [#g,12,13.5,14];
+	print i $n;
+	
+	imm a := [#g,#I,#F];
+	print a $n;
+	
+	
+	imm d := [6,5.6];
+	print d $n;
+	
+	
+}
