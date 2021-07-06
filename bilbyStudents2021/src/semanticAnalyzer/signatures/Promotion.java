@@ -7,9 +7,9 @@ import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import asmCodeGenerator.codeStorage.ASMOpcode;
 
 public enum Promotion {
+	CHAR_TO_INT(CHARACTER,INTEGER, ASMOpcode.Nop),
 	INT_TO_FLOAT(INTEGER,FLOAT,ASMOpcode.ConvertF),
 	CHAR_TO_FLOAT(CHARACTER,FLOAT,ASMOpcode.ConvertF),
-	CHAR_TO_INT(CHARACTER,INTEGER, ASMOpcode.Nop),
 	NONE(NO_TYPE,NO_TYPE,ASMOpcode.Nop);
 	
 	Type actual;

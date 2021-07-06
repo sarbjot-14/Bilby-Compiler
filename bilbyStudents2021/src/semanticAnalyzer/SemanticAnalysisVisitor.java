@@ -3,6 +3,9 @@ package semanticAnalyzer;
 import lexicalAnalyzer.Keyword;
 import java.util.Arrays;
 import java.util.List;
+
+import inputHandler.Locator;
+
 import java.util.ArrayList;
 import lexicalAnalyzer.Lextant;
 import lexicalAnalyzer.Punctuator;
@@ -32,13 +35,18 @@ import parseTree.nodeTypes.TypeNode;
 import semanticAnalyzer.signatures.FunctionSignature;
 import semanticAnalyzer.signatures.FunctionSignatures;
 import semanticAnalyzer.signatures.PromotedSignature;
+import semanticAnalyzer.signatures.Promotion;
 import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
+import semanticAnalyzer.types.PrimitiveType.*;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
 import symbolTable.Scope;
 import tokens.LextantToken;
 import tokens.Token;
+import parseTree.nodeTypes.FloatingConstantNode;
+import parseTree.nodeTypes.IntegerConstantNode;
+import parseTree.nodeTypes.CharacterConstantNode;
 
 class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	@Override
@@ -186,10 +194,88 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	}
 	@Override
 	public void visitLeave(ArrayNode node) {
+		List <PrimitiveType> promotableTypes = new ArrayList <PrimitiveType>(Arrays.asList(PrimitiveType.CHARACTER,PrimitiveType.INTEGER,PrimitiveType.FLOAT));
+		// check if no promotion is needed
+		boolean hasSameType = true;
+		Type firstType =  node.getChildren().get(0).getType();
+		for(ParseNode childNode:node.getChildren()) {
+			if(childNode.getType() != firstType) {
+				hasSameType = false;
+			}
+		}
+		// check if able to promote with least amount of promotions
+		//PrimitiveType targetType = PrimitiveType.INTEGER; 
+		if(!hasSameType) {
+			for(PrimitiveType promotableType : promotableTypes) {
+//				System.out.println(promotableType);
+//				System.out.println("IS PROMOTABLE?");
+//				System.out.println(isArrayPromotable(node, promotableType));
+				// if is promotable ,promote to that type and return 
+				if(isArrayPromotable(node, promotableType)) {
+					//System.out.println("FOUND A PROMOTABLE TYPE");
+					
+					Type subtype = promotableType;//node.child(0).getType();
+					Type arrayType = new Array(subtype);
+					node.setType(arrayType);
+					return;
+				}
+
+
+			
+			//System.out.println("NNNNNNNEXT");
+		}
+	}
+	else {
 		Type subtype = node.child(0).getType();
 		Type arrayType = new Array(subtype);
 		node.setType(arrayType);
+		return;
+	}
 
+		
+		//System.out.println("COULD NOT FIND ANY PROMOTABLE TYPE THROW ERROR");
+		promotableArrayError(node);
+
+		
+
+	}
+
+	private boolean isArrayPromotable(ArrayNode node, PrimitiveType targetType) {
+		for(ParseNode element:node.getChildren()) {
+			for(Promotion promotion: Promotion.values()) {
+				//System.out.println(element.getType());
+				//System.out.println(promotion);
+				if(element.getType() == targetType) {
+					//System.out.println("already target type, try next element");
+					break;
+				}
+
+				//System.out.println(promotion);
+				// if promotion on element creates target type and promotion is applicable on the element
+				else if(promotion.apply(element.getType()) == targetType && promotion.applies( element.getType())) {
+					//System.out.println("change to ");
+					//System.out.println(promotion.apply(element.getType()));
+					// save cast change then apply changes afterwards
+					break;
+				}
+				else {
+
+					// need to check if all prmotions checked for that element
+					// if so then we know promotion on array for that target type is not possible
+					Promotion lastTypeInPromotions = Arrays.asList(Promotion.values()).get(Arrays.asList(Promotion.values()).size() - 1);
+					if(lastTypeInPromotions == promotion) {
+						//System.out.println("Cannot change element to targetType:");
+						//System.out.println(targetType);
+						//System.out.println("try again with new targetType at beginning of elements");
+						//break; // return with null or something
+						return false;
+					}
+
+				}
+			}
+			
+		}
+		return true;
 	}
 	@Override
 	public void visitLeave(RangeNode node) {
@@ -321,12 +407,14 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 
 	private void multipleInterpretationError(OperatorNode node, List<Type> childTypes) {
 		Token token = node.getToken();
-
 		logError("operator " + token.getLexeme() + " has multiple interpretations " 
 				+ childTypes  + " at " + token.getLocation());
-
 	}
-	
+	private void promotableArrayError(ParseNode node) {
+		Token token = node.getToken();
+		
+		logError("array cannot be promoted to a common type");	
+	}
 	private void typeCheckError(ParseNode node, List<Type> operandTypes) {
 		Token token = node.getToken();
 		

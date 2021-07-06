@@ -1,0 +1,10 @@
+main{
+	
+	%imm b := [#g,"problem",14];
+	%print b $n;
+	
+	%imm c := [#g,true];
+	%print c $n;
+
+	
+}

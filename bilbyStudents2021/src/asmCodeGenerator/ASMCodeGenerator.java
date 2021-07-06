@@ -605,7 +605,8 @@ public class ASMCodeGenerator {
 		public void visitLeave(ArrayNode node) {
 			newValueCode(node);
 			int arrayLength = node.getChildren().size();
-			int subTypeSize = node.child(0).getType().getSize();
+			Type arrayType = ((Array)node.getType()).getSubtype();
+			int subTypeSize = arrayType.getSize();
 			
 			// push size of record
 			code.add(PushI, arrayLength);
@@ -653,10 +654,29 @@ public class ASMCodeGenerator {
 			
 			List<ParseNode> elements = node.getChildren();
 			//ParseNode elementNode = null;
+			
+			
+			//System.out.println(arrayType);
+			// do nothing if all in same type?
 			for(int i = 0; i< arrayLength;i++) {
 				code.append(removeValueCode(elements.get(i)));
-			
-				code.add(opcodeForStore(node.getChildren().get(1).getType())); // change this to use array type
+
+				if(elements.get(i).getType() != arrayType){
+					if(elements.get(i).getType() == PrimitiveType.CHARACTER) {
+						if(arrayType == PrimitiveType.INTEGER ) {
+							// nothing?
+						}
+						else if(arrayType == PrimitiveType.FLOAT) {
+							code.add(ConvertF);
+						}
+					}
+					else if(elements.get(i).getType() == PrimitiveType.INTEGER) {
+						if(arrayType == PrimitiveType.FLOAT) {
+							code.add(ConvertF);
+						}
+					}
+				}
+				code.add(opcodeForStore(arrayType));
 				code.add(PushI,subTypeSize); 
 				code.add(Add);
 				code.add(Duplicate);
