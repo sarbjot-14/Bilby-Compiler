@@ -1,7 +1,7 @@
 main{
 
 
-	imm i := [#g,#a,14];
+	imm i := [#A,2,4];
 	print i $n;
 	
 	

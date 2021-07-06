@@ -206,34 +206,14 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		//PrimitiveType targetType = PrimitiveType.INTEGER; 
 		if(!hasSameType) {
 			for(PrimitiveType promotableType : promotableTypes) {
-				System.out.println(promotableType);
-				System.out.println("IS PROMOTABLE?");
-				System.out.println(isArrayPromotable(node, promotableType));
+//				System.out.println(promotableType);
+//				System.out.println("IS PROMOTABLE?");
+//				System.out.println(isArrayPromotable(node, promotableType));
 				// if is promotable ,promote to that type and return 
 				if(isArrayPromotable(node, promotableType)) {
-					System.out.println("FOUND A PROMOTABLE TYPE");
-					for(ParseNode oldChild:node.getChildren()) {
-						Locator newLocator = null;
-						String newLexeme = null;
-						Token newToken = null;
-						if(oldChild.getType() == PrimitiveType.CHARACTER) {
-							tokens.CharacterConstantToken oldToken = ((tokens.CharacterConstantToken) oldChild.getToken());
-							newLocator = oldToken.getLocation();
-							newLexeme = oldToken.getLexeme();
-							char newChar = newLexeme.charAt(0);
-							if(promotableType == PrimitiveType.INTEGER) {
-								newToken = tokens.IntegerConstantToken.make(newLocator, Integer.toString(((int)newChar)));
-								ParseNode newChild = new IntegerConstantNode(newToken);
-								//System.out.println("concurrent modifications?");
-								node.replaceChild(oldChild, newChild);
-							}
-						}
-						else if(oldChild.getType() == PrimitiveType.INTEGER) {
-
-						}
-
-					}
-					Type subtype = node.child(0).getType();
+					//System.out.println("FOUND A PROMOTABLE TYPE");
+					
+					Type subtype = promotableType;//node.child(0).getType();
 					Type arrayType = new Array(subtype);
 					node.setType(arrayType);
 					return;
