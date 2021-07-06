@@ -177,13 +177,31 @@ public class ASMCodeGenerator {
 
 			}
 			else if(node.getType() instanceof Range) {
+				Range rangeType = (Range)node.getType();
 				code.add(Duplicate);
-				code.add(LoadI);
+				if(rangeType.getSubtype() == PrimitiveType.INTEGER ) {
+					code.add(LoadI);
+				}
+				else if(rangeType.getSubtype() == PrimitiveType.CHARACTER) {
+					code.add(LoadC);
+				}
+				else if(rangeType.getSubtype() == PrimitiveType.FLOAT) {
+					code.add(LoadF);
+				}
 				code.add(Exchange);
-				code.add(PushI,4);
+				code.add(PushI,rangeType.getSubtype().getSize());
 				code.add(Add);
-				code.add(LoadI);
-
+				if(rangeType.getSubtype() == PrimitiveType.INTEGER ) {
+					code.add(LoadI);
+				}
+				else if(rangeType.getSubtype() == PrimitiveType.CHARACTER) {
+					code.add(LoadC);
+				}
+				else if(rangeType.getSubtype() == PrimitiveType.FLOAT) {
+					code.add(LoadF);
+				}
+				
+			
 			}
 			else {
 				assert false : "node " + node;
@@ -398,30 +416,76 @@ public class ASMCodeGenerator {
 				return code;
 			}
 			if(type instanceof Range) {
+				Labeller labeller = new Labeller("rangeStore");
+
+				String highendLabel = labeller.newLabel("highend");
+				String lowendLabel = labeller.newLabel("lowend");
 				Range rangeType = (Range) node.getChildren().get(0).getType();
 				//System.out.println(rangeType.getSubtype());
-				if(rangeType.getSubtype() == PrimitiveType.INTEGER) {
-					//code.add(PStack);
+				if(rangeType.getSubtype() == PrimitiveType.INTEGER ) {
 					
-					code.add(DLabel,"highend"); // [&identifier, lowend, highend,]
+					code.add(DLabel,highendLabel); // [&identifier, lowend, highend,]
 					code.add(DataI, 0);
-					code.add(PushD, "highend"); // 
+					code.add(PushD, highendLabel); // 
 					code.add(Exchange); // [&identifier, lowend,&highend, highend]
-					
 					code.add(StoreI); // 
 					code.add(Exchange); // [lowend, &identifier]
 					code.add(Duplicate); // [lowend, &identifier, &identifier ]
 					
-					code.add(PushD,"highend");
+					code.add(PushD,highendLabel);
 					code.add(LoadI);
-					//code.add(PStack);
 					code.add(StoreI);
 					
 					code.add(PushI,4);
 					code.add(Add);
 					code.add(Exchange);  // [&identifier+4,lowend ]
-					//code.add(PStack);
 					code.add(StoreI);
+					
+				}
+				else if(rangeType.getSubtype() == PrimitiveType.FLOAT ) {
+					//code.add(PStack);
+					
+					code.add(DLabel,highendLabel); // [&identifier, lowend, highend,]
+					code.add(DataF, 0.0);
+					code.add(PushD, highendLabel); // 
+					code.add(Exchange); // [&identifier, lowend,&highend, highend]
+					
+					code.add(StoreF); // 
+					code.add(Exchange); // [lowend, &identifier]
+					code.add(Duplicate); // [lowend, &identifier, &identifier ]
+					
+					code.add(PushD,highendLabel);
+					code.add(LoadF);
+					//code.add(PStack);
+					code.add(StoreF);
+					
+					code.add(PushI,8);
+					code.add(Add);
+					code.add(Exchange);  // [&identifier+8,lowend ]
+					code.add(StoreF);
+					
+				}
+				else if(rangeType.getSubtype() == PrimitiveType.CHARACTER ) {
+					//code.add(PStack);
+					
+					code.add(DLabel,highendLabel); // [&identifier, lowend, highend,]
+					code.add(DataC, 0);
+					code.add(PushD, highendLabel); // 
+					code.add(Exchange); // [&identifier, lowend,&highend, highend]
+					
+					code.add(StoreC); // 
+					code.add(Exchange); // [lowend, &identifier]
+					code.add(Duplicate); // [lowend, &identifier, &identifier ]
+					
+					code.add(PushD,highendLabel);
+					code.add(LoadC);
+					//code.add(PStack);
+					code.add(StoreC);
+					
+					code.add(PushI,1);
+					code.add(Add);
+					code.add(Exchange);  // [&identifier+1,lowend ]
+					code.add(StoreC);
 					
 				}
 				

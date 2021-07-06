@@ -221,8 +221,8 @@ public class PrintStatementGenerator {
 			
 		}
 		else if(node.getType() instanceof Range && node instanceof IdentifierNode ) {
+			Range rangeType = (Range)node.getType();
 			code.append(visitor.removeValueCode(node));
-			//convertToPointerIfRange(node);
 			
 			Labeller labeller = new Labeller("print-range");
 			//String lenStorage= labeller.newLabel("storage-for-arrayLength");
@@ -233,7 +233,15 @@ public class PrintStatementGenerator {
 			code.add(Printf);
 			
 			// lowend
-			code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
+			if(rangeType.getSubtype() == PrimitiveType.INTEGER) {
+				code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
+			}
+			else if(rangeType.getSubtype() == PrimitiveType.FLOAT) {
+				code.add(PushD, RunTime.FLOATING_PRINT_FORMAT);
+			}
+			else if(rangeType.getSubtype() == PrimitiveType.CHARACTER) {
+				code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
+			}
 			code.add(Printf);
 			
 			// print range delim
@@ -244,8 +252,16 @@ public class PrintStatementGenerator {
 			code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
 			code.add(Printf);
 			
-			// lowend
-			code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
+			// high end
+			if(rangeType.getSubtype() == PrimitiveType.INTEGER) {
+				code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
+			}
+			else if(rangeType.getSubtype() == PrimitiveType.FLOAT) {
+				code.add(PushD, RunTime.FLOATING_PRINT_FORMAT);
+			}
+			else if(rangeType.getSubtype() == PrimitiveType.CHARACTER) {
+				code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
+			}
 			code.add(Printf);
 			
 			
@@ -255,11 +271,6 @@ public class PrintStatementGenerator {
 			code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
 			code.add(Printf);
 
-						
-			
-			
-			
-			
 			
 			
 		}

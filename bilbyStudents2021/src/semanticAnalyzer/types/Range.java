@@ -5,7 +5,7 @@ import java.util.Collection;
 
 public class Range implements Type {
 
-	private static final int REFERENCE_TYPE_SIZE = 4;
+	//private static final int REFERENCE_TYPE_SIZE = 4;
 	Type subtype;
 	
 	
@@ -16,7 +16,7 @@ public class Range implements Type {
 	
 	@Override
 	public int getSize() {
-		return REFERENCE_TYPE_SIZE;
+		return subtype.getSize();
 	}
 
 	@Override
