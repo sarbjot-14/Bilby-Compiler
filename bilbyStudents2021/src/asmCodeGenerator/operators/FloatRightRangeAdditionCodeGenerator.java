@@ -43,28 +43,28 @@ public class FloatRightRangeAdditionCodeGenerator implements SimpleCodeGenerator
 		// store high
 		//code.add(Duplicate);// [&subTypeSize, &subTypeSize]
 		code.add(DLabel,highLabel); // [&subTypeSize, &subTypeSize]
-		code.add(DataI, 0);
+		code.add(DataF, 0.0);
 		code.add(PushD, highLabel); // [&subTypeSize, &subTypeSize, &subTypeVar]
 		code.add(Exchange); // [&subTypeSize, &subTypeVar, &subTypeSize]
-		code.add(StoreI); //  [&subTypeSize]
+		code.add(StoreF); //  [&subTypeSize]
 		
 		// store low
 		//code.add(Duplicate);// [&subTypeSize, &subTypeSize]
 		code.add(DLabel,lowLabel); // [&subTypeSize, &subTypeSize]
-		code.add(DataI, 0);
+		code.add(DataF, 0.0);
 		code.add(PushD, lowLabel); // [&subTypeSize, &subTypeSize, &subTypeVar]
 		code.add(Exchange); // [&subTypeSize, &subTypeVar, &subTypeSize]
-		code.add(StoreI); //  [&subTypeSize]
+		code.add(StoreF); //  [&subTypeSize]
 		
 		code.add(Duplicate);
 		code.add(PushD,highLabel);
-		code.add(LoadI);
-		code.add(Add);
+		code.add(LoadF);
+		code.add(FAdd);
 		
 		code.add(Exchange);
 		code.add(PushD,lowLabel);
-		code.add(LoadI);
-		code.add(Add);
+		code.add(LoadF);
+		code.add(FAdd);
 		
 		code.add(Exchange);
 

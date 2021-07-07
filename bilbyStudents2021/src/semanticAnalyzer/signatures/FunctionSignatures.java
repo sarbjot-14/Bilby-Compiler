@@ -132,8 +132,10 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		    new FunctionSignature(ASMOpcode.FAdd, FLOAT, FLOAT, FLOAT),
 		    new FunctionSignature(new IntLeftRangeAdditionCodeGenerator(),new Range(INTEGER),INTEGER, new Range(INTEGER)),
 		    new FunctionSignature(new IntRightRangeAdditionCodeGenerator(), INTEGER,new Range(INTEGER),new Range(INTEGER)),
-		    new FunctionSignature(new FloatLeftRangeAdditionCodeGenerator(),new Range(FLOAT),FLOAT,new Range(FLOAT),
-		    new FunctionSignature(new FloatRightRangeAdditionCodeGenerator(), FLOAT,new Range(FLOAT),new Range(FLOAT))
+		    new FunctionSignature(new FloatLeftRangeAdditionCodeGenerator(),new Range(FLOAT),FLOAT,new Range(FLOAT)),
+		    new FunctionSignature(new FloatRightRangeAdditionCodeGenerator(),FLOAT,new Range(FLOAT),new Range(FLOAT))
+		    ///new FunctionSignature(new FloatLeftRangeAdditionCodeGenerator(),new Range(FLOAT),FLOAT,new Range(FLOAT)
+		    //new FunctionSignature(new FloatRightRangeAdditionCodeGenerator(), FLOAT,new Range(FLOAT),new Range(FLOAT))
 		);
 		
 		new FunctionSignatures(Punctuator.SUBTRACT,
