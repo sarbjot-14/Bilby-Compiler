@@ -1,15 +1,10 @@
 main{
 
+    mut myRange := [<44 .. 77> as <int>];
+    print myRange $n;
 	
-    mut myRange := [<4 .. 7> as <int>];
-    
-    %imm a := [5 as float];
-    
-    %print myRange $n;
-    
+	mut temp := <4 .. 7> ;
+	print temp $n;
 
-  
-   
-  
-
+ 
 }

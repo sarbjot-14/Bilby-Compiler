@@ -31,6 +31,7 @@ import asmCodeGenerator.operators.LessThanEqualCodeGeneratorInt;
 import asmCodeGenerator.operators.NotCodeGenerator;
 import asmCodeGenerator.operators.NotEqualsCodeGeneratorFloat;
 import asmCodeGenerator.operators.NotEqualsCodeGeneratorInt;
+import asmCodeGenerator.operators.RangeCastCodeGenerator;
 import asmCodeGenerator.operators.RangeCodeGenerator;
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Punctuator;
@@ -197,27 +198,7 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				new FunctionSignature(new NotEqualsCodeGeneratorInt(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),BOOLEAN,BOOLEAN,BOOLEAN),
 				new FunctionSignature(new NotEqualsCodeGeneratorFloat(ASMOpcode.FSubtract, ASMOpcode.JumpFPos,ASMOpcode.JumpFZero, ASMOpcode.Duplicate, ASMOpcode.ConvertI), FLOAT, FLOAT, BOOLEAN)
 		);
-		
-		TypeVariable C = new TypeVariable("C");
-		new FunctionSignatures(Punctuator.CAST, 
-				new FunctionSignature(ASMOpcode.ConvertF, INTEGER,FLOAT, FLOAT),
-
-				new FunctionSignature(ASMOpcode.ConvertI, FLOAT,INTEGER, INTEGER),
-				
-				new FunctionSignature(ASMOpcode.Nop, CHARACTER,INTEGER, INTEGER),
-				new FunctionSignature(new IntToCharCodeGenerator(ASMOpcode.BTAnd), INTEGER,CHARACTER, CHARACTER),
-				new FunctionSignature(new IntToBoolCodeGenerator(ASMOpcode.JumpFalse), INTEGER,BOOLEAN, BOOLEAN),
-				
-				new FunctionSignature(new IntToBoolCodeGenerator(ASMOpcode.JumpFalse), CHARACTER,BOOLEAN, BOOLEAN),				
-				new FunctionSignature(ASMOpcode.Nop, INTEGER,INTEGER, INTEGER),
-				new FunctionSignature(ASMOpcode.Nop, FLOAT,FLOAT, FLOAT),
-				new FunctionSignature(ASMOpcode.Nop, CHARACTER,CHARACTER, CHARACTER),
-				new FunctionSignature(ASMOpcode.Nop, BOOLEAN,BOOLEAN, BOOLEAN),
-				new FunctionSignature(ASMOpcode.Nop, STRING,STRING, STRING),
-				new FunctionSignature(ASMOpcode.Nop, new Range(C),C,new Range(C)),
-				new FunctionSignature(ASMOpcode.Nop,C, new Range(C),new Range(C))
-				
-		);
+	
 		
 		new FunctionSignatures(Punctuator.AND, 
 				new FunctionSignature(new BooleanAndCodeGenerator(),BOOLEAN,BOOLEAN,BOOLEAN)
@@ -239,11 +220,27 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				new FunctionSignature(new IndexingCodeGenerator(),new Array(S),INTEGER, S)
 		);
 		
-		//TypeVariable R = new TypeVariable("R");
+		TypeVariable C = new TypeVariable("C");
+		new FunctionSignatures(Punctuator.CAST, 
+				new FunctionSignature(ASMOpcode.ConvertF, INTEGER,FLOAT, FLOAT),
+
+				new FunctionSignature(ASMOpcode.ConvertI, FLOAT,INTEGER, INTEGER),
+				
+				new FunctionSignature(ASMOpcode.Nop, CHARACTER,INTEGER, INTEGER),
+				new FunctionSignature(new IntToCharCodeGenerator(ASMOpcode.BTAnd), INTEGER,CHARACTER, CHARACTER),
+				new FunctionSignature(new IntToBoolCodeGenerator(ASMOpcode.JumpFalse), INTEGER,BOOLEAN, BOOLEAN),
+				
+				new FunctionSignature(new IntToBoolCodeGenerator(ASMOpcode.JumpFalse), CHARACTER,BOOLEAN, BOOLEAN),				
+				new FunctionSignature(ASMOpcode.Nop, INTEGER,INTEGER, INTEGER),
+				new FunctionSignature(ASMOpcode.Nop, FLOAT,FLOAT, FLOAT),
+				new FunctionSignature(ASMOpcode.Nop, CHARACTER,CHARACTER, CHARACTER),
+				new FunctionSignature(ASMOpcode.Nop, BOOLEAN,BOOLEAN, BOOLEAN),
+				new FunctionSignature(ASMOpcode.Nop, STRING,STRING, STRING),
+				new FunctionSignature(new RangeCastCodeGenerator(ASMOpcode.JumpFalse), new Range(C),new Range(C),new Range(C))				
+		);
+		TypeVariable R = new TypeVariable("R");
 		new FunctionSignatures(Punctuator.RANGE_DELIM, 
-				new FunctionSignature(new RangeCodeGenerator(),INTEGER,INTEGER,new Range(INTEGER)),
-				new FunctionSignature(new RangeCodeGenerator(),FLOAT,FLOAT,new Range(FLOAT)),
-				new FunctionSignature(new RangeCodeGenerator(),CHARACTER,CHARACTER,new Range(CHARACTER))
+				new FunctionSignature(new RangeCodeGenerator(),R,R,new Range(R))
 				
 		);
 													

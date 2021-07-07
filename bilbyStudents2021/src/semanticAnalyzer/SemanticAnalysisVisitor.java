@@ -39,6 +39,7 @@ import semanticAnalyzer.signatures.Promotion;
 import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.PrimitiveType.*;
+import semanticAnalyzer.types.Range;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
 import symbolTable.Scope;
@@ -297,6 +298,17 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			Type arrayType = new Array(subtype);
 			node.setType(arrayType);
 		}
+		else if(node.isRange()) {
+			Type subType = node.child(0).getType();
+			Type rangeType = new Range(subType);
+			if(subType == PrimitiveType.INTEGER || subType == PrimitiveType.FLOAT || subType == PrimitiveType.CHARACTER ) {
+				node.setType(rangeType);
+			}
+			else {
+				invalidRangeTypeError(node,subType);
+			}
+			
+		}
 		else {
 			node.setType(node.typeFromToken());
 		}
@@ -409,6 +421,11 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Token token = node.getToken();
 		logError("operator " + token.getLexeme() + " has multiple interpretations " 
 				+ childTypes  + " at " + token.getLocation());
+	}
+	private void invalidRangeTypeError(ParseNode node, Type type) {
+		Token token = node.getToken();
+		logError("operator " + token.getLexeme() + " range has invalid type " 
+				+ type  + " at " + token.getLocation());
 	}
 	private void promotableArrayError(ParseNode node) {
 		Token token = node.getToken();

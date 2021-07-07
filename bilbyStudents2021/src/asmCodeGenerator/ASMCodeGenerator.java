@@ -42,6 +42,7 @@ import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Range;
 import semanticAnalyzer.types.Type;
+import semanticAnalyzer.types.TypeVariable;
 import symbolTable.Binding;
 import symbolTable.Scope;
 import static asmCodeGenerator.codeStorage.ASMCodeFragment.CodeType.*;
@@ -391,6 +392,7 @@ public class ASMCodeGenerator {
 		ASMCodeFragment generateStore(ParseNode node){
 			ASMCodeFragment code = new ASMCodeFragment(CodeType.GENERATES_VOID);
 			Type type = node.getType();
+			
 			if(type == PrimitiveType.INTEGER) {
 				code.add(StoreI);
 				return code;
@@ -416,13 +418,17 @@ public class ASMCodeGenerator {
 				return code;
 			}
 			if(type instanceof Range) {
+				
 				Labeller labeller = new Labeller("rangeStore");
 
 				String highendLabel = labeller.newLabel("highend");
 				String lowendLabel = labeller.newLabel("lowend");
-				Range rangeType = (Range) node.getChildren().get(0).getType();
-				//System.out.println(rangeType.getSubtype());
-				if(rangeType.getSubtype() == PrimitiveType.INTEGER ) {
+				Range rangeType = (Range) node.getType(); //
+				Type subType = rangeType.getSubtype();
+			
+				System.out.println(subType);
+
+			    if(subType == PrimitiveType.INTEGER ) {
 					
 					code.add(DLabel,highendLabel); // [&identifier, lowend, highend,]
 					code.add(DataI, 0);
@@ -434,6 +440,7 @@ public class ASMCodeGenerator {
 					
 					code.add(PushD,highendLabel);
 					code.add(LoadI);
+					//code.add(PStack);
 					code.add(StoreI);
 					
 					code.add(PushI,4);
@@ -442,7 +449,7 @@ public class ASMCodeGenerator {
 					code.add(StoreI);
 					
 				}
-				else if(rangeType.getSubtype() == PrimitiveType.FLOAT ) {
+				else if(subType == PrimitiveType.FLOAT ) {
 					//code.add(PStack);
 					
 					code.add(DLabel,highendLabel); // [&identifier, lowend, highend,]
@@ -465,7 +472,7 @@ public class ASMCodeGenerator {
 					code.add(StoreF);
 					
 				}
-				else if(rangeType.getSubtype() == PrimitiveType.CHARACTER ) {
+				else if(subType == PrimitiveType.CHARACTER ) {
 					//code.add(PStack);
 					
 					code.add(DLabel,highendLabel); // [&identifier, lowend, highend,]

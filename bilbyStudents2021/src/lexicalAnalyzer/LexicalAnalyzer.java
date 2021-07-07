@@ -50,9 +50,6 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		if(ch.isDigit()) {
 			return scanNumber(ch);
 		}
-		else if(ch.startsCompoundType()) {
-			return scanCompoundType(ch);
-		}
 		else if(ch.startsIdentifier()) {
 			return scanIdentifier(ch);
 		}
@@ -270,49 +267,7 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		input.pushback(c);
 	}
 	
-	// scan range and array type
-	private Token scanCompoundType(LocatedChar firstChar) {
-		Character OpenAngleBracket = firstChar.getCharacter(); //input.next();
-		//System.out.println("should be open bracket " +OpenAngleBracket.charValue());
-		
-		StringBuffer buffer = new StringBuffer();
-		
-		///System.out.println("peeking "+input.peek().getCharacter());
-		// how to identify <int> while avoiding less than sign?  fix
-		if(input.peek().isIdentifierChar()) {
-			System.out.println("is identifier?");
-			buffer.append(OpenAngleBracket);
-			//appendSubsequentIdentifier(buffer);
-			LocatedChar c = input.next();
-//			while(c.isIdentifierChar() ) {
-//				buffer.append(c.getCharacter());
-//				c = input.next();
-//				if(c.getCharacter() == '>') {
-//					buffer.append(c.getCharacter());
-//					break;
-//				}
-//				break;
-//			}
-			//input.pushback(c);
-			//buffer.append(input.next());
-		}
-		else {
-			input.pushback(firstChar);
-			return findNextToken();
-		}
-		
 
-		String lexeme = buffer.toString();
-		System.out.println(lexeme);
-		if(Keyword.isAKeyword(lexeme)) {
-			return LextantToken.make(firstChar, lexeme, Keyword.forLexeme(lexeme));
-		}
-		System.out.println("WWWHHHHAT THE HELL");
-		return findNextToken();
-	}
-	
-
-	
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Character-classification routines specific to bilby scanning.	

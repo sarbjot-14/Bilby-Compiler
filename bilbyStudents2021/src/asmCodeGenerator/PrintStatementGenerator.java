@@ -22,6 +22,7 @@ import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Range;
 import semanticAnalyzer.types.Type;
+import semanticAnalyzer.types.TypeVariable;
 import asmCodeGenerator.ASMCodeGenerator.CodeVisitor;
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import asmCodeGenerator.runtime.RunTime;
@@ -233,13 +234,20 @@ public class PrintStatementGenerator {
 			code.add(Printf);
 			
 			// lowend
-			if(rangeType.getSubtype() == PrimitiveType.INTEGER) {
+			//TypeVariable typeVar = (TypeVariable) rangeType.getSubtype();
+			
+	    	//TypeVariable typeVar = (TypeVariable) rangeType.getSubtype();
+		    //System.out.println("This is a type variable"+typeVar.concreteType());	
+		    //if(typeVar.concreteType()== PrimitiveType.INTEGER ) {
+			//Range rangeType = (Range) node.getType(); //(Range) node.getChildren().get(0).getType();
+			Type subType = rangeType.getSubtype();
+			if(subType == PrimitiveType.INTEGER) {
 				code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
 			}
-			else if(rangeType.getSubtype() == PrimitiveType.FLOAT) {
+			else if(subType  == PrimitiveType.FLOAT) {
 				code.add(PushD, RunTime.FLOATING_PRINT_FORMAT);
 			}
-			else if(rangeType.getSubtype() == PrimitiveType.CHARACTER) {
+			else if(subType == PrimitiveType.CHARACTER) {
 				code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
 			}
 			code.add(Printf);
@@ -253,13 +261,13 @@ public class PrintStatementGenerator {
 			code.add(Printf);
 			
 			// high end
-			if(rangeType.getSubtype() == PrimitiveType.INTEGER) {
+			if(subType  == PrimitiveType.INTEGER) {
 				code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
 			}
-			else if(rangeType.getSubtype() == PrimitiveType.FLOAT) {
+			else if(subType == PrimitiveType.FLOAT) {
 				code.add(PushD, RunTime.FLOATING_PRINT_FORMAT);
 			}
-			else if(rangeType.getSubtype() == PrimitiveType.CHARACTER) {
+			else if(subType== PrimitiveType.CHARACTER) {
 				code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
 			}
 			code.add(Printf);
