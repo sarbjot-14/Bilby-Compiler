@@ -1,22 +1,23 @@
 main{
-
-	
- 
     
-    imm result := high <4 .. 7> ;
+    imm result := 2.2 in <4.4 .. 20.6> ;
     print result $n;
     
-    imm resultFloat := high <4.4 .. 7.4> ;
+    %imm result1 := 4 in <4 .. 20> ;
+    %print result1 $n;
     
-    print resultFloat $n;
     
-    imm resultChar := high <#a .. #f> ;
+    %imm result2 := 6 in <4 .. 20> ;
+    %print result2 $n;
     
-    print resultChar $n;
+    
+    %imm result3 := 20 in <4 .. 20> ;
+    %print result3 $n;
+    
+    %imm result4 := 25 in <4 .. 20> ;
+    %print result4 $n;
     
    
-  
-   
-  
+ 
 
 }

@@ -19,6 +19,7 @@ import asmCodeGenerator.operators.GreaterCodeGenerator;
 import asmCodeGenerator.operators.GreaterThanEqualCodeGeneratorFloat;
 import asmCodeGenerator.operators.GreaterThanEqualCodeGeneratorInt;
 import asmCodeGenerator.operators.RangeHighCodeGenerator;
+import asmCodeGenerator.operators.RangeInCodeGenerator;
 import asmCodeGenerator.operators.IndexingCodeGenerator;
 import asmCodeGenerator.operators.IntDivideCodeGenerator;
 import asmCodeGenerator.operators.IntLeftRangeAdditionCodeGenerator;
@@ -225,6 +226,13 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		new FunctionSignatures(Punctuator.OR, 
 				new FunctionSignature(new BooleanOrCodeGenerator(),BOOLEAN,BOOLEAN,BOOLEAN)
 		);
+
+		new FunctionSignatures(Keyword.IN,
+				new FunctionSignature(new RangeInCodeGenerator(ASMOpcode.Subtract,ASMOpcode.JumpPos,ASMOpcode.Duplicate,ASMOpcode.DataI,
+						ASMOpcode.StoreI,ASMOpcode.LoadI,ASMOpcode.JumpNeg),INTEGER,new Range(INTEGER),BOOLEAN),
+				new FunctionSignature(new RangeInCodeGenerator(ASMOpcode.FSubtract,ASMOpcode.JumpFPos,ASMOpcode.Duplicate,ASMOpcode.DataF,
+						ASMOpcode.StoreF,ASMOpcode.LoadF,ASMOpcode.JumpFNeg),FLOAT,new Range(FLOAT),BOOLEAN)
+				);
 		new FunctionSignatures(Punctuator.NOT, 
 				new FunctionSignature(new NotCodeGenerator(),BOOLEAN,BOOLEAN)
 		);

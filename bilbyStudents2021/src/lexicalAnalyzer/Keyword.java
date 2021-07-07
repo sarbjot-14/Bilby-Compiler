@@ -24,6 +24,7 @@ public enum Keyword implements Lextant {
 	STRING("string"),
 	LOW("low"),
 	HIGH("high"),
+	IN("in"),
 	NULL_KEYWORD("");
 
 	private String lexeme;

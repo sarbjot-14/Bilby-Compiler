@@ -1,0 +1,21 @@
+main{
+	
+    imm result := 2 in <4 .. 20> ;
+    print result $n;
+    
+    imm result1 := 4 in <4 .. 20> ;
+    print result1 $n;
+    
+    
+    imm result2 := 6 in <4 .. 20> ;
+    print result2 $n;
+    
+    
+    imm result3 := 20 in <4 .. 20> ;
+    print result3 $n;
+    
+    imm result4 := 25 in <4 .. 20> ;
+    print result4 $n;
+    
+	
+}
