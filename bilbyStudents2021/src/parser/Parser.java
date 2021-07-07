@@ -544,7 +544,7 @@ public class Parser {
 			return syntaxErrorNode("unary or atomic expression");
 		}
 
-        if(nowReading.isLextant(Punctuator.SUBTRACT, Punctuator.ADD, Punctuator.NOT))  {
+        if(nowReading.isLextant(Punctuator.SUBTRACT, Punctuator.ADD, Punctuator.NOT, Keyword.LOW,Keyword.HIGH))  {
         	
 			Token operatorToken = nowReading;
 			readToken();
@@ -558,7 +558,7 @@ public class Parser {
 	}
 	
 	private boolean startsUnaryExpression(Token token) {
-		return (token.isLextant(Punctuator.SUBTRACT,Punctuator.ADD, Punctuator.NOT) || startsIndexingExpression(nowReading) );
+		return (token.isLextant(Punctuator.SUBTRACT,Punctuator.ADD, Punctuator.NOT, Keyword.LOW,Keyword.HIGH) || startsIndexingExpression(nowReading) );
 	}
 	
 	// indexingExpression -> atomicExpression ([ expression ])* 

@@ -1,8 +1,5 @@
 main{
-
 	
- 
-    
     imm result := high <4 .. 7> ;
     print result $n;
     
@@ -13,10 +10,5 @@ main{
     imm resultChar := high <#a .. #f> ;
     
     print resultChar $n;
-    
-   
-  
-   
-  
-
+	
 }

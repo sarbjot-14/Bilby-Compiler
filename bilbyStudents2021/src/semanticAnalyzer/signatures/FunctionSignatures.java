@@ -18,6 +18,7 @@ import asmCodeGenerator.operators.FloatRightRangeAdditionCodeGenerator;
 import asmCodeGenerator.operators.GreaterCodeGenerator;
 import asmCodeGenerator.operators.GreaterThanEqualCodeGeneratorFloat;
 import asmCodeGenerator.operators.GreaterThanEqualCodeGeneratorInt;
+import asmCodeGenerator.operators.RangeHighCodeGenerator;
 import asmCodeGenerator.operators.IndexingCodeGenerator;
 import asmCodeGenerator.operators.IntDivideCodeGenerator;
 import asmCodeGenerator.operators.IntLeftRangeAdditionCodeGenerator;
@@ -28,6 +29,7 @@ import asmCodeGenerator.operators.LessCodeGenerator;
 import asmCodeGenerator.operators.LessFloatCodeGenerator;
 import asmCodeGenerator.operators.LessThanEqualCodeGeneratorFloat;
 import asmCodeGenerator.operators.LessThanEqualCodeGeneratorInt;
+import asmCodeGenerator.operators.RangeLowCodeGenerator;
 import asmCodeGenerator.operators.NotCodeGenerator;
 import asmCodeGenerator.operators.NotEqualsCodeGeneratorFloat;
 import asmCodeGenerator.operators.NotEqualsCodeGeneratorInt;
@@ -225,6 +227,13 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		);
 		new FunctionSignatures(Punctuator.NOT, 
 				new FunctionSignature(new NotCodeGenerator(),BOOLEAN,BOOLEAN)
+		);
+		TypeVariable rangeT = new TypeVariable("rangeT");
+		new FunctionSignatures(Keyword.LOW, 
+				new FunctionSignature(new RangeLowCodeGenerator(),new Range(rangeT),rangeT)
+		);
+		new FunctionSignatures(Keyword.HIGH, 
+				new FunctionSignature(new RangeHighCodeGenerator(),new Range(rangeT),rangeT)
 		);
 		
 		TypeVariable S = new TypeVariable("S");
