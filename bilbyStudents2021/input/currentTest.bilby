@@ -1,13 +1,13 @@
 main{
 
 	
-    mut myRange := <4.4 .. 7.7> + 2.5;
+    mut myRange := [<4 .. 7> as <int>];
     
-    print myRange $n;
+    %imm a := [5 as float];
     
-    mut myRangeRight :=   2.3 + <14.4 .. 101.1>;
+    %print myRange $n;
     
-    print myRangeRight $n;
+
   
    
   

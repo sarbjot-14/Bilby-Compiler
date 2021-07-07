@@ -22,6 +22,7 @@ public enum Keyword implements Lextant {
 	WHILE("while"),
 	ALLOC("alloc"),
 	STRING("string"),
+	INT_RANGE("<int>"),
 	NULL_KEYWORD("");
 
 	private String lexeme;

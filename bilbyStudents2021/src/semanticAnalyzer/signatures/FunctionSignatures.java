@@ -197,6 +197,8 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				new FunctionSignature(new NotEqualsCodeGeneratorInt(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),BOOLEAN,BOOLEAN,BOOLEAN),
 				new FunctionSignature(new NotEqualsCodeGeneratorFloat(ASMOpcode.FSubtract, ASMOpcode.JumpFPos,ASMOpcode.JumpFZero, ASMOpcode.Duplicate, ASMOpcode.ConvertI), FLOAT, FLOAT, BOOLEAN)
 		);
+		
+		TypeVariable C = new TypeVariable("C");
 		new FunctionSignatures(Punctuator.CAST, 
 				new FunctionSignature(ASMOpcode.ConvertF, INTEGER,FLOAT, FLOAT),
 
@@ -211,8 +213,9 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				new FunctionSignature(ASMOpcode.Nop, FLOAT,FLOAT, FLOAT),
 				new FunctionSignature(ASMOpcode.Nop, CHARACTER,CHARACTER, CHARACTER),
 				new FunctionSignature(ASMOpcode.Nop, BOOLEAN,BOOLEAN, BOOLEAN),
-				new FunctionSignature(ASMOpcode.Nop, STRING,STRING, STRING)
-				
+				new FunctionSignature(ASMOpcode.Nop, STRING,STRING, STRING),
+				new FunctionSignature(ASMOpcode.Nop, new Range(C),C,new Range(C)),
+				new FunctionSignature(ASMOpcode.Nop,C, new Range(C),new Range(C))
 				
 		);
 		

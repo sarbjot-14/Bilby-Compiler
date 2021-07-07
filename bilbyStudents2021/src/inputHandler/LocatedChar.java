@@ -81,6 +81,7 @@ public class LocatedChar implements Locator {
 
 	public boolean isIdentifierChar() {
 		// new: identifier → [ a..zA..Z_@ ][ a..zA..Z_@0..9 ] *
+		//System.out.println(character);
 		boolean startsIdentifier = false;
 		if(Character.isLowerCase(character) || Character.isUpperCase(character) ) {
 			startsIdentifier = true;
@@ -93,6 +94,15 @@ public class LocatedChar implements Locator {
 		}
 
 		return startsIdentifier;
+	}
+
+
+	public boolean startsCompoundType() {
+		//boolean startsCompoundType = false;
+		if(character.charValue() == '<' ) {
+			return true;
+		}
+		return false;
 	}
 
 }
