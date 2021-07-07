@@ -13,11 +13,15 @@ import asmCodeGenerator.operators.BooleanOrCodeGenerator;
 import asmCodeGenerator.operators.EqualsCodeGeneratorFloat;
 import asmCodeGenerator.operators.EqualsCodeGeneratorInt;
 import asmCodeGenerator.operators.FloatDivideCodeGenerator;
+import asmCodeGenerator.operators.FloatLeftRangeAdditionCodeGenerator;
+import asmCodeGenerator.operators.FloatRightRangeAdditionCodeGenerator;
 import asmCodeGenerator.operators.GreaterCodeGenerator;
 import asmCodeGenerator.operators.GreaterThanEqualCodeGeneratorFloat;
 import asmCodeGenerator.operators.GreaterThanEqualCodeGeneratorInt;
 import asmCodeGenerator.operators.IndexingCodeGenerator;
 import asmCodeGenerator.operators.IntDivideCodeGenerator;
+import asmCodeGenerator.operators.IntLeftRangeAdditionCodeGenerator;
+import asmCodeGenerator.operators.IntRightRangeAdditionCodeGenerator;
 import asmCodeGenerator.operators.IntToBoolCodeGenerator;
 import asmCodeGenerator.operators.IntToCharCodeGenerator;
 import asmCodeGenerator.operators.LessCodeGenerator;
@@ -125,7 +129,11 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		    new FunctionSignature(ASMOpcode.Nop, INTEGER, INTEGER),
 		    new FunctionSignature(ASMOpcode.Nop, FLOAT, FLOAT),
 		    new FunctionSignature(ASMOpcode.Add, INTEGER, INTEGER, INTEGER),
-		    new FunctionSignature(ASMOpcode.FAdd, FLOAT, FLOAT, FLOAT)
+		    new FunctionSignature(ASMOpcode.FAdd, FLOAT, FLOAT, FLOAT),
+		    new FunctionSignature(new IntLeftRangeAdditionCodeGenerator(),new Range(INTEGER),INTEGER, new Range(INTEGER)),
+		    new FunctionSignature(new IntRightRangeAdditionCodeGenerator(), INTEGER,new Range(INTEGER),new Range(INTEGER)),
+		    new FunctionSignature(new FloatLeftRangeAdditionCodeGenerator(),new Range(FLOAT),FLOAT,new Range(FLOAT),
+		    new FunctionSignature(new FloatRightRangeAdditionCodeGenerator(), FLOAT,new Range(FLOAT),new Range(FLOAT))
 		);
 		
 		new FunctionSignatures(Punctuator.SUBTRACT,

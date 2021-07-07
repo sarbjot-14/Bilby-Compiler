@@ -1,0 +1,8 @@
+main{
+	
+     mut start := 1;
+    mut hi := 3;
+    mut rangeExp := < start .. 3 * hi + 1 >;
+    print rangeExp $n;
+	
+}
