@@ -48,7 +48,6 @@ public class PrintStatementGenerator {
 	}
 
 	private void recursivePrintCode(Type type) {
-		System.out.println("beginning of recursive call "+type);
 		if(type instanceof Array) {
 
 			//code.append(visitor.removeValueCode(node)); // address already there...
@@ -127,12 +126,10 @@ public class PrintStatementGenerator {
 
 
 			Array myArray = (Array)type;
-			//System.out.println(myArray.getSubtype());
 			if(myArray.getSubtype() instanceof Array) {
-				System.out.println("recursive call of codeAppend");
 				code.add(LoadI); // address of a array
-				//System.out.println(subArray.getSubtype());
 				recursivePrintCode(myArray.getSubtype());
+				
 			}
 			else if(myArray.getSubtype() ==PrimitiveType.BOOLEAN) {
 				code.add(LoadC);
@@ -171,7 +168,6 @@ public class PrintStatementGenerator {
 
 			}
 			else if(myArray.getSubtype() ==PrimitiveType.INTEGER) {
-				System.out.println("finally at a int");
 				code.add(LoadI);
 				code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
 				code.add(Printf);
@@ -210,6 +206,7 @@ public class PrintStatementGenerator {
 			code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
 			code.add(Printf);
 			code.add(Pop);
+			//code.add()
 
 		
 		}
@@ -225,11 +222,11 @@ public class PrintStatementGenerator {
 		
 	}
 	private void appendPrintCode(ParseNode node) {
-		System.out.println("first call to print");
 		
 		if(node.getType() instanceof Array) {
-		    
+		   
 			code.append(visitor.removeValueCode(node));
+			
 			convertToPointerIfArray(node.getType());
 			
 			Labeller labeller = new Labeller("print-array");
@@ -305,10 +302,9 @@ public class PrintStatementGenerator {
 			
 			
 			Array myArray = (Array)node.getType();
-			//System.out.println(myArray.getSubtype());
 			if(myArray.getSubtype() instanceof Array) {
 				code.add(LoadI); // address of a array
-				//System.out.println(subArray.getSubtype());
+				//code.add(PStack);
 				recursivePrintCode(myArray.getSubtype());
 			}
 			else if(myArray.getSubtype() ==PrimitiveType.BOOLEAN) {
@@ -353,11 +349,10 @@ public class PrintStatementGenerator {
 				code.add(Printf);
 				
 			}
-			
 			// update len
 			code.add(PushD,counter);
 			code.add(Duplicate); // [&lenStorage, &counter]
-			code.add(LoadI); // [&lenStorage, counter]
+			code.add(LoadI); // [&lenStorage,&counter, counter]
 			code.add(PushI,1);
 			code.add(Add);
 			code.add(StoreI);
@@ -385,7 +380,9 @@ public class PrintStatementGenerator {
 			code.add(PushI, 93);
 			code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
 			code.add(Printf);
+			
 			code.add(Pop);
+
 			
 			
 		}
@@ -399,7 +396,7 @@ public class PrintStatementGenerator {
 			code.add(Printf);
 		}		
 		
-		System.out.println("did the recursion end?");
+		
 	}
 	private void convertToStringIfBoolean(Type type) {
 		if(type != PrimitiveType.BOOLEAN) {
