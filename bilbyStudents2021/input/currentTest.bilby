@@ -1,14 +1,8 @@
 main{
 
 
-	imm integers := [[[[11,13]]],[[[12,16,18]]]];
-	print integers $n;
-	
-	imm floats := [[[[11.5,13.6]]],[[[12.2,16.7,18.9]]]];
-	print floats $n;
-	
-	imm chars := [[[[#a,#b,#c]]],[[[#d,#e,#f]]]];
-	print chars $n;
+	imm result := high <4 .. 7> ;
+    print result $n;
 
 	
 }

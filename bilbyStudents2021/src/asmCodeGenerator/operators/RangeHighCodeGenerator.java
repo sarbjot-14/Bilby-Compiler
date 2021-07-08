@@ -41,19 +41,10 @@ public class RangeHighCodeGenerator implements SimpleCodeGenerator {
 		 * Code in operstaor and that short circuits
 		 * 
 		 */
-		if(node.getChildren().get(0).getChildren().get(0) instanceof IntegerConstantNode ) {
-			IntegerConstantNode high = (IntegerConstantNode) node.getChildren().get(0).getChildren().get(1);
-			//System.out.println(high.getValue());
-			code.add(PushI,high.getValue());
-		}
-		else if(node.getChildren().get(0).getChildren().get(0) instanceof FloatingConstantNode ) {
-			FloatingConstantNode high = (FloatingConstantNode) node.getChildren().get(0).getChildren().get(1);
-			code.add(PushF,high.getValue());
-		}
-		else if(node.getChildren().get(0).getChildren().get(0) instanceof CharacterConstantNode ) {
-			CharacterConstantNode  high = (CharacterConstantNode ) node.getChildren().get(0).getChildren().get(01);
-			code.add(PushI,high.getValue());
-		}
+		code.append(args.get(0));
+		code.add(Exchange);
+		code.add(Pop);
+		
 
 		return code;
 	}

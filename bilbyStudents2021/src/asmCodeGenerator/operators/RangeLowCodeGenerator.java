@@ -1,10 +1,5 @@
 package asmCodeGenerator.operators;
 
-import static asmCodeGenerator.codeStorage.ASMOpcode.Jump;
-import static asmCodeGenerator.codeStorage.ASMOpcode.Label;
-import static asmCodeGenerator.codeStorage.ASMOpcode.PushI;
-import static asmCodeGenerator.codeStorage.ASMOpcode.PStack;
-import static asmCodeGenerator.codeStorage.ASMOpcode.JumpTrue;
 import static asmCodeGenerator.codeStorage.ASMOpcode.*;
 
 import java.util.List;
@@ -50,22 +45,9 @@ public class RangeLowCodeGenerator implements SimpleCodeGenerator {
 		 * Code in operstaor and that short circuits
 		 * 
 		 */
-		//ASMCodeFragment arg = removeValueCode(node.getChildren().get(0));
-		//code.add(PStack);
+		code.append(args.get(0));
 		
-		if(node.getChildren().get(0).getChildren().get(0) instanceof IntegerConstantNode ) {
-			IntegerConstantNode low = (IntegerConstantNode) node.getChildren().get(0).getChildren().get(0);
-			//System.out.println(low.getValue());
-			code.add(PushI,low.getValue());
-		}
-		else if(node.getChildren().get(0).getChildren().get(0) instanceof FloatingConstantNode ) {
-			FloatingConstantNode low = (FloatingConstantNode) node.getChildren().get(0).getChildren().get(0);
-			code.add(PushF,low.getValue());
-		}
-		else if(node.getChildren().get(0).getChildren().get(0) instanceof CharacterConstantNode ) {
-			CharacterConstantNode  low = (CharacterConstantNode ) node.getChildren().get(0).getChildren().get(0);
-			code.add(PushI,low.getValue());
-		}
+		code.add(Pop);
 	
 
 		return code;
