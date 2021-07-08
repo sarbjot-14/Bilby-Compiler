@@ -50,6 +50,9 @@ public class RangeLowCodeGenerator implements SimpleCodeGenerator {
 		 * Code in operstaor and that short circuits
 		 * 
 		 */
+		//ASMCodeFragment arg = removeValueCode(node.getChildren().get(0));
+		//code.add(PStack);
+		
 		if(node.getChildren().get(0).getChildren().get(0) instanceof IntegerConstantNode ) {
 			IntegerConstantNode low = (IntegerConstantNode) node.getChildren().get(0).getChildren().get(0);
 			//System.out.println(low.getValue());

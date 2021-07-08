@@ -461,9 +461,8 @@ public class ASMCodeGenerator {
 					
 				}
 				else if(subType.concreteType() == PrimitiveType.FLOAT ) {
-					//code.add(PStack);
 					
-					code.add(DLabel,highendLabel); // [&identifier, lowend, highend,]
+				    code.add(DLabel,highendLabel); // [&identifier, lowend, highend,]
 					code.add(DataF, 0.0);
 					code.add(PushD, highendLabel); // 
 					code.add(Exchange); // [&identifier, lowend,&highend, highend]

@@ -215,7 +215,9 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				new FunctionSignature(new RangeInCodeGenerator(ASMOpcode.Subtract,ASMOpcode.JumpPos,ASMOpcode.Duplicate,ASMOpcode.DataI,
 						ASMOpcode.StoreI,ASMOpcode.LoadI,ASMOpcode.JumpNeg),INTEGER,new Range(INTEGER),BOOLEAN),
 				new FunctionSignature(new RangeInCodeGenerator(ASMOpcode.FSubtract,ASMOpcode.JumpFPos,ASMOpcode.Duplicate,ASMOpcode.DataF,
-						ASMOpcode.StoreF,ASMOpcode.LoadF,ASMOpcode.JumpFNeg),FLOAT,new Range(FLOAT),BOOLEAN)
+						ASMOpcode.StoreF,ASMOpcode.LoadF,ASMOpcode.JumpFNeg),FLOAT,new Range(FLOAT),BOOLEAN),
+				new FunctionSignature(new RangeInCodeGenerator(ASMOpcode.Subtract,ASMOpcode.JumpPos,ASMOpcode.Duplicate,ASMOpcode.DataI,
+						ASMOpcode.StoreI,ASMOpcode.LoadI,ASMOpcode.JumpNeg),CHARACTER,new Range(CHARACTER),BOOLEAN)
 				);
 		new FunctionSignatures(Punctuator.NOT, 
 				new FunctionSignature(new NotCodeGenerator(),BOOLEAN,BOOLEAN)

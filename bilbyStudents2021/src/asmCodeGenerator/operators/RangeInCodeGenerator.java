@@ -47,6 +47,8 @@ public class RangeInCodeGenerator implements SimpleCodeGenerator {
 		String lowLabel = labeller.newLabel("low");
 		String subLabel   = labeller.newLabel("sub");
 		String trueLabel  = labeller.newLabel("true");
+		//String trueAndPopLabel  = labeller.newLabel("trueAndPop");
+		String falseAndPopLabel = labeller.newLabel("falseAndPop");
 		String falseLabel = labeller.newLabel("false");
 		String joinLabel  = labeller.newLabel("join");
 
@@ -59,22 +61,19 @@ public class RangeInCodeGenerator implements SimpleCodeGenerator {
 		//((a >= low r) && (a <= high r))
 		
 		
-		code.add(PStack);
-		
-		
 		// store high
 		code.add(DLabel,highLabel); // [&subTypeSize, &subTypeSize]
-//		if(dataOpcode == ASMOpcode.DataI) {
-//			code.add(dataOpcode, 0);
-//		}
-//		else {
-//			code.add(dataOpcode, 0.0);
-//		}
-		code.add(DataF,0.0);
+		if(dataOpcode == ASMOpcode.DataI) {
+			code.add(dataOpcode, 0);
+		}
+		else {
+			code.add(dataOpcode, 0.0);
+		}
+		//code.add(DataF,0.0);
 		code.add(PushD, highLabel); // [&subTypeSize, &subTypeSize, &subTypeVar]
 		code.add(Exchange); // [&subTypeSize, &subTypeVar, &subTypeSize]
 		
-		code.add(StoreF); //  [&subTypeSize]
+		code.add(storeOpcode); //  [&subTypeSize]
 		
 		// store low
 		code.add(DLabel,lowLabel); // [&subTypeSize, &subTypeSize]
@@ -84,6 +83,7 @@ public class RangeInCodeGenerator implements SimpleCodeGenerator {
 		else {
 			code.add(dataOpcode, 0.0);
 		}
+		//code.add(DataF);
 		code.add(PushD, lowLabel); // [&subTypeSize, &subTypeSize, &subTypeVar]
 		code.add(Exchange); // [&subTypeSize, &subTypeVar, &subTypeSize]
 		code.add(storeOpcode); //  [&subTypeSize]
@@ -91,31 +91,34 @@ public class RangeInCodeGenerator implements SimpleCodeGenerator {
 		code.add(duplicateOpcode);
 		code.add(PushD,lowLabel);
 		code.add(loadOpcode);
-		code.add(PStack);
 		
 		//((a >= low r) && (a <= high r))
 		code.add(subtractOpcode);
-		// if pos then true
-		// if 0 then true ... neg then false
-		code.add(jumpNegOpcode,falseLabel);
+		// if neg then false and pop
+		code.add(jumpNegOpcode,falseAndPopLabel);
+		// if 0 then true  .. let i slip through
+		//code.add(jumpNegOpcode,falseLabel);
 		
 		code.add(PushD,highLabel);
-		code.add(LoadF);
-		code.add(PStack);
+		code.add(loadOpcode);
 		code.add(subtractOpcode);
 		// if negative then true, if 0 then true, if pos then false
 		code.add(jumpPosOpcode,falseLabel);
 		code.add(Jump,trueLabel);
+	
 		
-
 		code.add(Label, trueLabel);
 		code.add(PushI, 1);
 		code.add(Jump, joinLabel);
 		code.add(Label, falseLabel);
 		code.add(PushI, 0);
 		code.add(Jump, joinLabel);
+		code.add(Label, falseAndPopLabel);
+		code.add(Pop);
+		code.add(PushI, 0);
+		code.add(Jump, joinLabel);
 		code.add(Label, joinLabel);
-		code.add(PStack);
+		
 		
 		return code;
 	}
