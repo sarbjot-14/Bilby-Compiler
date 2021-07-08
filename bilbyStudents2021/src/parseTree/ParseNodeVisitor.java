@@ -19,6 +19,7 @@ import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.OperatorNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.ProgramNode;
+import parseTree.nodeTypes.RangeNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StatementBlockNode;
 import parseTree.nodeTypes.ArrayNode;
@@ -64,6 +65,9 @@ public interface ParseNodeVisitor {
 	void visitEnter(ArrayNode node);
 	void visitLeave(ArrayNode node);
 	
+	void visitEnter(RangeNode node);
+	void visitLeave(RangeNode node);
+	
 	void visitEnter(IndexAssignmentNode node);
 	void visitLeave(IndexAssignmentNode node);
 
@@ -79,9 +83,9 @@ public interface ParseNodeVisitor {
 	void visit(NewlineNode node);
 	void visit(SpaceNode node);
 	void visit(TabNode node);
-	void visit(TypeNode node);
 	void visit(CastNode node);
 	void visit(ArrayNode node);
+	void visit(RangeNode node);
 
 	
 	public static class Default implements ParseNodeVisitor
@@ -185,6 +189,13 @@ public interface ParseNodeVisitor {
 			defaultVisitLeave(node);
 		}
 		
+		public void visitEnter(RangeNode node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(RangeNode node) {
+			defaultVisitLeave(node);
+		}
+		
 
 		public void visit(BooleanConstantNode node) {
 			defaultVisitForLeaf(node);
@@ -216,9 +227,6 @@ public interface ParseNodeVisitor {
 		public void visit(TabNode node) {
 			defaultVisitForLeaf(node);
 		}
-		public void visit(TypeNode node) {
-			defaultVisitForLeaf(node);
-		}
 		public void visit(CastNode node) {
 			defaultVisitForLeaf(node);
 		}
@@ -229,6 +237,9 @@ public interface ParseNodeVisitor {
 			defaultVisitForLeaf(node);
 		}
 		public void visit(ArrayNode node) {
+			defaultVisitForLeaf(node);
+		}
+		public void visit(RangeNode node) {
 			defaultVisitForLeaf(node);
 		}
 		public void visit(IndexAssignmentNode node) {

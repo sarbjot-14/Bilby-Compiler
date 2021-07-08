@@ -1,0 +1,14 @@
+main{
+	
+     imm result := low <4 .. 7> ;
+    print result $n;
+    
+    imm resultFloat := low <4.4 .. 7.4> ;
+    
+    print resultFloat $n;
+    
+    imm resultChar := low <#a .. #f> ;
+    
+    print resultChar $n;
+	
+}

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import asmCodeGenerator.codeStorage.ASMOpcode;
+import asmCodeGenerator.codeStorage.ASMCodeFragment.CodeType;
 import asmCodeGenerator.operators.SimpleCodeGenerator;
 import asmCodeGenerator.runtime.MemoryManager;
 import asmCodeGenerator.runtime.RunTime;
@@ -30,6 +31,7 @@ import parseTree.nodeTypes.OperatorNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.StatementBlockNode;
 import parseTree.nodeTypes.ProgramNode;
+import parseTree.nodeTypes.RangeNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
@@ -38,7 +40,9 @@ import parseTree.nodeTypes.WhileNode;
 import semanticAnalyzer.signatures.Promotion;
 import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
+import semanticAnalyzer.types.Range;
 import semanticAnalyzer.types.Type;
+import semanticAnalyzer.types.TypeVariable;
 import symbolTable.Binding;
 import symbolTable.Scope;
 import static asmCodeGenerator.codeStorage.ASMCodeFragment.CodeType.*;
@@ -173,6 +177,43 @@ public class ASMCodeGenerator {
 				code.add(LoadI);
 
 			}
+			else if(node.getType() instanceof Range) {
+				
+				//Range rangeType = (Range)node.getType();
+				Range rangeType = (Range) node.getType();
+				//System.out.println("type in turnAddres to value is "+rangeType.getSubtype().concreteType());
+
+				//Type rangeSubType = rangeType.concreteType();
+				code.add(Duplicate);
+				//System.out.println("turnAddressIntoValue");
+				if(rangeType.getSubtype().concreteType()== PrimitiveType.INTEGER ) {
+					code.add(LoadI);
+					code.add(Exchange);
+					code.add(PushI,rangeType.concreteType().getSize());
+					code.add(Add);
+					code.add(LoadI);
+				}
+				else if(rangeType.getSubtype().concreteType() == PrimitiveType.CHARACTER) {
+					code.add(LoadC);
+					code.add(Exchange);
+					code.add(PushI,rangeType.concreteType().getSize());
+					code.add(Add);
+					code.add(LoadC);
+				}
+				else if(rangeType.getSubtype().concreteType() == PrimitiveType.FLOAT) {
+					code.add(LoadF);
+					code.add(Exchange);
+					code.add(PushI,rangeType.concreteType().getSize());
+					code.add(Add);
+					code.add(LoadF);
+				}
+				
+				
+				
+				//System.out.println("Finished turnAddressIntoValue");
+				
+			
+			}
 			else {
 				assert false : "node " + node;
 			}
@@ -236,8 +277,10 @@ public class ASMCodeGenerator {
 			code.append(lvalue);
 			code.append(rvalue);
 			
-			Type type = node.getType();
-			code.add(opcodeForStore(type));
+			
+			ASMCodeFragment storeFrag = generateStore(node);
+			code.append(storeFrag);
+			
 		}
 		public void visitLeave(AssignmentNode node) {
 			
@@ -249,7 +292,8 @@ public class ASMCodeGenerator {
 			code.append(rvalue);
 
 			Type type = node.getType();
-			code.add(opcodeForStore(type));
+			ASMCodeFragment storeFrag = generateStore(node);
+			code.append(storeFrag);
 		}
 		public void visitLeave(IndexAssignmentNode node) {
 			
@@ -270,7 +314,6 @@ public class ASMCodeGenerator {
 			code.add(DataI, 0);
 			code.add(PushD, identifier);
 			code.append(lvalue); 
-			//code.add(PStack);
 			code.add(StoreI); 
 			
 			// save the index
@@ -311,7 +354,6 @@ public class ASMCodeGenerator {
 			
 		
 			
-			//code.add(PStack);
 			code.add(PushI, 8); 
 			code.add(Add);
 			code.add(Duplicate);
@@ -355,6 +397,123 @@ public class ASMCodeGenerator {
 			assert false: "Type " + type + " unimplemented in opcodeForStore()";
 			return null;
 		}
+		ASMCodeFragment generateStore(ParseNode node){
+			ASMCodeFragment code = new ASMCodeFragment(CodeType.GENERATES_VOID);
+			Type type = node.getType();
+			
+			if(type == PrimitiveType.INTEGER) {
+				code.add(StoreI);
+				return code;
+			}
+			if(type == PrimitiveType.FLOAT) {
+				code.add(StoreF);
+				return code;
+			}
+			if(type == PrimitiveType.BOOLEAN) {
+				code.add(StoreI);
+				return code;
+			}
+			if(type == PrimitiveType.STRING) {
+				code.add(StoreI);
+				return code;
+			}
+			if(type == PrimitiveType.CHARACTER) {
+				code.add(StoreC);
+				return code;
+			}
+			if(type instanceof Array) {
+				code.add(StoreI);
+				return code;
+			}
+			if(type instanceof Range) {
+				
+				Labeller labeller = new Labeller("rangeStore");
+
+				String highendLabel = labeller.newLabel("highend");
+				String lowendLabel = labeller.newLabel("lowend");
+				Range rangeType = (Range) node.getType(); //
+				Type subType = rangeType.getSubtype();
+			
+				//System.out.println(subType);
+				//System.out.println("storing these");
+				
+				//System.out.println("subType in store is "+subType.concreteType());
+			    if(subType.concreteType() == PrimitiveType.INTEGER ) {
+					
+					code.add(DLabel,highendLabel); // [&identifier, lowend, highend,]
+					code.add(DataI, 0);
+					code.add(PushD, highendLabel); // 
+					code.add(Exchange); // [&identifier, lowend,&highend, highend]
+					code.add(StoreI); // 
+					code.add(Exchange); // [lowend, &identifier]
+					code.add(Duplicate); // [lowend, &identifier, &identifier ]
+					
+					code.add(PushD,highendLabel);
+					code.add(LoadI);
+					code.add(StoreI);
+					
+					code.add(PushI,4);
+					code.add(Add);
+					code.add(Exchange);  // [&identifier+4,lowend ]
+					code.add(StoreI);
+					
+					//System.out.println("Finished Storing");
+					
+				}
+				else if(subType.concreteType() == PrimitiveType.FLOAT ) {
+					
+				    code.add(DLabel,highendLabel); // [&identifier, lowend, highend,]
+					code.add(DataF, 0.0);
+					code.add(PushD, highendLabel); // 
+					code.add(Exchange); // [&identifier, lowend,&highend, highend]
+					
+					code.add(StoreF); // 
+					code.add(Exchange); // [lowend, &identifier]
+					code.add(Duplicate); // [lowend, &identifier, &identifier ]
+					
+					code.add(PushD,highendLabel);
+					code.add(LoadF);
+					//code.add(PStack);
+					code.add(StoreF);
+					
+					code.add(PushI,8);
+					code.add(Add);
+					code.add(Exchange);  // [&identifier+8,lowend ]
+					code.add(StoreF);
+					
+				}
+				else if(subType.concreteType() == PrimitiveType.CHARACTER ) {
+					
+					
+					code.add(DLabel,highendLabel); // [&identifier, lowend, highend,]
+					code.add(DataC, 0);
+					code.add(PushD, highendLabel); // 
+					code.add(Exchange); // [&identifier, lowend,&highend, highend]
+					
+					code.add(StoreC); // 
+					code.add(Exchange); // [lowend, &identifier]
+					code.add(Duplicate); // [lowend, &identifier, &identifier ]
+					
+					code.add(PushD,highendLabel);
+					code.add(LoadC);
+					//code.add(PStack);
+					code.add(StoreC);
+					
+					code.add(PushI,1);
+					code.add(Add);
+					code.add(Exchange);  // [&identifier+1,lowend ]
+					code.add(StoreC);
+					
+				}
+				
+				return code;
+			}
+			
+			assert false: "Type " + type + " unimplemented in opcodeForStore()";
+			return null;
+			
+		}
+		
 
 
 		///////////////////////////////////////////////////////////////////////////
@@ -578,10 +737,10 @@ public class ASMCodeGenerator {
 			//ParseNode elementNode = null;
 			
 			
-			//System.out.println(arrayType);
 			// do nothing if all in same type?
 			for(int i = 0; i< arrayLength;i++) {
 				code.append(removeValueCode(elements.get(i)));
+
 				if(elements.get(i).getType() != arrayType){
 					if(elements.get(i).getType() == PrimitiveType.CHARACTER) {
 						if(arrayType == PrimitiveType.INTEGER ) {

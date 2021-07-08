@@ -1,0 +1,10 @@
+main{
+	
+    mut r := [<44 .. 77> as <int>];
+    print r $n;
+    
+ 
+    
+
+	
+}

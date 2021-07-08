@@ -1,0 +1,15 @@
+main{
+
+	
+    imm myRange := <4.4 .. 7.7> + 2.5;
+    
+    print myRange $n;
+    
+    imm myRangeRight :=   2.3 + <14.4 .. 101.1>;
+    
+    print myRangeRight $n;
+  
+   
+  
+
+}

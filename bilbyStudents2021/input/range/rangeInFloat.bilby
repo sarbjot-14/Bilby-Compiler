@@ -1,0 +1,21 @@
+main{
+	
+    imm result := 2.2 in <4.4 .. 20.2> ;
+    print result $n;
+    
+    imm result1 := 4.4 in <4.4 .. 20.2> ;
+    print result1 $n;
+    
+    
+    imm result2 := 6.7 in <4.4 .. 20.2> ;
+    print result2 $n;
+    
+    
+    imm result3 := 20.4 in <4.7 .. 20.4> ;
+    print result3 $n;
+    
+    imm result4 := 25.8 in <4.1 .. 20.7> ;
+    print result4 $n;
+    
+	
+}

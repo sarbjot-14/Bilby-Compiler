@@ -1,0 +1,15 @@
+main{
+
+	
+    mut myRange := <4 .. 7> + 2;
+    
+    print myRange $n;
+    
+    mut myRangeRight :=   2 + <14 .. 101>;
+    
+    print myRangeRight $n;
+  
+   
+  
+
+}

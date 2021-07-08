@@ -27,6 +27,7 @@ import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.OperatorNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.ProgramNode;
+import parseTree.nodeTypes.RangeNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
@@ -38,6 +39,7 @@ import semanticAnalyzer.signatures.Promotion;
 import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.PrimitiveType.*;
+import semanticAnalyzer.types.Range;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
 import symbolTable.Scope;
@@ -294,6 +296,13 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		}
 		return true;
 	}
+	@Override
+	public void visitLeave(RangeNode node) {
+		Type subtype = node.child(0).getType();
+		Type arrayType = new Array(subtype);
+		node.setType(arrayType);
+
+	}
 	private Lextant operatorFor(OperatorNode node) {
 		LextantToken token = (LextantToken) node.getToken();
 		return token.getLextant();
@@ -306,6 +315,17 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			Type subtype = node.child(0).getType();
 			Type arrayType = new Array(subtype);
 			node.setType(arrayType);
+		}
+		else if(node.isRange()) {
+			Type subType = node.child(0).getType();
+			Type rangeType = new Range(subType);
+			if(subType == PrimitiveType.INTEGER || subType == PrimitiveType.FLOAT || subType == PrimitiveType.CHARACTER ) {
+				node.setType(rangeType);
+			}
+			else {
+				invalidRangeTypeError(node,subType);
+			}
+			
 		}
 		else {
 			node.setType(node.typeFromToken());
@@ -419,6 +439,11 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Token token = node.getToken();
 		logError("operator " + token.getLexeme() + " has multiple interpretations " 
 				+ childTypes  + " at " + token.getLocation());
+	}
+	private void invalidRangeTypeError(ParseNode node, Type type) {
+		Token token = node.getToken();
+		logError("operator " + token.getLexeme() + " range has invalid type " 
+				+ type  + " at " + token.getLocation());
 	}
 	private void promotableArrayError(ParseNode node) {
 		Token token = node.getToken();

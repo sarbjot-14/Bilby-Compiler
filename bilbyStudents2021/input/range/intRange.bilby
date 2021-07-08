@@ -1,0 +1,7 @@
+main{
+	
+    mut myRange := <14..101>;
+    
+    print myRange $n;
+	
+}

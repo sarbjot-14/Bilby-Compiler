@@ -1,5 +1,6 @@
 main{
 
+
 	imm integers := [[[[11,13]]],[[[12,16,18]]]];
 	print integers $n;
 	
@@ -8,6 +9,6 @@ main{
 	
 	imm chars := [[[[#a,#b,#c]]],[[[#d,#e,#f]]]];
 	print chars $n;
-	
+
 	
 }

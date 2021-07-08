@@ -13,13 +13,16 @@ import static asmCodeGenerator.codeStorage.ASMOpcode.DataI;
 import static asmCodeGenerator.codeStorage.ASMOpcode.*;
 
 import parseTree.ParseNode;
+import parseTree.nodeTypes.IdentifierNode;
 import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.TabNode;
 import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
+import semanticAnalyzer.types.Range;
 import semanticAnalyzer.types.Type;
+import semanticAnalyzer.types.TypeVariable;
 import asmCodeGenerator.ASMCodeGenerator.CodeVisitor;
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import asmCodeGenerator.runtime.RunTime;
@@ -46,6 +49,7 @@ public class PrintStatementGenerator {
 			}
 		}
 	}
+
 
 	private void recursivePrintCode(Type type) {
 		if(type instanceof Array) {
@@ -207,19 +211,8 @@ public class PrintStatementGenerator {
 			code.add(Printf);
 			code.add(Pop);
 			//code.add()
-
-		
 		}
-//		else {
-//			String format = printFormat(type);
-//
-//			code.append(visitor.removeValueCode(node));
-//			convertToStringIfBoolean(node.getType());
-//			convertToPointerIfString(node.getType());
-//			code.add(PushD, format);
-//			code.add(Printf);
-//		}	
-		
+
 	}
 	private void appendPrintCode(ParseNode node) {
 		
@@ -382,6 +375,69 @@ public class PrintStatementGenerator {
 			code.add(Printf);
 			
 			code.add(Pop);
+
+			
+			
+		}
+		else if(node.getType() instanceof Range && node instanceof IdentifierNode ) {
+			
+			code.append(visitor.removeValueCode(node));
+			
+			Labeller labeller = new Labeller("print-range");
+			//String lenStorage= labeller.newLabel("storage-for-arrayLength");
+			
+			// print open brace
+			code.add(PushI, 60); 
+			code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
+			code.add(Printf);
+			
+			// lowend
+			//TypeVariable typeVar = (TypeVariable) rangeType.getSubtype();
+			
+	    	//TypeVariable typeVar = (TypeVariable) rangeType.getSubtype();
+		    //System.out.println("This is a type variable"+typeVar.concreteType());	
+		    //if(typeVar.concreteType()== PrimitiveType.INTEGER ) {
+			//Range rangeType = (Range) node.getType(); //(Range) node.getChildren().get(0).getType()
+			Range rangeType = (Range)node.getType();;
+			Type subType = rangeType.getSubtype();
+		
+			if(rangeType.getSubtype().concreteType()  == PrimitiveType.INTEGER) {
+				code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
+			}
+			else if(rangeType.getSubtype().concreteType()   == PrimitiveType.FLOAT) {
+				code.add(PushD, RunTime.FLOATING_PRINT_FORMAT);
+			}
+			else if(rangeType.getSubtype().concreteType()  == PrimitiveType.CHARACTER) {
+				code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
+			}
+			code.add(Printf);
+			
+			// print range delim
+			code.add(PushI, 46); 
+			code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
+			code.add(Printf);
+			code.add(PushI, 46); 
+			code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
+			code.add(Printf);
+			
+			// high end
+			if(rangeType.getSubtype().concreteType()   == PrimitiveType.INTEGER) {
+				code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
+			}
+			else if(rangeType.getSubtype().concreteType()  == PrimitiveType.FLOAT) {
+				code.add(PushD, RunTime.FLOATING_PRINT_FORMAT);
+			}
+			else if(rangeType.getSubtype().concreteType() == PrimitiveType.CHARACTER) {
+				code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
+			}
+			code.add(Printf);
+			
+			
+
+			// print open brace
+			code.add(PushI, 62); 
+			code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
+			code.add(Printf);
 
 			
 			

@@ -13,23 +13,33 @@ import asmCodeGenerator.operators.BooleanOrCodeGenerator;
 import asmCodeGenerator.operators.EqualsCodeGeneratorFloat;
 import asmCodeGenerator.operators.EqualsCodeGeneratorInt;
 import asmCodeGenerator.operators.FloatDivideCodeGenerator;
+import asmCodeGenerator.operators.FloatLeftRangeAdditionCodeGenerator;
+import asmCodeGenerator.operators.FloatRightRangeAdditionCodeGenerator;
 import asmCodeGenerator.operators.GreaterCodeGenerator;
 import asmCodeGenerator.operators.GreaterThanEqualCodeGeneratorFloat;
 import asmCodeGenerator.operators.GreaterThanEqualCodeGeneratorInt;
+import asmCodeGenerator.operators.RangeHighCodeGenerator;
+import asmCodeGenerator.operators.RangeInCodeGenerator;
 import asmCodeGenerator.operators.IndexingCodeGenerator;
 import asmCodeGenerator.operators.IntDivideCodeGenerator;
+import asmCodeGenerator.operators.IntLeftRangeAdditionCodeGenerator;
+import asmCodeGenerator.operators.IntRightRangeAdditionCodeGenerator;
 import asmCodeGenerator.operators.IntToBoolCodeGenerator;
 import asmCodeGenerator.operators.IntToCharCodeGenerator;
 import asmCodeGenerator.operators.LessCodeGenerator;
 import asmCodeGenerator.operators.LessFloatCodeGenerator;
 import asmCodeGenerator.operators.LessThanEqualCodeGeneratorFloat;
 import asmCodeGenerator.operators.LessThanEqualCodeGeneratorInt;
+import asmCodeGenerator.operators.RangeLowCodeGenerator;
 import asmCodeGenerator.operators.NotCodeGenerator;
 import asmCodeGenerator.operators.NotEqualsCodeGeneratorFloat;
 import asmCodeGenerator.operators.NotEqualsCodeGeneratorInt;
+import asmCodeGenerator.operators.RangeCastCodeGenerator;
+import asmCodeGenerator.operators.RangeCodeGenerator;
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Punctuator;
 import semanticAnalyzer.types.Array;
+import semanticAnalyzer.types.Range;
 import semanticAnalyzer.types.Type;
 import semanticAnalyzer.types.TypeVariable;
 
@@ -123,7 +133,13 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		    new FunctionSignature(ASMOpcode.Nop, INTEGER, INTEGER),
 		    new FunctionSignature(ASMOpcode.Nop, FLOAT, FLOAT),
 		    new FunctionSignature(ASMOpcode.Add, INTEGER, INTEGER, INTEGER),
-		    new FunctionSignature(ASMOpcode.FAdd, FLOAT, FLOAT, FLOAT)
+		    new FunctionSignature(ASMOpcode.FAdd, FLOAT, FLOAT, FLOAT),
+		    new FunctionSignature(new IntLeftRangeAdditionCodeGenerator(),new Range(INTEGER),INTEGER, new Range(INTEGER)),
+		    new FunctionSignature(new IntRightRangeAdditionCodeGenerator(), INTEGER,new Range(INTEGER),new Range(INTEGER)),
+		    new FunctionSignature(new FloatLeftRangeAdditionCodeGenerator(),new Range(FLOAT),FLOAT,new Range(FLOAT)),
+		    new FunctionSignature(new FloatRightRangeAdditionCodeGenerator(),FLOAT,new Range(FLOAT),new Range(FLOAT))
+		    ///new FunctionSignature(new FloatLeftRangeAdditionCodeGenerator(),new Range(FLOAT),FLOAT,new Range(FLOAT)
+		    //new FunctionSignature(new FloatRightRangeAdditionCodeGenerator(), FLOAT,new Range(FLOAT),new Range(FLOAT))
 		);
 		
 		new FunctionSignatures(Punctuator.SUBTRACT,
@@ -185,6 +201,45 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				new FunctionSignature(new NotEqualsCodeGeneratorInt(ASMOpcode.Subtract, ASMOpcode.JumpPos, ASMOpcode.JumpFalse, ASMOpcode.Duplicate),BOOLEAN,BOOLEAN,BOOLEAN),
 				new FunctionSignature(new NotEqualsCodeGeneratorFloat(ASMOpcode.FSubtract, ASMOpcode.JumpFPos,ASMOpcode.JumpFZero, ASMOpcode.Duplicate, ASMOpcode.ConvertI), FLOAT, FLOAT, BOOLEAN)
 		);
+	
+		
+		new FunctionSignatures(Punctuator.AND, 
+				new FunctionSignature(new BooleanAndCodeGenerator(),BOOLEAN,BOOLEAN,BOOLEAN)
+		);
+		
+		new FunctionSignatures(Punctuator.OR, 
+				new FunctionSignature(new BooleanOrCodeGenerator(),BOOLEAN,BOOLEAN,BOOLEAN)
+		);
+
+		new FunctionSignatures(Keyword.IN,
+				new FunctionSignature(new RangeInCodeGenerator(ASMOpcode.Subtract,ASMOpcode.JumpPos,ASMOpcode.Duplicate,ASMOpcode.DataI,
+						ASMOpcode.StoreI,ASMOpcode.LoadI,ASMOpcode.JumpNeg),INTEGER,new Range(INTEGER),BOOLEAN),
+				new FunctionSignature(new RangeInCodeGenerator(ASMOpcode.FSubtract,ASMOpcode.JumpFPos,ASMOpcode.Duplicate,ASMOpcode.DataF,
+						ASMOpcode.StoreF,ASMOpcode.LoadF,ASMOpcode.JumpFNeg),FLOAT,new Range(FLOAT),BOOLEAN),
+				new FunctionSignature(new RangeInCodeGenerator(ASMOpcode.Subtract,ASMOpcode.JumpPos,ASMOpcode.Duplicate,ASMOpcode.DataI,
+						ASMOpcode.StoreI,ASMOpcode.LoadI,ASMOpcode.JumpNeg),CHARACTER,new Range(CHARACTER),BOOLEAN)
+				);
+		new FunctionSignatures(Punctuator.NOT, 
+				new FunctionSignature(new NotCodeGenerator(),BOOLEAN,BOOLEAN)
+		);
+		TypeVariable rangeT = new TypeVariable("rangeT");
+		new FunctionSignatures(Keyword.LOW, 
+				new FunctionSignature(new RangeLowCodeGenerator(),new Range(rangeT),rangeT)
+		);
+		new FunctionSignatures(Keyword.HIGH, 
+				new FunctionSignature(new RangeHighCodeGenerator(),new Range(rangeT),rangeT)
+		);
+		
+		TypeVariable S = new TypeVariable("S");
+		new FunctionSignatures(Keyword.ALLOC, 
+				new FunctionSignature(new AllocCodeGenerator(),new Array(S),INTEGER, new Array(S))
+		);
+		
+		new FunctionSignatures(Punctuator.INDEXING, 
+				new FunctionSignature(new IndexingCodeGenerator(),new Array(S),INTEGER, S)
+		);
+		
+		TypeVariable C = new TypeVariable("C");
 		new FunctionSignatures(Punctuator.CAST, 
 				new FunctionSignature(ASMOpcode.ConvertF, INTEGER,FLOAT, FLOAT),
 
@@ -199,29 +254,13 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				new FunctionSignature(ASMOpcode.Nop, FLOAT,FLOAT, FLOAT),
 				new FunctionSignature(ASMOpcode.Nop, CHARACTER,CHARACTER, CHARACTER),
 				new FunctionSignature(ASMOpcode.Nop, BOOLEAN,BOOLEAN, BOOLEAN),
-				new FunctionSignature(ASMOpcode.Nop, STRING,STRING, STRING)
+				new FunctionSignature(ASMOpcode.Nop, STRING,STRING, STRING),
+				new FunctionSignature(ASMOpcode.Nop, new Range(C),new Range(C),new Range(C))				
+		);///new RangeCastCodeGenerator(ASMOpcode.JumpFalse)
+		TypeVariable R = new TypeVariable("R");
+		new FunctionSignatures(Punctuator.RANGE_DELIM, 
+				new FunctionSignature(new RangeCodeGenerator(),R,R,new Range(R))
 				
-				
-		);
-		
-		new FunctionSignatures(Punctuator.AND, 
-				new FunctionSignature(new BooleanAndCodeGenerator(),BOOLEAN,BOOLEAN,BOOLEAN)
-		);
-		
-		new FunctionSignatures(Punctuator.OR, 
-				new FunctionSignature(new BooleanOrCodeGenerator(),BOOLEAN,BOOLEAN,BOOLEAN)
-		);
-		new FunctionSignatures(Punctuator.NOT, 
-				new FunctionSignature(new NotCodeGenerator(),BOOLEAN,BOOLEAN)
-		);
-		
-		TypeVariable S = new TypeVariable("S");
-		new FunctionSignatures(Keyword.ALLOC, 
-				new FunctionSignature(new AllocCodeGenerator(),new Array(S),INTEGER, new Array(S))
-		);
-		
-		new FunctionSignatures(Punctuator.INDEXING, 
-				new FunctionSignature(new IndexingCodeGenerator(),new Array(S),INTEGER, S)
 		);
 													
 		

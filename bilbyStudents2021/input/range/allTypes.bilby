@@ -1,0 +1,16 @@
+main{
+
+	mut rangeChar := <#a..#f>;
+   
+   	print rangeChar $n;
+   
+    mut myRange := <14..101>;
+    
+    print myRange $n;
+    
+    mut rangeFloat := <14.4..101.1>;
+    
+    print rangeFloat $n;
+    
+
+}

@@ -20,6 +20,7 @@ import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.OperatorNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.ProgramNode;
+import parseTree.nodeTypes.RangeNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
@@ -331,7 +332,7 @@ public class Parser {
 	// unaryExpression			-> UNARYOP* unaryExpression | atomicExpression
 	// indexingExpression       -> atomicExpression ([expression])*
 	// atomicExpression         -> bracketExpression | literal
-	// bracketExpression       -> (expression) | [ expression CAST type ] | ALLOC [type] (expression)
+	// bracketExpression       -> (expression) | [ expression CAST type ] | ALLOC [type] (expression) | < expression .. expression >
 	// literal                  -> intConstant | identifier | booleanConstant | characterConstant | stringConstant | floatConstant 
 
 	// expr  -> comparisonExpression
@@ -352,7 +353,7 @@ public class Parser {
 		}
 		
 		ParseNode left = parseAdditiveExpression();
-		if(nowReading.isLextant(Punctuator.GREATER, Punctuator.GREATER_THAN_EQUAL,Punctuator.LESS,Punctuator.LESS_THAN_EQUAL, Punctuator.EQUALS,Punctuator.NOT_EQUALS, Punctuator.AND, Punctuator.OR  )) {
+		if(nowReading.isLextant(Punctuator.GREATER, Punctuator.GREATER_THAN_EQUAL,Punctuator.LESS,Punctuator.LESS_THAN_EQUAL, Punctuator.EQUALS,Punctuator.NOT_EQUALS, Punctuator.AND, Punctuator.OR ,Keyword.IN )) {
 			Token compareToken = nowReading;
 			readToken();
 			ParseNode right = parseAdditiveExpression();
@@ -423,7 +424,7 @@ public class Parser {
 		return startsLiteral(token) || startsBracketExpression(token);
 	}
 	
-	// bracketExpression       -> (expression) | [ expression CAST type ] | ALLOC [type] (expression) | [expressionList ]
+	// bracketExpression       -> (expression) | [ expression CAST type ] | ALLOC [type] (expression) | [expressionList ] | < expression .. expression >
 	private ParseNode parseBracketExpression() {
 		if(!startsBracketExpression(nowReading)) {
 			return syntaxErrorNode("bracket expression");
@@ -458,8 +459,8 @@ public class Parser {
 				readToken();
 				ParseNode castNode = new CastNode(previouslyRead);
 
-				readToken();
-				ParseNode rightType = new TypeNode(previouslyRead);
+				//readToken();
+				ParseNode rightType = parseType(); //new TypeNode(previouslyRead);
 
 
 				castNode.appendChild(left);
@@ -484,6 +485,23 @@ public class Parser {
 				syntaxError(nowReading, "not a cast or expressionlist");
 			}
 		}
+		else if(nowReading.isLextant(Punctuator.LESS)) {
+			//ParseNode rangeNode = new RangeNode(nowReading);
+			expect(Punctuator.LESS);
+			ParseNode expressionStart = parseExpression();
+			Token lessToken = nowReading;
+			expect(Punctuator.RANGE_DELIM);
+			ParseNode expressionEnd = parseAdditiveExpression(); 
+			expect(Punctuator.GREATER);
+			
+//			rangeNode.appendChild(expressionStart);
+//			rangeNode.appendChild(expressionEnd);
+			
+
+			
+			return OperatorNode.withChildren(lessToken, expressionStart , expressionEnd);
+			
+		}
 		
 		
 		return syntaxErrorNode("bracked Expression not implemented");
@@ -491,7 +509,7 @@ public class Parser {
 	}
 	
 	private boolean startsBracketExpression(Token token) {
-		return token.isLextant(Punctuator.OPEN_BRACE_PAREN) || token.isLextant(Punctuator.OPEN_BRACKET) || token.isLextant(Keyword.ALLOC);
+		return token.isLextant(Punctuator.OPEN_BRACE_PAREN) || token.isLextant(Punctuator.OPEN_BRACKET) || token.isLextant(Keyword.ALLOC) || token.isLextant(Punctuator.LESS) ;
 	}
 	
 	// arrayExpression			-> [expressionList]
@@ -526,7 +544,7 @@ public class Parser {
 			return syntaxErrorNode("unary or atomic expression");
 		}
 
-        if(nowReading.isLextant(Punctuator.SUBTRACT, Punctuator.ADD, Punctuator.NOT))  {
+        if(nowReading.isLextant(Punctuator.SUBTRACT, Punctuator.ADD, Punctuator.NOT, Keyword.LOW,Keyword.HIGH))  {
         	
 			Token operatorToken = nowReading;
 			readToken();
@@ -540,7 +558,7 @@ public class Parser {
 	}
 	
 	private boolean startsUnaryExpression(Token token) {
-		return (token.isLextant(Punctuator.SUBTRACT,Punctuator.ADD, Punctuator.NOT) || startsIndexingExpression(nowReading) );
+		return (token.isLextant(Punctuator.SUBTRACT,Punctuator.ADD, Punctuator.NOT, Keyword.LOW,Keyword.HIGH) || startsIndexingExpression(nowReading) );
 	}
 	
 	// indexingExpression -> atomicExpression ([ expression ])* 
@@ -671,7 +689,7 @@ public class Parser {
 		previouslyRead = nowReading;
 		nowReading = scanner.next();
 	}	
-	// type ->  [type] | BOOL | CHAR | FLOAT | INT | STRING
+	// type ->  [type] | BOOL | CHAR | FLOAT | INT | STRING | <type>
 	private ParseNode parseType() {
 		if(!startsType(nowReading)) {
 			return syntaxErrorNode("type");
@@ -683,6 +701,11 @@ public class Parser {
 			expect(Punctuator.CLOSE_BRACKET);
 			return TypeNode.withChildren(typeToken,child);
 		}
+		else if(typeToken.isLextant(Punctuator.LESS)) {
+			ParseNode child = parseType();
+			expect(Punctuator.GREATER);
+			return TypeNode.withChildren(typeToken,child);
+		}
 		else {
 			
 			return TypeNode.make(typeToken);
@@ -691,7 +714,7 @@ public class Parser {
 	}
 	
 	private boolean startsType(Token token) {
-		return token.isLextant(Keyword.BOOL, Keyword.CHAR, Keyword.INT, Keyword.FLOAT, Keyword.STRING, Punctuator.OPEN_BRACKET);
+		return token.isLextant(Keyword.BOOL, Keyword.CHAR, Keyword.INT, Keyword.FLOAT, Keyword.STRING, Punctuator.OPEN_BRACKET,Punctuator.LESS);
 	}
 	// if the current token is one of the given lextants, read the next token.
 	// otherwise, give a syntax error and read next token (to avoid endless looping).

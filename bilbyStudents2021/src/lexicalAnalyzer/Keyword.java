@@ -22,6 +22,9 @@ public enum Keyword implements Lextant {
 	WHILE("while"),
 	ALLOC("alloc"),
 	STRING("string"),
+	LOW("low"),
+	HIGH("high"),
+	IN("in"),
 	NULL_KEYWORD("");
 
 	private String lexeme;

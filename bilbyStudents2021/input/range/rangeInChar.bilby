@@ -1,0 +1,21 @@
+main{
+	
+    imm result := #a in <#c .. #h> ;
+    print result $n;
+    
+    imm result1 := #c in <#c .. #h> ;
+    print result1 $n;
+    
+    
+    imm result2 := #f in <#c .. #h>;
+    print result2 $n;
+    
+    
+    imm result3 := #h in <#c .. #h> ;
+    print result3 $n;
+    
+    imm result4 := #j in <#c .. #h> ;
+    print result4 $n;
+    
+	
+}
