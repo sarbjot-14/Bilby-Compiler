@@ -31,7 +31,7 @@ public class Array implements Type {
 	@Override
 	public String toString() {
 		
-		return "ARRAY[" + subtype + "]"; // fix this
+		return "[" + subtype + "]"; // fix this
 	}
 	
 	@Override

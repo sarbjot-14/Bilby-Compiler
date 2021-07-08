@@ -1,8 +1,15 @@
 main{
 
 
-	imm i := [#A,2,4];
-	print i $n;
+	
+	
+	imm integers := [[[11]],[13,14,15]];
+	print integers $n;
+	
+	%imm integers2 := [[11],[13,14,15]];
+	%print integers2 $n;
+	
+	
 	
 	
 }

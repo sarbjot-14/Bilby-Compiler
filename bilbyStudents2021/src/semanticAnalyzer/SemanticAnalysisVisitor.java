@@ -197,45 +197,63 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		// check if no promotion is needed
 		boolean hasSameType = true;
 		Type firstType =  node.getChildren().get(0).getType();
-		for(ParseNode childNode:node.getChildren()) {
-			if(childNode.getType() != firstType) {
-				hasSameType = false;
+		Array arrayType = null;
+		//regualar type
+		//System.out.println(firstType);
+		if(!(firstType instanceof Array )) {
+			for(ParseNode childNode:node.getChildren()) {
+				if(childNode.getType() != firstType) {
+					hasSameType = false;
+				}
 			}
 		}
+//		else { // what happens if has arrays? just make hasSameType = true so it skips any attempt to promote?
+//			if(firstType instanceof Array) {
+//				Array firstTypeArray = (Array) firstType;
+//				for(ParseNode childNode:node.getChildren()) {
+//					arrayType = (Array) childNode.getType();
+//					if(arrayType.getSubtype() != firstTypeArray.getSubtype()) {
+//						hasSameType = false;
+//					}
+//				}
+//			}
+//			
+//		}
+		
 		// check if able to promote with least amount of promotions
 		//PrimitiveType targetType = PrimitiveType.INTEGER; 
 		if(!hasSameType) {
 			for(PrimitiveType promotableType : promotableTypes) {
-//				System.out.println(promotableType);
-//				System.out.println("IS PROMOTABLE?");
-//				System.out.println(isArrayPromotable(node, promotableType));
+				//				System.out.println(promotableType);
+				//				System.out.println("IS PROMOTABLE?");
+				//				System.out.println(isArrayPromotable(node, promotableType));
 				// if is promotable ,promote to that type and return 
 				if(isArrayPromotable(node, promotableType)) {
 					//System.out.println("FOUND A PROMOTABLE TYPE");
-					
+
 					Type subtype = promotableType;//node.child(0).getType();
-					Type arrayType = new Array(subtype);
-					node.setType(arrayType);
+					Type arrayT = new Array(subtype);
+					node.setType(arrayT);
 					return;
 				}
 
 
-			
-			//System.out.println("NNNNNNNEXT");
-		}
-	}
-	else {
-		Type subtype = node.child(0).getType();
-		Type arrayType = new Array(subtype);
-		node.setType(arrayType);
-		return;
-	}
 
-		
+				//System.out.println("NNNNNNNEXT");
+			}
+		}
+		else {
+			Type subtype = node.child(0).getType();
+			Type arrayT = new Array(subtype);
+			node.setType(arrayT);
+			return;
+		}
+
+
 		//System.out.println("COULD NOT FIND ANY PROMOTABLE TYPE THROW ERROR");
 		promotableArrayError(node);
 
-		
+
 
 	}
 
