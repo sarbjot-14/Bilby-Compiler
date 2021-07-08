@@ -69,15 +69,7 @@ public class IntRightRangeAdditionCodeGenerator implements SimpleCodeGenerator {
 		code.add(Exchange);
 
 		
-		
-//		
-//		code.add(Add);
-//		code.add(Exchange);
-//		code.add(PushD,additionOperandLabel);
-//		code.add(LoadI);
-//		code.add(Add);
-//		
-//		code.add(Exchange);
+	
 		
 		return code;
 	}

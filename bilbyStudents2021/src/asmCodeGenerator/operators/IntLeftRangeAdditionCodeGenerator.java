@@ -25,7 +25,7 @@ public class IntLeftRangeAdditionCodeGenerator implements SimpleCodeGenerator {
 	public ASMCodeFragment generate(ParseNode node, List<ASMCodeFragment> args) {
 	
 
-		Labeller labeller = new Labeller("rangeAdditionLeft");
+		Labeller labeller = new Labeller("intleftRangeAddtion");
 
 		String startLabel = labeller.newLabel("start");
 		String additionOperandLabel   = labeller.newLabel("additionOperand");

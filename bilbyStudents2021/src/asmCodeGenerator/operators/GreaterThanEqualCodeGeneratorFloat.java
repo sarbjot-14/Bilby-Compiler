@@ -36,7 +36,7 @@ public class GreaterThanEqualCodeGeneratorFloat implements SimpleCodeGenerator {
 	public ASMCodeFragment generate(ParseNode node, List<ASMCodeFragment> args) {
 	
 
-		Labeller labeller = new Labeller("compare");
+		Labeller labeller = new Labeller("greateer-than-equal");
 
 		String startLabel = labeller.newLabel("start");
 		String subLabel   = labeller.newLabel("sub");

@@ -31,7 +31,7 @@ public class BooleanOrCodeGenerator implements SimpleCodeGenerator {
 	public ASMCodeFragment generate(ParseNode node, List<ASMCodeFragment> args) {
 	
 
-		Labeller labeller = new Labeller("compare");
+		Labeller labeller = new Labeller("boolean-or");
 
 		String startLabel = labeller.newLabel("start");
 		String subLabel   = labeller.newLabel("sub");

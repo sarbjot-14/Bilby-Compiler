@@ -35,7 +35,7 @@ public class EqualsCodeGeneratorInt implements SimpleCodeGenerator {
 	public ASMCodeFragment generate(ParseNode node, List<ASMCodeFragment> args) {
 	
 
-		Labeller labeller = new Labeller("compare");
+		Labeller labeller = new Labeller("equals-int");
 
 		String startLabel = labeller.newLabel("start");
 		String subLabel   = labeller.newLabel("sub");

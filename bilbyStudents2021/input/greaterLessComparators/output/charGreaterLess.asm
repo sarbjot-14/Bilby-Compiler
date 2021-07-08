@@ -205,22 +205,22 @@
         DLabel       $global-memory-block      
         DataZ        0                         
         Label        $$main                    
-        Label        -compare-1-start          
+        Label        -greater-1-start          
         PushI        71                        
         Nop                                    
         PushI        67                        
         Nop                                    
-        Label        -compare-1-sub            
+        Label        -greater-1-sub            
         Subtract                               
-        JumpPos      -compare-1-true           
-        Jump         -compare-1-false          
-        Label        -compare-1-true           
+        JumpPos      -greater-1-true           
+        Jump         -greater-1-false          
+        Label        -greater-1-true           
         PushI        1                         
-        Jump         -compare-1-join           
-        Label        -compare-1-false          
+        Jump         -greater-1-join           
+        Label        -greater-1-false          
         PushI        0                         
-        Jump         -compare-1-join           
-        Label        -compare-1-join           
+        Jump         -greater-1-join           
+        Label        -greater-1-join           
         JumpTrue     -print-boolean-2-true     
         PushD        $boolean-false-string     
         Jump         -print-boolean-2-join     
@@ -231,22 +231,22 @@
         Printf                                 
         PushD        $print-format-newline     
         Printf                                 
-        Label        -compare-3-start          
+        Label        -greater-3-start          
         PushI        67                        
         Nop                                    
         PushI        71                        
         Nop                                    
-        Label        -compare-3-sub            
+        Label        -greater-3-sub            
         Subtract                               
-        JumpPos      -compare-3-true           
-        Jump         -compare-3-false          
-        Label        -compare-3-true           
+        JumpPos      -greater-3-true           
+        Jump         -greater-3-false          
+        Label        -greater-3-true           
         PushI        1                         
-        Jump         -compare-3-join           
-        Label        -compare-3-false          
+        Jump         -greater-3-join           
+        Label        -greater-3-false          
         PushI        0                         
-        Jump         -compare-3-join           
-        Label        -compare-3-join           
+        Jump         -greater-3-join           
+        Label        -greater-3-join           
         JumpTrue     -print-boolean-4-true     
         PushD        $boolean-false-string     
         Jump         -print-boolean-4-join     
@@ -313,24 +313,24 @@
         Printf                                 
         PushD        $print-format-newline     
         Printf                                 
-        Label        -compare-9-start          
+        Label        -greater-than-equal-int-9-start 
         PushI        71                        
         Nop                                    
         PushI        71                        
         Nop                                    
-        Label        -compare-9-sub            
+        Label        -greater-than-equal-int-9-sub 
         Subtract                               
         Duplicate                              
-        JumpFalse    -compare-9-true           
-        JumpPos      -compare-9-true           
-        Jump         -compare-9-false          
-        Label        -compare-9-true           
+        JumpFalse    -greater-than-equal-int-9-true 
+        JumpPos      -greater-than-equal-int-9-true 
+        Jump         -greater-than-equal-int-9-false 
+        Label        -greater-than-equal-int-9-true 
         PushI        1                         
-        Jump         -compare-9-join           
-        Label        -compare-9-false          
+        Jump         -greater-than-equal-int-9-join 
+        Label        -greater-than-equal-int-9-false 
         PushI        0                         
-        Jump         -compare-9-join           
-        Label        -compare-9-join           
+        Jump         -greater-than-equal-int-9-join 
+        Label        -greater-than-equal-int-9-join 
         JumpTrue     -print-boolean-10-true    
         PushD        $boolean-false-string     
         Jump         -print-boolean-10-join    
@@ -341,24 +341,24 @@
         Printf                                 
         PushD        $print-format-newline     
         Printf                                 
-        Label        -compare-11-start         
+        Label        -greater-than-equal-int-11-start 
         PushI        67                        
         Nop                                    
         PushI        71                        
         Nop                                    
-        Label        -compare-11-sub           
+        Label        -greater-than-equal-int-11-sub 
         Subtract                               
         Duplicate                              
-        JumpFalse    -compare-11-true          
-        JumpPos      -compare-11-true          
-        Jump         -compare-11-false         
-        Label        -compare-11-true          
+        JumpFalse    -greater-than-equal-int-11-true 
+        JumpPos      -greater-than-equal-int-11-true 
+        Jump         -greater-than-equal-int-11-false 
+        Label        -greater-than-equal-int-11-true 
         PushI        1                         
-        Jump         -compare-11-join          
-        Label        -compare-11-false         
+        Jump         -greater-than-equal-int-11-join 
+        Label        -greater-than-equal-int-11-false 
         PushI        0                         
-        Jump         -compare-11-join          
-        Label        -compare-11-join          
+        Jump         -greater-than-equal-int-11-join 
+        Label        -greater-than-equal-int-11-join 
         JumpTrue     -print-boolean-12-true    
         PushD        $boolean-false-string     
         Jump         -print-boolean-12-join    
@@ -369,24 +369,24 @@
         Printf                                 
         PushD        $print-format-newline     
         Printf                                 
-        Label        -compare-13-start         
+        Label        -lessThanEquals-13-start  
         PushI        67                        
         Nop                                    
         PushI        67                        
         Nop                                    
-        Label        -compare-13-sub           
+        Label        -lessThanEquals-13-sub    
         Subtract                               
         Duplicate                              
-        JumpFalse    -compare-13-true          
-        JumpPos      -compare-13-false         
-        Jump         -compare-13-true          
-        Label        -compare-13-true          
+        JumpFalse    -lessThanEquals-13-true   
+        JumpPos      -lessThanEquals-13-false  
+        Jump         -lessThanEquals-13-true   
+        Label        -lessThanEquals-13-true   
         PushI        1                         
-        Jump         -compare-13-join          
-        Label        -compare-13-false         
+        Jump         -lessThanEquals-13-join   
+        Label        -lessThanEquals-13-false  
         PushI        0                         
-        Jump         -compare-13-join          
-        Label        -compare-13-join          
+        Jump         -lessThanEquals-13-join   
+        Label        -lessThanEquals-13-join   
         JumpTrue     -print-boolean-14-true    
         PushD        $boolean-false-string     
         Jump         -print-boolean-14-join    
@@ -397,24 +397,24 @@
         Printf                                 
         PushD        $print-format-newline     
         Printf                                 
-        Label        -compare-15-start         
+        Label        -lessThanEquals-15-start  
         PushI        67                        
         Nop                                    
         PushI        71                        
         Nop                                    
-        Label        -compare-15-sub           
+        Label        -lessThanEquals-15-sub    
         Subtract                               
         Duplicate                              
-        JumpFalse    -compare-15-true          
-        JumpPos      -compare-15-false         
-        Jump         -compare-15-true          
-        Label        -compare-15-true          
+        JumpFalse    -lessThanEquals-15-true   
+        JumpPos      -lessThanEquals-15-false  
+        Jump         -lessThanEquals-15-true   
+        Label        -lessThanEquals-15-true   
         PushI        1                         
-        Jump         -compare-15-join          
-        Label        -compare-15-false         
+        Jump         -lessThanEquals-15-join   
+        Label        -lessThanEquals-15-false  
         PushI        0                         
-        Jump         -compare-15-join          
-        Label        -compare-15-join          
+        Jump         -lessThanEquals-15-join   
+        Label        -lessThanEquals-15-join   
         JumpTrue     -print-boolean-16-true    
         PushD        $boolean-false-string     
         Jump         -print-boolean-16-join    

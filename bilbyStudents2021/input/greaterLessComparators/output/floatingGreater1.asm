@@ -205,22 +205,22 @@
         DLabel       $global-memory-block      
         DataZ        0                         
         Label        $$main                    
-        Label        -compare-1-start          
+        Label        -greater-1-start          
         PushF        1.230000                  
         Nop                                    
         PushF        2.340000                  
         Nop                                    
-        Label        -compare-1-sub            
+        Label        -greater-1-sub            
         FSubtract                              
-        JumpFPos     -compare-1-true           
-        Jump         -compare-1-false          
-        Label        -compare-1-true           
+        JumpFPos     -greater-1-true           
+        Jump         -greater-1-false          
+        Label        -greater-1-true           
         PushI        1                         
-        Jump         -compare-1-join           
-        Label        -compare-1-false          
+        Jump         -greater-1-join           
+        Label        -greater-1-false          
         PushI        0                         
-        Jump         -compare-1-join           
-        Label        -compare-1-join           
+        Jump         -greater-1-join           
+        Label        -greater-1-join           
         JumpTrue     -print-boolean-2-true     
         PushD        $boolean-false-string     
         Jump         -print-boolean-2-join     
@@ -231,22 +231,22 @@
         Printf                                 
         PushD        $print-format-newline     
         Printf                                 
-        Label        -compare-3-start          
+        Label        -greater-3-start          
         PushF        1.230000                  
         Nop                                    
         PushF        1.230000                  
         Nop                                    
-        Label        -compare-3-sub            
+        Label        -greater-3-sub            
         FSubtract                              
-        JumpFPos     -compare-3-true           
-        Jump         -compare-3-false          
-        Label        -compare-3-true           
+        JumpFPos     -greater-3-true           
+        Jump         -greater-3-false          
+        Label        -greater-3-true           
         PushI        1                         
-        Jump         -compare-3-join           
-        Label        -compare-3-false          
+        Jump         -greater-3-join           
+        Label        -greater-3-false          
         PushI        0                         
-        Jump         -compare-3-join           
-        Label        -compare-3-join           
+        Jump         -greater-3-join           
+        Label        -greater-3-join           
         JumpTrue     -print-boolean-4-true     
         PushD        $boolean-false-string     
         Jump         -print-boolean-4-join     

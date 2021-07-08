@@ -36,7 +36,7 @@ public class EqualsCodeGeneratorFloat implements SimpleCodeGenerator {
 	public ASMCodeFragment generate(ParseNode node, List<ASMCodeFragment> args) {
 	
 
-		Labeller labeller = new Labeller("equalsFloat");
+		Labeller labeller = new Labeller("equals-float");
 
 		String startLabel = labeller.newLabel("start");
 		String subLabel   = labeller.newLabel("sub");
