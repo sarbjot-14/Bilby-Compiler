@@ -89,9 +89,9 @@ public class LocatedChar implements Locator {
 		if(character.charValue() == '_' || character.charValue() == '@'  ) {
 			startsIdentifier = true;
 		}
-//		if(character.charValue() >= '0' && character.charValue() <= '9'  ) {
-//			startsIdentifier = true;
-//		}
+		if(character.charValue() >= '0' && character.charValue() <= '9'  ) {
+			startsIdentifier = true;
+		}
 
 		return startsIdentifier;
 	}

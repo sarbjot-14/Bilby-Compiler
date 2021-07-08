@@ -222,7 +222,7 @@ public class PrintStatementGenerator {
 			
 		}
 		else if(node.getType() instanceof Range && node instanceof IdentifierNode ) {
-			Range rangeType = (Range)node.getType();
+			
 			code.append(visitor.removeValueCode(node));
 			
 			Labeller labeller = new Labeller("print-range");
@@ -239,15 +239,17 @@ public class PrintStatementGenerator {
 	    	//TypeVariable typeVar = (TypeVariable) rangeType.getSubtype();
 		    //System.out.println("This is a type variable"+typeVar.concreteType());	
 		    //if(typeVar.concreteType()== PrimitiveType.INTEGER ) {
-			//Range rangeType = (Range) node.getType(); //(Range) node.getChildren().get(0).getType();
+			//Range rangeType = (Range) node.getType(); //(Range) node.getChildren().get(0).getType()
+			Range rangeType = (Range)node.getType();;
 			Type subType = rangeType.getSubtype();
-			if(subType == PrimitiveType.INTEGER) {
+		
+			if(rangeType.getSubtype().concreteType()  == PrimitiveType.INTEGER) {
 				code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
 			}
-			else if(subType  == PrimitiveType.FLOAT) {
+			else if(rangeType.getSubtype().concreteType()   == PrimitiveType.FLOAT) {
 				code.add(PushD, RunTime.FLOATING_PRINT_FORMAT);
 			}
-			else if(subType == PrimitiveType.CHARACTER) {
+			else if(rangeType.getSubtype().concreteType()  == PrimitiveType.CHARACTER) {
 				code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
 			}
 			code.add(Printf);
@@ -261,13 +263,13 @@ public class PrintStatementGenerator {
 			code.add(Printf);
 			
 			// high end
-			if(subType  == PrimitiveType.INTEGER) {
+			if(rangeType.getSubtype().concreteType()   == PrimitiveType.INTEGER) {
 				code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
 			}
-			else if(subType == PrimitiveType.FLOAT) {
+			else if(rangeType.getSubtype().concreteType()  == PrimitiveType.FLOAT) {
 				code.add(PushD, RunTime.FLOATING_PRINT_FORMAT);
 			}
-			else if(subType== PrimitiveType.CHARACTER) {
+			else if(rangeType.getSubtype().concreteType() == PrimitiveType.CHARACTER) {
 				code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
 			}
 			code.add(Printf);

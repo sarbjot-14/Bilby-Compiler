@@ -236,8 +236,8 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				new FunctionSignature(ASMOpcode.Nop, CHARACTER,CHARACTER, CHARACTER),
 				new FunctionSignature(ASMOpcode.Nop, BOOLEAN,BOOLEAN, BOOLEAN),
 				new FunctionSignature(ASMOpcode.Nop, STRING,STRING, STRING),
-				new FunctionSignature(new RangeCastCodeGenerator(ASMOpcode.JumpFalse), new Range(C),new Range(C),new Range(C))				
-		);
+				new FunctionSignature(ASMOpcode.Nop, new Range(C),new Range(C),new Range(C))				
+		);///new RangeCastCodeGenerator(ASMOpcode.JumpFalse)
 		TypeVariable R = new TypeVariable("R");
 		new FunctionSignatures(Punctuator.RANGE_DELIM, 
 				new FunctionSignature(new RangeCodeGenerator(),R,R,new Range(R))

@@ -1,6 +1,6 @@
 main{
 
-	 mut rangeChar := <#a..#f>;
+	mut rangeChar := <#a..#f>;
    
    	print rangeChar $n;
    
