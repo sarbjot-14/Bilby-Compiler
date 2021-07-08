@@ -267,10 +267,7 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		input.pushback(c);
 	}
 	
-	
-	
 
-	
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Character-classification routines specific to bilby scanning.	

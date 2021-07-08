@@ -459,8 +459,8 @@ public class Parser {
 				readToken();
 				ParseNode castNode = new CastNode(previouslyRead);
 
-				readToken();
-				ParseNode rightType = new TypeNode(previouslyRead);
+				//readToken();
+				ParseNode rightType = parseType(); //new TypeNode(previouslyRead);
 
 
 				castNode.appendChild(left);
@@ -486,7 +486,7 @@ public class Parser {
 			}
 		}
 		else if(nowReading.isLextant(Punctuator.LESS)) {
-			ParseNode rangeNode = new RangeNode(nowReading);
+			//ParseNode rangeNode = new RangeNode(nowReading);
 			expect(Punctuator.LESS);
 			ParseNode expressionStart = parseExpression();
 			Token lessToken = nowReading;
@@ -689,7 +689,7 @@ public class Parser {
 		previouslyRead = nowReading;
 		nowReading = scanner.next();
 	}	
-	// type ->  [type] | BOOL | CHAR | FLOAT | INT | STRING
+	// type ->  [type] | BOOL | CHAR | FLOAT | INT | STRING | <type>
 	private ParseNode parseType() {
 		if(!startsType(nowReading)) {
 			return syntaxErrorNode("type");
@@ -701,6 +701,11 @@ public class Parser {
 			expect(Punctuator.CLOSE_BRACKET);
 			return TypeNode.withChildren(typeToken,child);
 		}
+		else if(typeToken.isLextant(Punctuator.LESS)) {
+			ParseNode child = parseType();
+			expect(Punctuator.GREATER);
+			return TypeNode.withChildren(typeToken,child);
+		}
 		else {
 			
 			return TypeNode.make(typeToken);
@@ -709,7 +714,7 @@ public class Parser {
 	}
 	
 	private boolean startsType(Token token) {
-		return token.isLextant(Keyword.BOOL, Keyword.CHAR, Keyword.INT, Keyword.FLOAT, Keyword.STRING, Punctuator.OPEN_BRACKET);
+		return token.isLextant(Keyword.BOOL, Keyword.CHAR, Keyword.INT, Keyword.FLOAT, Keyword.STRING, Punctuator.OPEN_BRACKET,Punctuator.LESS);
 	}
 	// if the current token is one of the given lextants, read the next token.
 	// otherwise, give a syntax error and read next token (to avoid endless looping).

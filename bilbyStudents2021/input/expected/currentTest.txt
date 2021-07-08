@@ -2,3 +2,4 @@
 [ 174 2.2 2.2 4.4 ]
 [ 174 2.2 0 ]
 Bad operand type for StoreI instruction at location 58.
+

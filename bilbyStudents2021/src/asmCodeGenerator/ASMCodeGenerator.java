@@ -42,6 +42,7 @@ import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Range;
 import semanticAnalyzer.types.Type;
+import semanticAnalyzer.types.TypeVariable;
 import symbolTable.Binding;
 import symbolTable.Scope;
 import static asmCodeGenerator.codeStorage.ASMCodeFragment.CodeType.*;
@@ -177,29 +178,39 @@ public class ASMCodeGenerator {
 
 			}
 			else if(node.getType() instanceof Range) {
-				Range rangeType = (Range)node.getType();
+				
+				//Range rangeType = (Range)node.getType();
+				Range rangeType = (Range) node.getType();
+				//System.out.println("type in turnAddres to value is "+rangeType.getSubtype().concreteType());
+
+				//Type rangeSubType = rangeType.concreteType();
 				code.add(Duplicate);
-				if(rangeType.getSubtype() == PrimitiveType.INTEGER ) {
+				//System.out.println("turnAddressIntoValue");
+				if(rangeType.getSubtype().concreteType()== PrimitiveType.INTEGER ) {
+					code.add(LoadI);
+					code.add(Exchange);
+					code.add(PushI,rangeType.concreteType().getSize());
+					code.add(Add);
 					code.add(LoadI);
 				}
-				else if(rangeType.getSubtype() == PrimitiveType.CHARACTER) {
+				else if(rangeType.getSubtype().concreteType() == PrimitiveType.CHARACTER) {
+					code.add(LoadC);
+					code.add(Exchange);
+					code.add(PushI,rangeType.concreteType().getSize());
+					code.add(Add);
 					code.add(LoadC);
 				}
-				else if(rangeType.getSubtype() == PrimitiveType.FLOAT) {
+				else if(rangeType.getSubtype().concreteType() == PrimitiveType.FLOAT) {
+					code.add(LoadF);
+					code.add(Exchange);
+					code.add(PushI,rangeType.concreteType().getSize());
+					code.add(Add);
 					code.add(LoadF);
 				}
-				code.add(Exchange);
-				code.add(PushI,rangeType.getSubtype().getSize());
-				code.add(Add);
-				if(rangeType.getSubtype() == PrimitiveType.INTEGER ) {
-					code.add(LoadI);
-				}
-				else if(rangeType.getSubtype() == PrimitiveType.CHARACTER) {
-					code.add(LoadC);
-				}
-				else if(rangeType.getSubtype() == PrimitiveType.FLOAT) {
-					code.add(LoadF);
-				}
+				
+				
+				
+				//System.out.println("Finished turnAddressIntoValue");
 				
 			
 			}
@@ -303,7 +314,6 @@ public class ASMCodeGenerator {
 			code.add(DataI, 0);
 			code.add(PushD, identifier);
 			code.append(lvalue); 
-			//code.add(PStack);
 			code.add(StoreI); 
 			
 			// save the index
@@ -344,7 +354,6 @@ public class ASMCodeGenerator {
 			
 		
 			
-			//code.add(PStack);
 			code.add(PushI, 8); 
 			code.add(Add);
 			code.add(Duplicate);
@@ -391,6 +400,7 @@ public class ASMCodeGenerator {
 		ASMCodeFragment generateStore(ParseNode node){
 			ASMCodeFragment code = new ASMCodeFragment(CodeType.GENERATES_VOID);
 			Type type = node.getType();
+			
 			if(type == PrimitiveType.INTEGER) {
 				code.add(StoreI);
 				return code;
@@ -416,13 +426,19 @@ public class ASMCodeGenerator {
 				return code;
 			}
 			if(type instanceof Range) {
+				
 				Labeller labeller = new Labeller("rangeStore");
 
 				String highendLabel = labeller.newLabel("highend");
 				String lowendLabel = labeller.newLabel("lowend");
-				Range rangeType = (Range) node.getChildren().get(0).getType();
-				//System.out.println(rangeType.getSubtype());
-				if(rangeType.getSubtype() == PrimitiveType.INTEGER ) {
+				Range rangeType = (Range) node.getType(); //
+				Type subType = rangeType.getSubtype();
+			
+				//System.out.println(subType);
+				//System.out.println("storing these");
+				
+				//System.out.println("subType in store is "+subType.concreteType());
+			    if(subType.concreteType() == PrimitiveType.INTEGER ) {
 					
 					code.add(DLabel,highendLabel); // [&identifier, lowend, highend,]
 					code.add(DataI, 0);
@@ -441,8 +457,10 @@ public class ASMCodeGenerator {
 					code.add(Exchange);  // [&identifier+4,lowend ]
 					code.add(StoreI);
 					
+					//System.out.println("Finished Storing");
+					
 				}
-				else if(rangeType.getSubtype() == PrimitiveType.FLOAT ) {
+				else if(subType.concreteType() == PrimitiveType.FLOAT ) {
 					//code.add(PStack);
 					
 					code.add(DLabel,highendLabel); // [&identifier, lowend, highend,]
@@ -465,8 +483,8 @@ public class ASMCodeGenerator {
 					code.add(StoreF);
 					
 				}
-				else if(rangeType.getSubtype() == PrimitiveType.CHARACTER ) {
-					//code.add(PStack);
+				else if(subType.concreteType() == PrimitiveType.CHARACTER ) {
+					
 					
 					code.add(DLabel,highendLabel); // [&identifier, lowend, highend,]
 					code.add(DataC, 0);
@@ -720,7 +738,6 @@ public class ASMCodeGenerator {
 			//ParseNode elementNode = null;
 			
 			
-			//System.out.println(arrayType);
 			// do nothing if all in same type?
 			for(int i = 0; i< arrayLength;i++) {
 				code.append(removeValueCode(elements.get(i)));

@@ -1,0 +1,1 @@
+Bad operand type for StoreF instruction at location 34.

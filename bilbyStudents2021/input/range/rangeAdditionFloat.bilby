@@ -1,11 +1,11 @@
 main{
 
 	
-    mut myRange := <4.4 .. 7.7> + 2.5;
+    imm myRange := <4.4 .. 7.7> + 2.5;
     
     print myRange $n;
     
-    mut myRangeRight :=   2.3 + <14.4 .. 101.1>;
+    imm myRangeRight :=   2.3 + <14.4 .. 101.1>;
     
     print myRangeRight $n;
   
