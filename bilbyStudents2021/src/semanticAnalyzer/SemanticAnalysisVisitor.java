@@ -126,6 +126,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
         	if(assignmentArray.getSubtype() == identifierArray.getSubtype()) {
         		node.setType(assignmentType);
         	}
+        	
         	else {
         		typeCheckError(node,typeList);
         	}
@@ -135,8 +136,20 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			
 		}
         else {
-        	typeCheckError(node,typeList);
-        }
+    		for(Promotion promotion:Promotion.values()) {
+				if(promotion.applies(assignmentType)) {
+					Type promotedType = promotion.apply(assignmentType);
+					if(promotedType == identifier.getType()) {
+						node.setType(identifier.getType());
+						return;
+						
+					}
+				}	
+    		}
+    		 typeCheckError(node,typeList);
+    	}
+       
+
         
 
 		

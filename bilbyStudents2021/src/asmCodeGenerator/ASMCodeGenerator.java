@@ -290,6 +290,23 @@ public class ASMCodeGenerator {
 
 			code.append(lvalue);
 			code.append(rvalue);
+			if(node.child(0).getType() != node.child(1).getType() ) {
+				for(Promotion promotion:Promotion.values()) {
+					if(promotion.applies(node.child(1).getType())) {
+						Type promotedType = promotion.apply(node.child(1).getType());
+						if(promotedType == node.child(0).getType()) {
+							if(promotedType == PrimitiveType.FLOAT) {
+								code.add(ConvertF);
+							}
+//							else if(promotedType == PrimitiveType.INTEGER) {
+//								
+//							}
+							
+						}
+					}
+				}
+			}
+			
 
 			Type type = node.getType();
 			ASMCodeFragment storeFrag = generateStore(node);

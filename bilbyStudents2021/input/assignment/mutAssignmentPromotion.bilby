@@ -1,0 +1,12 @@
+main{
+	mut b := 5.0; 
+	b := 4; 
+	print b $n;
+	%with 4 being promoted to float 
+	
+	mut c := 5; 
+	c := #a; 
+	print c $n;
+	
+	
+}

@@ -1,21 +1,16 @@
 main{
 
-	mut array1 := [11,12,13,14,15];
-	mut len := length array1;
-	print len $n;
 	
-	mut array := [11];
-	len := length array;
-	print len $n;
-	
-	len := length [11.4,12.7,13.2,14.9];
-	print len $n;
-	
-	imm g := alloc [char](0);
+    %mut result := 73;
+    %result := #&;
+    %print result $n;
+    
+    mut result := 5.8;
+    result := 9;
+    print result $n;
 
 	
-	len := length g;
-	print len $n;
+	
 	
 	
 }

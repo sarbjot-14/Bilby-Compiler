@@ -444,7 +444,6 @@ public class PrintStatementGenerator {
 		}
 		else {
 			String format = printFormat(node.getType());
-
 			code.append(visitor.removeValueCode(node));
 			convertToStringIfBoolean(node.getType());
 			convertToPointerIfString(node.getType());
