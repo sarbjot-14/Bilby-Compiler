@@ -8,6 +8,7 @@ import java.util.Set;
 
 import asmCodeGenerator.codeStorage.ASMOpcode;
 import asmCodeGenerator.operators.AllocCodeGenerator;
+import asmCodeGenerator.operators.ArrayLengthCodeGenerator;
 import asmCodeGenerator.operators.BooleanAndCodeGenerator;
 import asmCodeGenerator.operators.BooleanOrCodeGenerator;
 import asmCodeGenerator.operators.EqualsCodeGeneratorFloat;
@@ -228,6 +229,10 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		);
 		new FunctionSignatures(Keyword.HIGH, 
 				new FunctionSignature(new RangeHighCodeGenerator(),new Range(rangeT),rangeT)
+		);
+		TypeVariable arrayL = new TypeVariable("arrayL");
+		new FunctionSignatures(Keyword.LENGTH, 
+				new FunctionSignature(new ArrayLengthCodeGenerator(),new Array(arrayL),INTEGER)
 		);
 		
 		TypeVariable S = new TypeVariable("S");
