@@ -203,14 +203,11 @@ public class ASMCodeGenerator {
 				else if(rangeType.getSubtype().concreteType() == PrimitiveType.FLOAT) {
 					code.add(LoadF);
 					code.add(Exchange);
-					code.add(PushI,rangeType.concreteType().getSize());
+					code.add(PushI,8);
 					code.add(Add);
 					code.add(LoadF);
 				}
 				
-				
-				
-				//System.out.println("Finished turnAddressIntoValue");
 				
 			
 			}
@@ -410,12 +407,7 @@ public class ASMCodeGenerator {
 			if(type instanceof Array) {
 				return StoreI;
 			}
-			if(type instanceof Range) {
-				Range rangeType = (Range) type;
-				if(rangeType.getSubtype() == PrimitiveType.CHARACTER) {
-					
-				}
-			}
+		
 			
 			assert false: "Type " + type + " unimplemented in opcodeForStore()";
 			return null;
@@ -711,6 +703,10 @@ public class ASMCodeGenerator {
 			int arrayLength = node.getChildren().size();
 			Type arrayType = ((Array)node.getType()).getSubtype();
 			int subTypeSize = arrayType.getSize();
+		
+			if(arrayType instanceof Range) {
+				subTypeSize = subTypeSize *2;
+			}
 			
 			// push size of record
 			code.add(PushI, arrayLength);
@@ -763,24 +759,53 @@ public class ASMCodeGenerator {
 			// do nothing if all in same type?
 			for(int i = 0; i< arrayLength;i++) {
 				code.append(removeValueCode(elements.get(i)));
-
-				if(elements.get(i).getType() != arrayType){
+				// if not matching with array type && NOT AN ARRAY && NOT A RANGE
+				if(elements.get(i).getType() != arrayType && !(arrayType instanceof Array)&& !(arrayType instanceof Range)){
+//					System.out.println("Does not match");
+//					System.out.println(elements.get(i).getType());
 					if(elements.get(i).getType() == PrimitiveType.CHARACTER) {
 						if(arrayType == PrimitiveType.INTEGER ) {
 							// nothing?
+							code.add(StoreI);
 						}
 						else if(arrayType == PrimitiveType.FLOAT) {
 							code.add(ConvertF);
+							code.add(StoreF);
+							// add store code manually
 						}
 					}
 					else if(elements.get(i).getType() == PrimitiveType.INTEGER) {
 						if(arrayType == PrimitiveType.FLOAT) {
 							code.add(ConvertF);
+							code.add(StoreF);
+							// add store code manually
 						}
 					}
 				}
-				code.append(generateStore(elements.get(i)));
-				code.add(PushI,subTypeSize); 
+				else {
+					code.append(generateStore(elements.get(i)));
+				}
+				
+				if(elements.get(i).getType() instanceof Range) {
+					Range rangeType = (Range) elements.get(i).getType() ;
+					
+					if(rangeType.getSubtype() == PrimitiveType.FLOAT) {
+						code.add(PushI,16);
+					}
+					else if(rangeType.getSubtype() == PrimitiveType.INTEGER) {
+						code.add(PushI,8);
+					}
+					else {
+						assert(rangeType.getSubtype() == PrimitiveType.CHARACTER);
+						code.add(PushI,2);
+					}
+					
+					
+				}
+				else {
+					code.add(PushI,subTypeSize); 
+				}
+				
 				code.add(Add);
 				code.add(Duplicate);
 			}

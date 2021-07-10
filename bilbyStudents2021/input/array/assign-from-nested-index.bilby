@@ -1,0 +1,17 @@
+main{
+	
+	imm integers := [[11,12],[13,14,15]];
+	
+	imm a := integers[0][1];
+	
+	print a $n;
+	
+	imm nested := [[[#a,#b],[#t,#h,#e]],[[#x,#y,#z]]];
+	
+	imm b := nested[1][0][2];
+	
+	print b $n;
+	
+	
+	
+}

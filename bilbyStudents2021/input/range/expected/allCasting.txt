@@ -1,1 +1,1 @@
-<,..MNot enough operands on stack for Printf instruction at location 67.
+<44..77>

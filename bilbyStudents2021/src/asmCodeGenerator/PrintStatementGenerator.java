@@ -135,6 +135,57 @@ public class PrintStatementGenerator {
 				recursivePrintCode(myArray.getSubtype());
 				
 			}
+			else if(myArray.getSubtype() instanceof Range) {
+				// print open brace
+				code.add(PushI, 60); 
+				code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
+				code.add(Printf);
+				
+				Range rangeType = (Range) myArray.getSubtype();
+				code.add(Duplicate);
+				if(rangeType.getSubtype() ==PrimitiveType.FLOAT ) {
+					code.add(LoadF);
+					code.add(Exchange);
+					code.add(PushI,8);
+					code.add(Add);
+					code.add(LoadF);
+					code.add(PushD, RunTime.FLOATING_PRINT_FORMAT);
+					code.add(Printf);
+					printRangeDelim();
+					code.add(PushD, RunTime.FLOATING_PRINT_FORMAT);
+					code.add(Printf);
+					
+				}
+				else if(rangeType.getSubtype() == PrimitiveType.INTEGER){
+					code.add(LoadI);
+					code.add(Exchange);
+					code.add(PushI,4);
+					code.add(Add);
+					code.add(LoadI);
+					code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
+					code.add(Printf);
+					printRangeDelim();
+					code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
+					code.add(Printf);
+				}
+				else {
+					assert(rangeType.getSubtype() == PrimitiveType.CHARACTER);
+					code.add(LoadC);
+					code.add(Exchange);
+					code.add(PushI,1);
+					code.add(Add);
+					code.add(LoadC);
+					code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
+					code.add(Printf);
+					printRangeDelim();
+					code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
+					code.add(Printf);
+				}
+				code.add(PushI, 62); 
+				code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
+				code.add(Printf);
+			}
+			
 			else if(myArray.getSubtype() ==PrimitiveType.BOOLEAN) {
 				code.add(LoadC);
 				//code.add(PStack);
@@ -307,35 +358,48 @@ public class PrintStatementGenerator {
 				code.add(Printf);
 				
 				Range rangeType = (Range) myArray.getSubtype();
+				code.add(Duplicate);
 				if(rangeType.getSubtype() ==PrimitiveType.FLOAT ) {
-					//code.add(PStack);
-					code.add(Duplicate);
+					code.add(LoadF);
+					code.add(Exchange);
+					code.add(PushI,8);
+					code.add(Add);
 					code.add(LoadF);
 					code.add(PushD, RunTime.FLOATING_PRINT_FORMAT);
 					code.add(Printf);
-					code.add(LoadF);
+					printRangeDelim();
 					code.add(PushD, RunTime.FLOATING_PRINT_FORMAT);
 					code.add(Printf);
-					
 					
 				}
 				else if(rangeType.getSubtype() == PrimitiveType.INTEGER){
 					code.add(LoadI);
+					code.add(Exchange);
+					code.add(PushI,4);
+					code.add(Add);
+					code.add(LoadI);
 					code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
 					code.add(Printf);
-					code.add(LoadI);
+					printRangeDelim();
 					code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
 					code.add(Printf);
 				}
 				else {
 					assert(rangeType.getSubtype() == PrimitiveType.CHARACTER);
 					code.add(LoadC);
-					code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
-					code.add(Printf);
+					code.add(Exchange);
+					code.add(PushI,1);
+					code.add(Add);
 					code.add(LoadC);
 					code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
 					code.add(Printf);
+					printRangeDelim();
+					code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
+					code.add(Printf);
 				}
+				code.add(PushI, 62); 
+				code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
+				code.add(Printf);
 			}
 			else if(myArray.getSubtype() ==PrimitiveType.BOOLEAN) {
 				code.add(LoadC);
@@ -451,23 +515,6 @@ public class PrintStatementGenerator {
 				code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
 				code.add(Printf);
 			}
-			
-			
-			
-			
-			// high end
-			if(rangeType.getSubtype().concreteType()   == PrimitiveType.INTEGER) {
-				code.add(PushD, RunTime.INTEGER_PRINT_FORMAT);
-			}
-			else if(rangeType.getSubtype().concreteType()  == PrimitiveType.FLOAT) {
-				code.add(PushD, RunTime.FLOATING_PRINT_FORMAT);
-			}
-			else if(rangeType.getSubtype().concreteType() == PrimitiveType.CHARACTER) {
-				code.add(PushD, RunTime.CHARACTER_PRINT_FORMAT);
-			}
-			code.add(Printf);
-			
-			
 
 			// print open brace
 			code.add(PushI, 62); 
