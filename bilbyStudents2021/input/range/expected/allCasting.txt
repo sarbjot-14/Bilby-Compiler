@@ -1,1 +1,1 @@
-Bad operand type for StoreF instruction at location 34.
+<,..MNot enough operands on stack for Printf instruction at location 67.

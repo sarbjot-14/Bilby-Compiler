@@ -410,6 +410,12 @@ public class ASMCodeGenerator {
 			if(type instanceof Array) {
 				return StoreI;
 			}
+			if(type instanceof Range) {
+				Range rangeType = (Range) type;
+				if(rangeType.getSubtype() == PrimitiveType.CHARACTER) {
+					
+				}
+			}
 			
 			assert false: "Type " + type + " unimplemented in opcodeForStore()";
 			return null;
@@ -773,7 +779,7 @@ public class ASMCodeGenerator {
 						}
 					}
 				}
-				code.add(opcodeForStore(arrayType));
+				code.append(generateStore(elements.get(i)));
 				code.add(PushI,subTypeSize); 
 				code.add(Add);
 				code.add(Duplicate);

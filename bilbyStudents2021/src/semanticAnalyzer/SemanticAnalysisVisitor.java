@@ -213,27 +213,26 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		boolean hasSameType = true;
 		Type firstType =  node.getChildren().get(0).getType();
 		Array arrayType = null;
-		//regualar type
-		//System.out.println(firstType);
+
+		// check if nested array
 		if(!(firstType instanceof Array )) {
 			for(ParseNode childNode:node.getChildren()) {
-				if(childNode.getType() != firstType) {
+				//System.out.println(childNode.getType().concreteType());
+				if(childNode.getType() instanceof Range) {
+					Range firstRangeElement = (Range) node.getChildren().get(0).getType();
+					Range rangeElement = (Range) childNode.getType();
+					if(firstRangeElement.getSubtype() != rangeElement.getSubtype()) {
+						hasSameType = false;
+					}
+				}
+				else if(childNode.getType() != firstType) {
 					hasSameType = false;
 				}
 			}
 		}
-//		else { // what happens if has arrays? just make hasSameType = true so it skips any attempt to promote?
-//			if(firstType instanceof Array) {
-//				Array firstTypeArray = (Array) firstType;
-//				for(ParseNode childNode:node.getChildren()) {
-//					arrayType = (Array) childNode.getType();
-//					if(arrayType.getSubtype() != firstTypeArray.getSubtype()) {
-//						hasSameType = false;
-//					}
-//				}
-//			}
-//			
-//		}
+		else { // is nested array
+			// how to check if nested arrays are same?
+		}
 		
 		// check if able to promote with least amount of promotions
 		//PrimitiveType targetType = PrimitiveType.INTEGER; 
