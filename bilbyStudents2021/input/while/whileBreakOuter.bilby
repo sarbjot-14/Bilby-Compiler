@@ -5,17 +5,17 @@ main{
 		print "outer" $n;
 		print count $n;
 		count := count +1;
-		if(count ==3){
-				print "count is" $s count $n;
-				break;
-		}
-		while (count2 < 3) {
+		while (count2 < 7) {
 			print "inner" $n;
 			print count2 $n;
 			count2 := count2 +1;
-			
+			if(count2 ==4){
+				print "FOURR" $n;
+				break;
+			}
 		}
 		count2 := 0;
+		
 		
 	}
 }

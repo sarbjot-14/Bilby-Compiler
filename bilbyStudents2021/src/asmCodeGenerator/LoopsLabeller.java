@@ -1,13 +1,15 @@
 package asmCodeGenerator;
 
-public class Labeller {
+public class LoopsLabeller {
 	private static int labelSequenceNumber = 0;
 
 	private int labelNumber;
 	private String prefix;
 
-	public Labeller() {};
-	public Labeller(String userPrefix) {
+	public LoopsLabeller() {
+		labelNumber = labelSequenceNumber+1;
+	};
+	public LoopsLabeller(String userPrefix) {
 		labelSequenceNumber++;
 		labelNumber = labelSequenceNumber;
 		this.prefix = makePrefix(userPrefix);
@@ -18,6 +20,11 @@ public class Labeller {
 
 	public String newLabel(String suffix) {
 		return prefix + suffix;
+	}
+	
+	public String newBreakLabel() {
+		return "-loop-"+labelNumber + "-endLoop";
+		//-loop-4-endLoop  
 	}
 	
 }

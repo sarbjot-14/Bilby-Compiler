@@ -6,6 +6,9 @@ inner
 1
 inner
 2
+inner
+3
+FOURR
 outer
 1
 inner
@@ -14,9 +17,20 @@ inner
 1
 inner
 2
+inner
+3
+FOURR
 outer
 2
-count is 3
+inner
+0
+inner
+1
+inner
+2
+inner
+3
+FOURR
 outer
 3
 inner
@@ -25,6 +39,9 @@ inner
 1
 inner
 2
+inner
+3
+FOURR
 outer
 4
 inner
@@ -33,3 +50,6 @@ inner
 1
 inner
 2
+inner
+3
+FOURR

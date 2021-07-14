@@ -13,8 +13,10 @@ import logging.BilbyLogger;
 import parseTree.ParseNode;
 import parseTree.ParseNodeVisitor;
 import parseTree.nodeTypes.BooleanConstantNode;
+import parseTree.nodeTypes.BreakNode;
 import parseTree.nodeTypes.CastNode;
 import parseTree.nodeTypes.CharacterConstantNode;
+import parseTree.nodeTypes.ContinueNode;
 import parseTree.nodeTypes.StatementBlockNode;
 import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.ErrorNode;
@@ -389,6 +391,12 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	}
 	@Override
 	public void visit(TabNode node) {
+	}
+	@Override
+	public void visit(BreakNode node) {
+	}
+	@Override
+	public void visit(ContinueNode node) {
 	}
 	@Override
 	public void visitLeave(CastNode node) {

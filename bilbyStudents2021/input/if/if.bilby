@@ -3,5 +3,11 @@ main{
 	if(false){print "if failed false" $n;}
 	if(2==2){print "if worked true with equality condition" $n;}
 	
+	if(2==2){
+	print "just checking again" $n;
+	}
+	
+	
+	
 
 }
