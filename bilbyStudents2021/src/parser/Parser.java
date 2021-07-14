@@ -12,6 +12,7 @@ import parseTree.nodeTypes.StatementBlockNode;
 import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.ErrorNode;
 import parseTree.nodeTypes.FloatingConstantNode;
+import parseTree.nodeTypes.ForNode;
 import parseTree.nodeTypes.IdentifierNode;
 import parseTree.nodeTypes.IfNode;
 import parseTree.nodeTypes.IndexAssignmentNode;
@@ -127,11 +128,14 @@ public class Parser {
 		if(startsWhileStatement(nowReading)) {
 			return parseWhileStatement();
 		}
+		if(startsForStatement(nowReading)) {
+			return parseForStatement();
+		}
 		// add if and other things
 		return syntaxErrorNode("statement");
 	}
 	private boolean startsStatement(Token token) {
-		return startsPrintStatement(token) ||
+		return startsForStatement(token) ||startsPrintStatement(token) ||
 				startsDeclaration(token) || startsBlockStatement(token)||startsAssignmentStatement(token) ||startsIfStatement(token) ||startsWhileStatement(token) ;
 	}
 	private boolean startsAssignmentStatement(Token token) {
@@ -186,6 +190,34 @@ public class Parser {
 		expect(Punctuator.TERMINATOR);
 		return result;
 	}
+	private boolean startsForStatement(Token token) {
+		return token.isLextant(Keyword.FOR);
+	}
+	
+	// forStatement → for ( identifier in expression ) blockStatement
+	private ParseNode parseForStatement() {
+		if(!startsForStatement(nowReading)) {
+			return syntaxErrorNode("for statement");
+		}
+		//--
+		Token forToken = nowReading;
+		//readToken();
+		expect(Keyword.FOR);
+
+		expect(Punctuator.OPEN_BRACE_PAREN);
+		//ParseNode inRange = parseComparisonExpression()
+		ParseNode identifier = parseIdentifier();
+		expect(Keyword.IN);
+		ParseNode rangeExpression = parseExpression();
+		expect(Punctuator.CLOSE_BRACE_PAREN);
+		ParseNode block = parseBlockStatement(); 
+
+
+		return ForNode.withChildren(forToken, identifier, rangeExpression,block);
+	}
+
+		
+	
 	private boolean startsIfStatement(Token token) {
 		return token.isLextant(Keyword.IF);
 	}

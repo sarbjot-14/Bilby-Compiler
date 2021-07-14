@@ -1,12 +1,7 @@
 main{
 
 	
-	%imm e := [1,(2.5+3.5),3,4];
-	%print e $n;
-	
-	%imm integers := [[[[11,13]]],[[[12,16,18]]]];
-	%print integers $n;
-	
-	imm ranges := [<2.4..5.6>,<3.3..9.8>];
-	print ranges $n;
+	for(i in <2..5>) {
+		print i*i $s;
+	}
 }

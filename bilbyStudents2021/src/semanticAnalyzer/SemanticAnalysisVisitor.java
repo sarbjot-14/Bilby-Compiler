@@ -68,6 +68,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		enterSubscope(node);
 	}
 	public void visitLeave(StatementBlockNode node) {
+		leaveScope(node);
 	}
 	
 	
