@@ -1,0 +1,19 @@
+main{
+	mut count := 0;
+	mut count2 := 0;
+	while (count < 5) {
+		print "outer"$s count $n;
+		count := count +1;
+		while (count2 < 7) {
+			print "inner" $s count2 $n;
+			count2 := count2 +1;
+			if(count2 ==4){
+				print "FOURR" $n;
+				break;
+			}
+		}
+		count2 := 0;
+		
+		
+	}
+}

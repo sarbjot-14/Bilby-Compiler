@@ -8,6 +8,7 @@ import parseTree.nodeTypes.AssignmentNode;
 import parseTree.nodeTypes.BooleanConstantNode;
 import parseTree.nodeTypes.CastNode;
 import parseTree.nodeTypes.CharacterConstantNode;
+import parseTree.nodeTypes.ContinueNode;
 import parseTree.nodeTypes.StatementBlockNode;
 import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.ErrorNode;
@@ -28,6 +29,7 @@ import parseTree.nodeTypes.TabNode;
 import parseTree.nodeTypes.TypeNode;
 import parseTree.nodeTypes.WhileNode;
 import parseTree.nodeTypes.ArrayNode;
+import parseTree.nodeTypes.BreakNode;
 import tokens.*;
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
@@ -83,13 +85,13 @@ public class Parser {
 	// statementBlock
 	
 	// statementBlock -> { statement* }
-		private ParseNode parseBlockStatement() {
-			if(!startsBlockStatement(nowReading)) {
-				return syntaxErrorNode("statementBlock");
+	private ParseNode parseBlockStatement() {
+		if(!startsBlockStatement(nowReading)) {
+			return syntaxErrorNode("statementBlock");
 		}
 		ParseNode blockStatement = new StatementBlockNode(nowReading);
 		expect(Punctuator.OPEN_BRACE);
-		
+
 		while(startsStatement(nowReading)) { // 0 or more statements
 			ParseNode statement = parseStatement();
 			blockStatement.appendChild(statement);
@@ -106,6 +108,7 @@ public class Parser {
 	// statements
 	
 	// statement-> declaration | printStmt | blockStatement  | assignmentStatement | ifStatement | whileStatement
+	//             breakStatement | continueStatement
 	private ParseNode parseStatement() {
 		if(!startsStatement(nowReading)) {
 			return syntaxErrorNode("statement");
@@ -128,15 +131,23 @@ public class Parser {
 		if(startsWhileStatement(nowReading)) {
 			return parseWhileStatement();
 		}
+
 		if(startsForStatement(nowReading)) {
 			return parseForStatement();
+		}
+		if(startsBreakStatement(nowReading)) {
+			return parseBreakStatement();
+		}
+		if(startsContinueStatement(nowReading)) {
+			return parseContinueStatement();
 		}
 		// add if and other things
 		return syntaxErrorNode("statement");
 	}
 	private boolean startsStatement(Token token) {
-		return startsForStatement(token) ||startsPrintStatement(token) ||
-				startsDeclaration(token) || startsBlockStatement(token)||startsAssignmentStatement(token) ||startsIfStatement(token) ||startsWhileStatement(token) ;
+		return startsForStatement(token) ||startsPrintStatement(token) || startsDeclaration(token) || 
+				startsBlockStatement(token)||startsAssignmentStatement(token) || startsIfStatement(token) ||
+				startsWhileStatement(token)||startsBreakStatement(token) ||startsContinueStatement(token) ; 
 	}
 	private boolean startsAssignmentStatement(Token token) {
 		return startsIdentifier(token);
@@ -190,6 +201,7 @@ public class Parser {
 		expect(Punctuator.TERMINATOR);
 		return result;
 	}
+
 	private boolean startsForStatement(Token token) {
 		return token.isLextant(Keyword.FOR);
 	}
@@ -217,7 +229,41 @@ public class Parser {
 	}
 
 		
+
 	
+	private boolean startsBreakStatement(Token token) {
+		return token.isLextant(Keyword.BREAK);
+	}
+	
+	// breakStatement ->   break
+	private ParseNode parseBreakStatement() {
+		if(!startsBreakStatement(nowReading)) {
+			return syntaxErrorNode("break statement");
+		}
+		Token breakToken = nowReading;
+		readToken();
+		expect( Punctuator.TERMINATOR);
+		return new BreakNode(breakToken);
+		
+	}
+	private boolean startsContinueStatement(Token token) {
+		return token.isLextant(Keyword.CONTINUE);
+	}
+	
+	// continueStatement ->   continue
+	private ParseNode parseContinueStatement() {
+		if(!startsContinueStatement(nowReading)) {
+			return syntaxErrorNode("continue statement");
+		}
+		Token continueToken = nowReading;
+		readToken();
+		expect( Punctuator.TERMINATOR);
+		return new ContinueNode(continueToken);
+		
+		
+	
+	}
+
 	private boolean startsIfStatement(Token token) {
 		return token.isLextant(Keyword.IF);
 	}

@@ -1,8 +1,10 @@
 package parseTree;
 
 import parseTree.nodeTypes.BooleanConstantNode;
+import parseTree.nodeTypes.BreakNode;
 import parseTree.nodeTypes.CastNode;
 import parseTree.nodeTypes.CharacterConstantNode;
+import parseTree.nodeTypes.ContinueNode;
 import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
 import parseTree.nodeTypes.TypeNode;
@@ -74,6 +76,8 @@ public interface ParseNodeVisitor {
 	
 	void visitEnter(IndexAssignmentNode node);
 	void visitLeave(IndexAssignmentNode node);
+	
+	
 
 
 	// leaf nodes: visitLeaf only
@@ -90,6 +94,8 @@ public interface ParseNodeVisitor {
 	void visit(CastNode node);
 	void visit(ArrayNode node);
 	void visit(RangeNode node);
+	void visit(BreakNode breakNode);
+	void visit(ContinueNode breakNode);
 
 	
 	public static class Default implements ParseNodeVisitor
@@ -255,8 +261,18 @@ public interface ParseNodeVisitor {
 		public void visit(IndexAssignmentNode node) {
 			defaultVisitForLeaf(node);
 		}
+		public void visit(BreakNode node) {
+			defaultVisitForLeaf(node);
+		}
+		public void visit(ContinueNode node) {
+			defaultVisitForLeaf(node);
+		}
+		
 	
 	}
+
+
+	
 
 
 

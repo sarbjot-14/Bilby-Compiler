@@ -1,0 +1,15 @@
+main{
+	mut count := 0;
+	mut count2 := 0;
+	while (count < 5) {
+		print "outer" $s count $n;
+		
+		if(count ==3){
+				print "count is" $s count $n;
+				break;
+		}	
+		count := count +1;
+	
+		
+	}
+}

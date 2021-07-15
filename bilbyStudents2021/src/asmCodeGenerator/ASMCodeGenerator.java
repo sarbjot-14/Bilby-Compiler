@@ -15,8 +15,10 @@ import lexicalAnalyzer.Lextant;
 import lexicalAnalyzer.Punctuator;
 import parseTree.*;
 import parseTree.nodeTypes.BooleanConstantNode;
+import parseTree.nodeTypes.BreakNode;
 import parseTree.nodeTypes.CastNode;
 import parseTree.nodeTypes.CharacterConstantNode;
+import parseTree.nodeTypes.ContinueNode;
 import parseTree.nodeTypes.MainBlockNode;
 import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.FloatingConstantNode;
@@ -633,12 +635,25 @@ public class ASMCodeGenerator {
 		}
 		///////////////////////////////////////////////////////////////////////////
 		// while
+		public void visitEnter(WhileNode node) {
+			Labeller labeller = new Labeller("whileLoop");
+			String endLoop = labeller.newLabel("endLoop");
+			node.setBreakLabel(endLoop);
+			String startLoop = labeller.newLabel("startLoop");
+			node.setContinueLabel(startLoop);
+			
+			
+		}
 		public void visitLeave(WhileNode node) {
 			newVoidCode(node);
+			//Labeller labeller = new Labeller("loop");
 
+			String startLoop = node.getContinueLabel();
+			String endLoop = node.getBreakLabel();
+			
 			// start of while condition
-			String startWhile = new Labeller("startWhile").newLabel("");
-			code.add(Label, startWhile);	
+			//String startWhile = new Labeller("startWhile").newLabel("");
+			code.add(Label, startLoop);	
 			
 			// check boolean conditional
 			ParseNode booleanConditional = node.getChildren().get(0);
@@ -646,8 +661,8 @@ public class ASMCodeGenerator {
 			code.append(arg1);
 			
 			// check conditional and jump over block statement
-			String endWhile = new Labeller("endWhile").newLabel("");
-			code.add(JumpFalse, endWhile);
+			//String endWhile = new Labeller("endWhile").newLabel("");
+			code.add(JumpFalse, endLoop);
 			
 			// run block statement
 			ParseNode blockStatement = node.getChildren().get(1);
@@ -656,10 +671,10 @@ public class ASMCodeGenerator {
 
 			
 			// jump to start of start of boolean condition
-			code.add(Jump, startWhile);
+			code.add(Jump, startLoop);
 			
 			// end
-			code.add(Label, endWhile);
+			code.add(Label, endLoop);
 
 		}
 
@@ -886,6 +901,28 @@ public class ASMCodeGenerator {
 			
 			code.add(PushI, node.getValue());
 		}
+		public void visit(BreakNode node) {
+			newVoidCode(node);
+			for(ParseNode current : node.pathToRoot()) {
+				if(current instanceof WhileNode  ) {
+					WhileNode whileNode = (WhileNode)current;
+					code.add(Jump,whileNode.getBreakLabel());
+				}
+			}	
+			
+		}
+	
+		public void visit(ContinueNode node) {
+			newVoidCode(node);
+			for(ParseNode current : node.pathToRoot()) {
+				if(current instanceof WhileNode  ) {
+					WhileNode whileNode = (WhileNode)current;
+					code.add(Jump,whileNode.getContinueLabel());
+				}
+			}	
+			
+		}
+		
 		public void visit(StringConstantNode node) {
 			newValueCode(node);
 		

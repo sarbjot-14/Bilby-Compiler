@@ -1,0 +1,30 @@
+outer 0
+inner 0
+inner 1
+inner 2
+inner 3
+FOURR
+outer 1
+inner 0
+inner 1
+inner 2
+inner 3
+FOURR
+outer 2
+inner 0
+inner 1
+inner 2
+inner 3
+FOURR
+outer 3
+inner 0
+inner 1
+inner 2
+inner 3
+FOURR
+outer 4
+inner 0
+inner 1
+inner 2
+inner 3
+FOURR

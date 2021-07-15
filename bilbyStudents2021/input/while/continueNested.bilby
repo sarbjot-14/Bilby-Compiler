@@ -1,0 +1,20 @@
+main{
+	mut count := 0;
+	mut count2 := 0;
+	while (count < 3) {
+		print "outer"$s count $n;
+		count := count +1;
+		while (count2 < 4) {
+			
+			count2 := count2 +1;
+			if(count2 ==3){
+				print "THREE" $n;
+				continue;
+			}
+			print "inner" $s count2 $n;
+		}
+		count2 := 0;
+		
+		
+	}
+}

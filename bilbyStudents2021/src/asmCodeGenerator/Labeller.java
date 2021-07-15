@@ -6,6 +6,7 @@ public class Labeller {
 	private int labelNumber;
 	private String prefix;
 
+	public Labeller() {};
 	public Labeller(String userPrefix) {
 		labelSequenceNumber++;
 		labelNumber = labelSequenceNumber;
@@ -18,4 +19,6 @@ public class Labeller {
 	public String newLabel(String suffix) {
 		return prefix + suffix;
 	}
+	
+	
 }
