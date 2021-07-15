@@ -634,12 +634,21 @@ public class ASMCodeGenerator {
 		}
 		///////////////////////////////////////////////////////////////////////////
 		// while
+		public void visitEnter(WhileNode node) {
+			Labeller labeller = new Labeller("whileLoop");
+			String endLoop = labeller.newLabel("endLoop");
+			node.setBreakLabel(endLoop);
+			String startLoop = labeller.newLabel("startLoop");
+			node.setContinueLabel(startLoop);
+			
+			
+		}
 		public void visitLeave(WhileNode node) {
 			newVoidCode(node);
-			LoopsLabeller labeller = new LoopsLabeller("loop");
+			//Labeller labeller = new Labeller("loop");
 
-			String startLoop = labeller.newLabel("startLoop");
-			String endLoop = labeller.newLabel("endLoop");
+			String startLoop = node.getContinueLabel();
+			String endLoop = node.getBreakLabel();
 			
 			// start of while condition
 			//String startWhile = new Labeller("startWhile").newLabel("");
@@ -848,13 +857,25 @@ public class ASMCodeGenerator {
 			code.add(PushI, node.getValue());
 		}
 		public void visit(BreakNode node) {
-			//System.out.println(new LoopsLabeller().newBreakLabel());
-			code.add(Jump,new LoopsLabeller().newBreakLabel());
-			//code.add(Halt);
 			newVoidCode(node);
+			for(ParseNode current : node.pathToRoot()) {
+				if(current instanceof WhileNode  ) {
+					WhileNode whileNode = (WhileNode)current;
+					code.add(Jump,whileNode.getBreakLabel());
+				}
+			}	
+			
 		}
+	
 		public void visit(ContinueNode node) {
 			newVoidCode(node);
+			for(ParseNode current : node.pathToRoot()) {
+				if(current instanceof WhileNode  ) {
+					WhileNode whileNode = (WhileNode)current;
+					code.add(Jump,whileNode.getContinueLabel());
+				}
+			}	
+			
 		}
 		
 		public void visit(StringConstantNode node) {

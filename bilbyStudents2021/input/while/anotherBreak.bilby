@@ -7,12 +7,13 @@ main{
 		while (count2 < 7) {
 			print "inner" $s count2 $n;
 			count2 := count2 +1;
-			if(count2 ==4){
-				print "FOURR" $n;
-				break;
-			}
+			
 		}
 		count2 := 0;
+		
+		if(count ==3){
+				break;
+			}
 		
 		
 	}

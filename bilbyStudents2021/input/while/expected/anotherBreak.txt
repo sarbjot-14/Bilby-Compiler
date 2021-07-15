@@ -1,15 +1,24 @@
 outer 0
+inner 0
 inner 1
 inner 2
-THREE
+inner 3
 inner 4
+inner 5
+inner 6
 outer 1
+inner 0
 inner 1
 inner 2
-THREE
+inner 3
 inner 4
+inner 5
+inner 6
 outer 2
+inner 0
 inner 1
 inner 2
-THREE
+inner 3
 inner 4
+inner 5
+inner 6

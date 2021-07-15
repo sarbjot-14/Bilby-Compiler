@@ -8,6 +8,8 @@ import tokens.LextantToken;
 import tokens.Token;
 
 public class WhileNode extends ParseNode {
+	private String breakLabel;
+	private String continueLabel;
 	private FunctionSignature signature;
 	
 	public WhileNode(Token token) {
@@ -22,6 +24,19 @@ public class WhileNode extends ParseNode {
 	
 	////////////////////////////////////////////////////////////
 	// attributes
+	
+	public void setBreakLabel(String breakLabel) {
+		this.breakLabel = breakLabel;
+	}
+	public String getBreakLabel() {
+		return breakLabel;
+	}
+	public void setContinueLabel(String continueLabel) {
+		this.continueLabel = continueLabel;
+	}
+	public String getContinueLabel() {
+		return continueLabel;
+	}
 	
 	public Lextant getOperator() {
 		return lextantToken().getLextant();
