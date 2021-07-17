@@ -23,7 +23,10 @@ import parseTree.nodeTypes.ErrorNode;
 import parseTree.nodeTypes.ArrayNode;
 import parseTree.nodeTypes.AssignmentNode;
 import parseTree.nodeTypes.FloatingConstantNode;
+import parseTree.nodeTypes.ForNode;
+import parseTree.nodeTypes.ForNodeX;
 import parseTree.nodeTypes.IdentifierNode;
+import parseTree.nodeTypes.IfNode;
 import parseTree.nodeTypes.IntegerConstantNode;
 import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.OperatorNode;
@@ -34,6 +37,7 @@ import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
 import parseTree.nodeTypes.TypeNode;
+import parseTree.nodeTypes.WhileNode;
 import semanticAnalyzer.signatures.FunctionSignature;
 import semanticAnalyzer.signatures.FunctionSignatures;
 import semanticAnalyzer.signatures.PromotedSignature;
@@ -316,6 +320,55 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Type subtype = node.child(0).getType();
 		Type arrayType = new Array(subtype);
 		node.setType(arrayType);
+
+	}
+	@Override
+	public void visitEnter(IfNode node) {
+		enterSubscope(node);
+
+	}
+	@Override
+	public void visitLeave(IfNode node) {
+		leaveScope(node);
+		
+
+	}
+	@Override
+	public void visitEnter(WhileNode node) {
+		enterSubscope(node);
+
+	}
+	@Override
+	public void visitLeave(WhileNode node) {
+		leaveScope(node);
+
+	}
+	
+	@Override
+	public void visitLeave(ForNodeX node) {
+	
+		IdentifierNode ident = (IdentifierNode) node.getChildren().get(0);
+		Range rangeType = (Range) node.getChildren().get(1).getType();
+		//System.out.println(rangeType.getSubtype());
+		ident.setType(rangeType.getSubtype());
+		addBinding(ident,rangeType.getSubtype() , true);
+		
+
+	}
+	@Override
+	public void visitEnter(ForNode node) {
+		enterSubscope(node);
+//		IdentifierNode ident = (IdentifierNode) node.getChildren().get(0);
+//		ident.setType(PrimitiveType.INTEGER);
+//		addBinding(ident,PrimitiveType.INTEGER , true);
+		
+
+	}
+	
+	@Override
+	public void visitLeave(ForNode node) {
+		
+		leaveScope(node);
 
 	}
 	private Lextant operatorFor(OperatorNode node) {

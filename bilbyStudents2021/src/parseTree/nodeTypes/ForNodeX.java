@@ -7,35 +7,21 @@ import lexicalAnalyzer.Lextant;
 import tokens.LextantToken;
 import tokens.Token;
 
-public class ForNode extends ParseNode {
-	private String breakLabel;
-	private String continueLabel;
+public class ForNodeX extends ParseNode {
 	private FunctionSignature signature;
 	
-	public ForNode(Token token) {
+	public ForNodeX(Token token) {
 		super(token);
 		assert(token instanceof LextantToken);
 	}
 
-	public ForNode(ParseNode node) {
+	public ForNodeX(ParseNode node) {
 		super(node);
 	}
 	
 	
 	////////////////////////////////////////////////////////////
 	// attributes
-	public void setBreakLabel(String breakLabel) {
-		this.breakLabel = breakLabel;
-	}
-	public String getBreakLabel() {
-		return breakLabel;
-	}
-	public void setContinueLabel(String continueLabel) {
-		this.continueLabel = continueLabel;
-	}
-	public String getContinueLabel() {
-		return continueLabel;
-	}
 	
 	public Lextant getOperator() {
 		return lextantToken().getLextant();
@@ -57,7 +43,7 @@ public class ForNode extends ParseNode {
 	// convenience factory
 
 	public static ParseNode withChildren(Token token, ParseNode ...children) {
-		ForNode node = new ForNode(token);
+		ForNodeX node = new ForNodeX(token);
 		for(ParseNode child: children) {
 			node.appendChild(child);
 		}

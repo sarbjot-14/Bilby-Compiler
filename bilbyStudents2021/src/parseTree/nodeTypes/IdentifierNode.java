@@ -54,7 +54,10 @@ public class IdentifierNode extends ParseNode {
 				return current.bindingOf(identifier);
 			}
 		}
-		useBeforeDefineError();
+		if(!(this.getParent() instanceof ForNodeX)) {
+			useBeforeDefineError();
+		}
+		
 		return Binding.nullInstance();
 	}
 

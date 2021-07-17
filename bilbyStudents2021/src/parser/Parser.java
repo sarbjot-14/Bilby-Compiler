@@ -14,6 +14,7 @@ import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.ErrorNode;
 import parseTree.nodeTypes.FloatingConstantNode;
 import parseTree.nodeTypes.ForNode;
+import parseTree.nodeTypes.ForNodeX;
 import parseTree.nodeTypes.IdentifierNode;
 import parseTree.nodeTypes.IfNode;
 import parseTree.nodeTypes.IndexAssignmentNode;
@@ -223,9 +224,11 @@ public class Parser {
 		ParseNode rangeExpression = parseExpression();
 		expect(Punctuator.CLOSE_BRACE_PAREN);
 		ParseNode block = parseBlockStatement(); 
+		
+		ParseNode forX = ForNodeX.withChildren(forToken, identifier,rangeExpression);
 
 
-		return ForNode.withChildren(forToken, identifier, rangeExpression,block);
+		return ForNode.withChildren(forToken, forX,block);
 	}
 
 		

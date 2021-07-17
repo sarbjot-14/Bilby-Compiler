@@ -415,6 +415,7 @@ public class ASMCodeGenerator {
 			assert false: "Type " + type + " unimplemented in opcodeForStore()";
 			return null;
 		}
+		
 		ASMCodeFragment generateStore(ParseNode node){
 			ASMCodeFragment code = new ASMCodeFragment(CodeType.GENERATES_VOID);
 			Type type = node.getType();
@@ -677,50 +678,123 @@ public class ASMCodeGenerator {
 			code.add(Label, endLoop);
 
 		}
-
 		///////////////////////////////////////////////////////////////////////////
 		// for
+		public void visitEnter(ForNode node) {
+			newVoidCode(node);
+			Labeller labeller = new Labeller("forLoop");
+			String endLoop = labeller.newLabel("endLoop");
+			node.setBreakLabel(endLoop);
+			String startLoop = labeller.newLabel("startLoop");
+			node.setContinueLabel(startLoop);
+			
+		}
+		
 		public void visitLeave(ForNode node) {
 			newVoidCode(node);
-			
-			// start of while condition
 			Labeller labeller = new Labeller("forLoop");
-			String startFor = labeller.newLabel("startFor");
-			String endFor = labeller.newLabel("endFor");
-			String startLoop = labeller.newLabel("startLoop");
-			String endLoop = labeller.newLabel("endLoop");
-			
-			// create immutable binding in scope just for identifier
-			// emit code for identifier
-			// check upper bound
-			// increment
-			
-			
-			
-			code.add(Label, startFor);	
 
-//			// check boolean conditional
-//			ParseNode booleanConditional = node.getChildren().get(0);
-//			ASMCodeFragment arg1 = removeValueCode(booleanConditional);
-//			code.append(arg1);
-//
-//			// check conditional and jump over block statement
-//			String endWhile = new Labeller("endWhile").newLabel("");
-//			code.add(JumpFalse, endWhile);
-//
-//			// run block statement
-//			ParseNode blockStatement = node.getChildren().get(1);
-//			ASMCodeFragment arg2 =removeVoidCode(blockStatement);
-//			code.append(arg2);
-//
-//
+			String startLoop = node.getContinueLabel();
+			String endLoop = node.getBreakLabel();
+			//((a >= low r) && (a <= high r))
+			//emit identifier?
+			// initialize identifier to low?
+			ASMCodeFragment rangeValues = removeValueCode(node.getChildren().get(0).getChildren().get(1));
+			code.append(rangeValues);
+			
+			// save the high
+			String high = labeller.newLabel("high");
+			code.add(DLabel, high);
+			code.add(DataI, 0);
+			code.add(PushD, high);
+			code.add(Exchange);
+			code.add(StoreI); 
+			
+			// save the low
+			String count = labeller.newLabel("count");
+			code.add(DLabel, count);
+			code.add(DataI, 0);
+			code.add(PushD, count);
+			code.add(Exchange);
+			code.add(StoreI); 
+			
+			Type identifierType = node.getChildren().get(0).getChildren().get(0).getType();
+			// update identifier
+			String identifierAddress= labeller.newLabel("identifierAddress");
+			code.add(DLabel, identifierAddress);
+			if(identifierType == PrimitiveType.INTEGER) {
+				code.add(DataI, 0);
+			}
+			else {
+				assert(identifierType == PrimitiveType.CHARACTER);
+				code.add(DataC, 0);
+			}
+			
+			code.add(PushD, identifierAddress);
+			ASMCodeFragment lvalue = removeAddressCode(node.getChildren().get(0).getChildren().get(0));	
+			code.append(lvalue);
+			code.add(opcodeForStore(identifierType));
+			//code.add(StoreI); 
+			
+			code.add(PushD,identifierAddress);
+			code.add(LoadI);
+			
+			code.add(PushD,count);
+			code.add(LoadI);
+			
+			code.add(StoreI);
+			
+		
+			
+			
+			code.add(Label, startLoop);	
+			// check termination condition
+			
+			code.add(PushD,count);
+			code.add(LoadI);
+			
+			code.add(PushD,high);
+			code.add(LoadI);
+			
+			//code.add(PStack);
+			code.add(Subtract);
+			code.add(JumpPos,endLoop);
+			
+			
+			// run block statement
+			ParseNode blockStatement = node.getChildren().get(1);
+			ASMCodeFragment arg2 =removeVoidCode(blockStatement);
+			code.append(arg2);
+
+			
+			// increment step
+			code.add(PushD,count);
+			code.add(LoadI);
+			code.add(PushI,1);
+			code.add(Add);
+			code.add(PushD, count);
+			code.add(Exchange);
+			code.add(StoreI); 
+			
+			
+			// update identifier
+			code.add(PushD,identifierAddress);
+			code.add(LoadI);
+			
+			code.add(PushD,count);
+			code.add(LoadI);
+	
+			code.add(StoreI);
+			
 //			// jump to start of start of boolean condition
-//			code.add(Jump, startWhile);
+			code.add(Jump, startLoop);
 
 			// end
-			code.add(Label, endFor);
+			code.add(Label, endLoop);
 
 		}
+
+
 		///////////////////////////////////////////////////////////////////////////
 		// type casting
 		public void visitLeave(TypeNode node) {
