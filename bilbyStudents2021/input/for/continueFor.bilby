@@ -1,0 +1,16 @@
+main{
+
+	
+	for(i in <2..7>) {
+		
+		if(i == 5){
+			print "dont print 25" $n;
+			continue;
+		}
+		print i*i $s;
+
+	}
+	print $n;
+
+}
+

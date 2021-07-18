@@ -1,0 +1,15 @@
+main{
+
+	
+	for(i in <2..7>) {
+		
+		if(i == 5){
+			break;
+		}
+		print i*i $s;
+
+	}
+	print $n;
+
+}
+

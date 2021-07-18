@@ -1,11 +1,8 @@
 main{
 
 	
-	for(i in <#a..#d>) {
-		print i $s;
 
-	}
-	print $n;
+	print 5 $n;
 
 }
 

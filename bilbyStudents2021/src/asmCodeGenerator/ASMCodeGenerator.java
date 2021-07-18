@@ -390,7 +390,54 @@ public class ASMCodeGenerator {
 			Type type = node.getChildren().get(2).getType();  
 			code.add(opcodeForStore(type));
 		}
+		private ASMOpcode opcodeForLoad(Type type) {
+			if(type == PrimitiveType.INTEGER) {
+				return LoadI;
+			}
+			if(type == PrimitiveType.FLOAT) {
+				return LoadF;
+			}
+			if(type == PrimitiveType.BOOLEAN) {
+				return LoadI;
+			}
+			if(type == PrimitiveType.STRING) {
+				return LoadI;
+			}
+			if(type == PrimitiveType.CHARACTER) {
+				return LoadC;
+			}
+			if(type instanceof Array) {
+				return LoadI;
+			}
 		
+			
+			assert false: "Type " + type + " unimplemented in opcodeForLoad()";
+			return null;
+		}
+		private ASMOpcode opcodeForData(Type type) {
+			if(type == PrimitiveType.INTEGER) {
+				return DataI;
+			}
+			if(type == PrimitiveType.FLOAT) {
+				return DataF;
+			}
+			if(type == PrimitiveType.BOOLEAN) {
+				return DataI;
+			}
+			if(type == PrimitiveType.STRING) {
+				return DataI;
+			}
+			if(type == PrimitiveType.CHARACTER) {
+				return DataC;
+			}
+			if(type instanceof Array) {
+				return DataI;
+			}
+		
+			
+			assert false: "Type " + type + " unimplemented in opcodeForData()";
+			return null;
+		}
 		private ASMOpcode opcodeForStore(Type type) {
 			if(type == PrimitiveType.INTEGER) {
 				return StoreI;
@@ -687,6 +734,8 @@ public class ASMCodeGenerator {
 			node.setBreakLabel(endLoop);
 			String startLoop = labeller.newLabel("startLoop");
 			node.setContinueLabel(startLoop);
+			String increment = labeller.newLabel("increment");
+			node.setIncrementLabel(increment);
 			
 		}
 		
@@ -696,53 +745,46 @@ public class ASMCodeGenerator {
 
 			String startLoop = node.getContinueLabel();
 			String endLoop = node.getBreakLabel();
-			//((a >= low r) && (a <= high r))
-			//emit identifier?
-			// initialize identifier to low?
+			String incrementLabel = node.getIncrementLabel();
+			
+			Type identifierType = node.getChildren().get(0).getChildren().get(0).getType();
+
+
 			ASMCodeFragment rangeValues = removeValueCode(node.getChildren().get(0).getChildren().get(1));
 			code.append(rangeValues);
 			
 			// save the high
 			String high = labeller.newLabel("high");
 			code.add(DLabel, high);
-			code.add(DataI, 0);
+			code.add(opcodeForData(identifierType), 0);
 			code.add(PushD, high);
 			code.add(Exchange);
-			code.add(StoreI); 
+			code.add(opcodeForStore(identifierType)); 
 			
 			// save the low
 			String count = labeller.newLabel("count");
 			code.add(DLabel, count);
-			code.add(DataI, 0);
+			code.add(opcodeForData(identifierType), 0);
 			code.add(PushD, count);
 			code.add(Exchange);
-			code.add(StoreI); 
+			code.add(opcodeForStore(identifierType)); 
 			
-			Type identifierType = node.getChildren().get(0).getChildren().get(0).getType();
 			// update identifier
 			String identifierAddress= labeller.newLabel("identifierAddress");
 			code.add(DLabel, identifierAddress);
-			if(identifierType == PrimitiveType.INTEGER) {
-				code.add(DataI, 0);
-			}
-			else {
-				assert(identifierType == PrimitiveType.CHARACTER);
-				code.add(DataC, 0);
-			}
-			
+			code.add(opcodeForData(identifierType), 0);
 			code.add(PushD, identifierAddress);
 			ASMCodeFragment lvalue = removeAddressCode(node.getChildren().get(0).getChildren().get(0));	
 			code.append(lvalue);
 			code.add(opcodeForStore(identifierType));
-			//code.add(StoreI); 
 			
 			code.add(PushD,identifierAddress);
-			code.add(LoadI);
+			code.add(opcodeForLoad(identifierType));
 			
 			code.add(PushD,count);
-			code.add(LoadI);
+			code.add(opcodeForLoad(identifierType));
 			
-			code.add(StoreI);
+			code.add(opcodeForStore(identifierType));
 			
 		
 			
@@ -751,12 +793,12 @@ public class ASMCodeGenerator {
 			// check termination condition
 			
 			code.add(PushD,count);
-			code.add(LoadI);
+			code.add(opcodeForLoad(identifierType));
 			
 			code.add(PushD,high);
-			code.add(LoadI);
+			code.add(opcodeForLoad(identifierType));
 			
-			//code.add(PStack);
+		
 			code.add(Subtract);
 			code.add(JumpPos,endLoop);
 			
@@ -766,25 +808,28 @@ public class ASMCodeGenerator {
 			ASMCodeFragment arg2 =removeVoidCode(blockStatement);
 			code.append(arg2);
 
-			
+			code.add(Label, incrementLabel);
 			// increment step
 			code.add(PushD,count);
-			code.add(LoadI);
+			code.add(opcodeForLoad(identifierType));
+			//code.add(PStack);
 			code.add(PushI,1);
 			code.add(Add);
 			code.add(PushD, count);
 			code.add(Exchange);
-			code.add(StoreI); 
+			
+			code.add(opcodeForStore(identifierType));
 			
 			
 			// update identifier
 			code.add(PushD,identifierAddress);
-			code.add(LoadI);
+			code.add(opcodeForLoad(identifierType));
 			
 			code.add(PushD,count);
-			code.add(LoadI);
-	
-			code.add(StoreI);
+			code.add(opcodeForLoad(identifierType));
+			
+			
+			code.add(opcodeForStore(identifierType));
 			
 //			// jump to start of start of boolean condition
 			code.add(Jump, startLoop);
@@ -982,6 +1027,10 @@ public class ASMCodeGenerator {
 					WhileNode whileNode = (WhileNode)current;
 					code.add(Jump,whileNode.getBreakLabel());
 				}
+				else if(current instanceof ForNode) {
+					ForNode forNode = (ForNode)current;
+					code.add(Jump,forNode.getBreakLabel());
+				}
 			}	
 			
 		}
@@ -992,6 +1041,10 @@ public class ASMCodeGenerator {
 				if(current instanceof WhileNode  ) {
 					WhileNode whileNode = (WhileNode)current;
 					code.add(Jump,whileNode.getContinueLabel());
+				}
+				else if(current instanceof ForNode) {
+					ForNode forNode = (ForNode)current;
+					code.add(Jump,forNode.getIncrementLabel());
 				}
 			}	
 			

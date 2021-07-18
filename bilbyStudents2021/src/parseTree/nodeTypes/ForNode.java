@@ -10,6 +10,7 @@ import tokens.Token;
 public class ForNode extends ParseNode {
 	private String breakLabel;
 	private String continueLabel;
+	private String incrementLabel;
 	private FunctionSignature signature;
 	
 	public ForNode(Token token) {
@@ -36,6 +37,14 @@ public class ForNode extends ParseNode {
 	public String getContinueLabel() {
 		return continueLabel;
 	}
+	public void setIncrementLabel(String incrementLabel) {
+		this.incrementLabel = incrementLabel;
+	}
+	public String getIncrementLabel() {
+		return incrementLabel;
+	}
+	
+
 	
 	public Lextant getOperator() {
 		return lextantToken().getLextant();
@@ -72,5 +81,7 @@ public class ForNode extends ParseNode {
 		visitChildren(visitor);
 		visitor.visitLeave(this);
 	}
+
+	
 }
 
