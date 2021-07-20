@@ -170,7 +170,7 @@ public class ASMCodeGenerator {
 				code.add(LoadC);
 			}	
 			else if(node.getType() == PrimitiveType.CHARACTER) {
-				code.add(LoadI);
+				code.add(LoadC);
 			}
 			else if(node.getType() == PrimitiveType.STRING) {
 				code.add(LoadI);
@@ -539,7 +539,6 @@ public class ASMCodeGenerator {
 					
 					code.add(PushD,highendLabel);
 					code.add(LoadF);
-					//code.add(PStack);
 					code.add(StoreF);
 					
 					code.add(PushI,8);
@@ -772,14 +771,16 @@ public class ASMCodeGenerator {
 			// update identifier
 			String identifierAddress= labeller.newLabel("identifierAddress");
 			code.add(DLabel, identifierAddress);
-			code.add(opcodeForData(identifierType), 0);
+			code.add(DataI, 0);
 			code.add(PushD, identifierAddress);
 			ASMCodeFragment lvalue = removeAddressCode(node.getChildren().get(0).getChildren().get(0));	
 			code.append(lvalue);
-			code.add(opcodeForStore(identifierType));
+			code.add(StoreI);
 			
 			code.add(PushD,identifierAddress);
-			code.add(opcodeForLoad(identifierType));
+			code.add(LoadI);
+			
+			
 			
 			code.add(PushD,count);
 			code.add(opcodeForLoad(identifierType));
@@ -798,9 +799,10 @@ public class ASMCodeGenerator {
 			code.add(PushD,high);
 			code.add(opcodeForLoad(identifierType));
 			
-		
+			
 			code.add(Subtract);
 			code.add(JumpPos,endLoop);
+			
 			
 			
 			// run block statement
@@ -812,7 +814,6 @@ public class ASMCodeGenerator {
 			// increment step
 			code.add(PushD,count);
 			code.add(opcodeForLoad(identifierType));
-			//code.add(PStack);
 			code.add(PushI,1);
 			code.add(Add);
 			code.add(PushD, count);
@@ -823,7 +824,7 @@ public class ASMCodeGenerator {
 			
 			// update identifier
 			code.add(PushD,identifierAddress);
-			code.add(opcodeForLoad(identifierType));
+			code.add(LoadI);
 			
 			code.add(PushD,count);
 			code.add(opcodeForLoad(identifierType));
@@ -896,7 +897,6 @@ public class ASMCodeGenerator {
 			
 			//call memory manager
 			code.add(Call,MemoryManager.MEM_MANAGER_ALLOCATE);
-			//code.add(PStack);
 			code.add(Duplicate);
 			
 			// type identifier
