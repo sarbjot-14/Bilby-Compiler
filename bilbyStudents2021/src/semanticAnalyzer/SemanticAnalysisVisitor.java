@@ -281,10 +281,8 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	private boolean isArrayPromotable(ArrayNode node, PrimitiveType targetType) {
 		for(ParseNode element:node.getChildren()) {
 			for(Promotion promotion: Promotion.values()) {
-				//System.out.println(element.getType());
-				//System.out.println(promotion);
+			
 				if(element.getType() == targetType) {
-					//System.out.println("already target type, try next element");
 					break;
 				}
 
@@ -359,9 +357,6 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	@Override
 	public void visitEnter(ForNode node) {
 		enterSubscope(node);
-//		IdentifierNode ident = (IdentifierNode) node.getChildren().get(0);
-//		ident.setType(PrimitiveType.INTEGER);
-//		addBinding(ident,PrimitiveType.INTEGER , true);
 		
 
 	}

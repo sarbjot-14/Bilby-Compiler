@@ -7,10 +7,6 @@ func float weight(int numHydrogen, int numOxygen) {
 	return molecularWeight * g ;
 }
 
-func int fin( int a, int b ){
-	return 5;%pax(5*a, b) ;
-}
-
 
 main{
 

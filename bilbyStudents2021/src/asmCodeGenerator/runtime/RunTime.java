@@ -24,16 +24,36 @@ public class RunTime {
 	public static final String FLOAT_DIVIDE_BY_ZERO_RUNTIME_ERROR = "$$f-divide-by-zero";
 	public static final String NEGATIVE_ARRAY_LENGTH_RUNTIME_ERROR = "$$negative-length-array";
 	public static final String INDEXING_RUNTIME_ERROR = "$$out-of-bounds-indexing";
+	public static final String STACK_POINTER   = "$stack-pointer";
+	public static final String FRAME_POINTER   = "$frame-pointer";
 	
-
 	private ASMCodeFragment environmentASM() {
 		ASMCodeFragment result = new ASMCodeFragment(GENERATES_VOID);
 		
+		result.append(initializePointers());
 		result.append(jumpToMain());
 		result.append(stringsForPrintf());
 		result.append(runtimeErrors());
 		result.add(DLabel, USABLE_MEMORY_START);
 		return result;
+	}
+	private ASMCodeFragment initializePointers(){
+		// sets up space in data space (low memory)
+		ASMCodeFragment frag = new ASMCodeFragment(GENERATES_VOID);
+		frag.add(DLabel, STACK_POINTER);
+		frag.add(DataI,0);
+		// memory location
+		frag.add(PushD,STACK_POINTER);
+		frag.add(Memtop);
+		frag.add(StoreI);
+	
+		frag.add(DLabel, FRAME_POINTER);
+		frag.add(DataI,0);
+		frag.add(PushD,FRAME_POINTER);
+		frag.add(Memtop);
+		frag.add(StoreI);
+		return frag;
+		
 	}
 	
 	private ASMCodeFragment jumpToMain() {
