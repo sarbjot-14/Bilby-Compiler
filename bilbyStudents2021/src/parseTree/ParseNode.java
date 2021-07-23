@@ -35,6 +35,9 @@ public class ParseNode implements Locator {
 		this.type = node.type;
 		this.scope = node.scope;
 	}
+	public ParseNode() {
+		
+	}
 	public Token getToken() {
 		return token;
 	}
@@ -162,5 +165,13 @@ public class ParseNode implements Locator {
 		for(ParseNode child : children) {
 			child.accept(visitor);
 		}
+	}
+	public void setToken(Token token) {
+		this.token = token;
+		this.type = PrimitiveType.NO_TYPE;
+		this.scope = null;
+		this.parent = NO_PARENT;
+		initChildren();
+		
 	}
 }

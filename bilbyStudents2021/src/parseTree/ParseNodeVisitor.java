@@ -15,15 +15,19 @@ import parseTree.nodeTypes.ErrorNode;
 import parseTree.nodeTypes.FloatingConstantNode;
 import parseTree.nodeTypes.ForNode;
 import parseTree.nodeTypes.ForNodeX;
+import parseTree.nodeTypes.FunctionDefinitionNode;
 import parseTree.nodeTypes.IdentifierNode;
 import parseTree.nodeTypes.IfNode;
 import parseTree.nodeTypes.IndexAssignmentNode;
 import parseTree.nodeTypes.IntegerConstantNode;
 import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.OperatorNode;
+import parseTree.nodeTypes.ParameterListNode;
+import parseTree.nodeTypes.ParameterSpecificationNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.ProgramNode;
 import parseTree.nodeTypes.RangeNode;
+import parseTree.nodeTypes.ReturnNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StatementBlockNode;
 import parseTree.nodeTypes.ArrayNode;
@@ -80,6 +84,18 @@ public interface ParseNodeVisitor {
 	
 	void visitEnter(IndexAssignmentNode node);
 	void visitLeave(IndexAssignmentNode node);
+	
+	void visitEnter(ParameterSpecificationNode node);
+	void visitLeave(ParameterSpecificationNode node);
+	
+	void visitEnter(ParameterListNode node);
+	void visitLeave(ParameterListNode node);
+	
+	void visitEnter(ReturnNode node);
+	void visitLeave(ReturnNode node);
+	
+	void visitEnter(FunctionDefinitionNode node);
+	void visitLeave(FunctionDefinitionNode node);
 	
 	
 
@@ -172,9 +188,6 @@ public interface ParseNodeVisitor {
 			defaultVisitLeave(node);
 		}
 		
-		
-		
-		
 		public void visitEnter(TypeNode node) {
 			defaultVisitEnter(node);
 		}
@@ -219,6 +232,30 @@ public interface ParseNodeVisitor {
 			defaultVisitEnter(node);
 		}
 		public void visitLeave(RangeNode node) {
+			defaultVisitLeave(node);
+		}
+		public void visitEnter(ParameterSpecificationNode node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(ParameterSpecificationNode node) {
+			defaultVisitLeave(node);
+		}
+		public void visitEnter(ParameterListNode node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(ParameterListNode node) {
+			defaultVisitLeave(node);
+		}
+		public void visitEnter(ReturnNode node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(ReturnNode node) {
+			defaultVisitLeave(node);
+		}
+		public void visitEnter(FunctionDefinitionNode node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(FunctionDefinitionNode node) {
 			defaultVisitLeave(node);
 		}
 		

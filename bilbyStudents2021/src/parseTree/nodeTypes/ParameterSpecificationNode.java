@@ -4,12 +4,12 @@ import parseTree.ParseNode;
 import parseTree.ParseNodeVisitor;
 import tokens.Token;
 
-public class ProgramNode extends ParseNode {
+public class ParameterSpecificationNode extends ParseNode {
 
-	public ProgramNode(Token token) {
+	public ParameterSpecificationNode(Token token) {
 		super(token);
 	}
-	public ProgramNode(ParseNode node) {
+	public ParameterSpecificationNode(ParseNode node) {
 		super(node);
 	}
 	
@@ -20,10 +20,6 @@ public class ProgramNode extends ParseNode {
 	///////////////////////////////////////////////////////////
 	// boilerplate for visitors
 	
-	public ProgramNode() {
-		super();
-		
-	}
 	public void accept(ParseNodeVisitor visitor) {
 		visitor.visitEnter(this);
 		visitChildren(visitor);

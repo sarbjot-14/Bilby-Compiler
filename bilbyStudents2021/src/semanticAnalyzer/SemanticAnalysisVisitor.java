@@ -333,6 +333,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		
 
 	}
+	
 	@Override
 	public void visitEnter(WhileNode node) {
 		enterSubscope(node);
