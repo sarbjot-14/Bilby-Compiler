@@ -1,0 +1,17 @@
+
+func float weight(int numHydrogen, int numOxygen) {
+	imm g := 6.02E23 ;
+	imm hy := 1.008 ;
+	imm ox := 15.999 ;
+	imm molecularWeight := hy * numHydrogen + ox * numOxygen ;
+	return molecularWeight * g ;
+}
+
+
+
+main{
+
+
+	print "helloWorld" $n;
+
+}
