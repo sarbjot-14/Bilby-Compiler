@@ -25,6 +25,7 @@ import parseTree.nodeTypes.AssignmentNode;
 import parseTree.nodeTypes.FloatingConstantNode;
 import parseTree.nodeTypes.ForNode;
 import parseTree.nodeTypes.ForNodeX;
+import parseTree.nodeTypes.FunctionDefinitionNode;
 import parseTree.nodeTypes.IdentifierNode;
 import parseTree.nodeTypes.IfNode;
 import parseTree.nodeTypes.IntegerConstantNode;
@@ -314,6 +315,17 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		return true;
 	}
 	@Override
+	public void visitEnter(FunctionDefinitionNode node) {
+		//enterSubscope(node);
+		//enterParameterScope(node);
+
+	}
+	@Override
+	public void visitLeave(FunctionDefinitionNode node) {
+		//leaveScope(node);
+
+	}
+	@Override
 	public void visitLeave(RangeNode node) {
 		Type subtype = node.child(0).getType();
 		Type arrayType = new Array(subtype);
@@ -461,8 +473,6 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			assert node.nChildren() == 2;
 			ParseNode left  = node.child(0);
 			ParseNode right = node.child(1);
-			
-			
 			
 			childTypes = Arrays.asList(left.getType(), right.getType());		
 		}
