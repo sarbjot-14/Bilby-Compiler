@@ -893,6 +893,7 @@ public class Parser {
 		if(!startsIdentifier(nowReading)) {
 			return syntaxErrorNode("identifier");
 		}
+		
 		readToken();
 		return new IdentifierNode(previouslyRead);
 	}
