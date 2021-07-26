@@ -54,7 +54,12 @@ public class IdentifierNode extends ParseNode {
 				return current.bindingOf(identifier);
 			}
 		}
-		if(!(this.getParent() instanceof ForNodeX)) {
+		// if parent is either forNodex or function def then throw error
+		// !false && !false && !true
+		// true && true && false
+		if(!(this.getParent() instanceof ForNodeX) && !(this.getParent() instanceof FunctionDefinitionNode )&& !(this.getParent() instanceof ParameterSpecificationNode)) {
+			System.out.println("called for"+this.toString());
+			System.out.println(this.getParent() instanceof ParameterSpecificationNode);
 			useBeforeDefineError();
 		}
 		

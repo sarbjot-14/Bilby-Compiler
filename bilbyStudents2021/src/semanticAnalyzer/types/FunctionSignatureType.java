@@ -23,10 +23,10 @@ public class FunctionSignatureType implements Type {
 	///////////////////////////////////////////////////////////////
 	// construction
 	
-	public FunctionSignatureType(Type returnType,Type ...types) {
+	public FunctionSignatureType(Type returnType,List<Type> paramTypeList) {
 		//assert(types.length >= 1);
-		if(types.length>0) {
-			storeParamTypes(types);
+		if(paramTypeList.size()>0) {
+			storeParamTypes(paramTypeList);
 		}
 		this.returnType = returnType;
 		
@@ -39,10 +39,12 @@ public class FunctionSignatureType implements Type {
 		}
 		
 	}
-	private void storeParamTypes(Type[] types) {
-		paramTypes = new Type[types.length-1];
-		for(int i=0; i<types.length-1; i++) {
-			paramTypes[i] = types[i];
+	private void storeParamTypes(List<Type> paramTypeList) {
+		//System.out.println(paramTypeList.size());
+		paramTypes = new Type[paramTypeList.size()];
+		for(int i=0; i<paramTypeList.size(); i++) {
+			paramTypes[i] = paramTypeList.get(i);
+			//System.out.println(paramTypes[i]);
 		}
 	}
 	
@@ -106,7 +108,11 @@ public class FunctionSignatureType implements Type {
 		//(int, int) -> float
 		String info = "(";
 		for(int i = 0; i < paramTypes.length ; i++) {
-			info += paramTypes[i] + ",";
+			info += paramTypes[i] ;
+			if(i==paramTypes.length-1 ) {
+				continue;
+			}
+			info+=",";
 			
 		}
 		return info+")"+" "+"->"+" "+this.returnType ;

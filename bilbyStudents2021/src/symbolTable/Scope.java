@@ -18,7 +18,7 @@ public class Scope {
 		return new Scope(programScopeAllocator(), nullInstance());
 	}
 	public static Scope createParameterScope() {
-		return new Scope(programScopeAllocator(), nullInstance());
+		return new Scope(parameterScopeAllocator(), nullInstance());
 	}
 	public Scope createSubscope() {
 		return new Scope(allocator, this);
