@@ -25,11 +25,13 @@ import parseTree.nodeTypes.AssignmentNode;
 import parseTree.nodeTypes.FloatingConstantNode;
 import parseTree.nodeTypes.ForNode;
 import parseTree.nodeTypes.ForNodeX;
+import parseTree.nodeTypes.FunctionDefinitionNode;
 import parseTree.nodeTypes.IdentifierNode;
 import parseTree.nodeTypes.IfNode;
 import parseTree.nodeTypes.IntegerConstantNode;
 import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.OperatorNode;
+import parseTree.nodeTypes.ParameterListNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.ProgramNode;
 import parseTree.nodeTypes.RangeNode;
@@ -43,6 +45,7 @@ import semanticAnalyzer.signatures.FunctionSignatures;
 import semanticAnalyzer.signatures.PromotedSignature;
 import semanticAnalyzer.signatures.Promotion;
 import semanticAnalyzer.types.Array;
+import semanticAnalyzer.types.FunctionSignatureType;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.PrimitiveType.*;
 import semanticAnalyzer.types.Range;
@@ -84,6 +87,10 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Scope scope = Scope.createProgramScope();
 		node.setScope(scope);
 	}	
+	private void enterParameterScope(ParseNode node) {
+		Scope scope = Scope.createParameterScope();
+		node.setScope(scope);
+	}
 	@SuppressWarnings("unused")
 	private void enterSubscope(ParseNode node) {
 		Scope baseScope = node.getLocalScope();
@@ -250,7 +257,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 				//				System.out.println(isArrayPromotable(node, promotableType));
 				// if is promotable ,promote to that type and return 
 				if(isArrayPromotable(node, promotableType)) {
-					//System.out.println("FOUND A PROMOTABLE TYPE");
+					
 
 					Type subtype = promotableType;//node.child(0).getType();
 					Type arrayT = new Array(subtype);
@@ -258,9 +265,6 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 					return;
 				}
 
-
-
-				//System.out.println("NNNNNNNEXT");
 			}
 		}
 		else {
@@ -281,10 +285,8 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	private boolean isArrayPromotable(ArrayNode node, PrimitiveType targetType) {
 		for(ParseNode element:node.getChildren()) {
 			for(Promotion promotion: Promotion.values()) {
-				//System.out.println(element.getType());
-				//System.out.println(promotion);
+			
 				if(element.getType() == targetType) {
-					//System.out.println("already target type, try next element");
 					break;
 				}
 
@@ -314,6 +316,65 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			
 		}
 		return true;
+	}
+	@Override
+	public void visitEnter(FunctionDefinitionNode node) {
+		// set types of param
+		boolean isImmutable=false;
+		
+		IdentifierNode identifier = null;
+		for(ParseNode paramSpec:node.child(2).getChildren()) {
+			identifier = (IdentifierNode) paramSpec.child(1);
+			identifier.setType(paramSpec.child(0).getType());
+		}
+		//enter param scope
+
+		enterParameterScope(node);
+		
+
+	}
+	@Override
+	public void visitLeave(FunctionDefinitionNode node) {
+		leaveScope(node); // leave parameter scope
+		// set the function binding
+		IdentifierNode identifier = (IdentifierNode) node.child(1);
+		Type returnType = node.child(0).getType();
+		
+		List<Type> paramTypeList = new ArrayList<Type>();
+		
+		for(ParseNode nodeChild:node.child(2).getChildren()) {
+			paramTypeList.add(nodeChild.child(0).getType());
+//			System.out.println(nodeChild.child(0).getToken());
+//			System.out.println(nodeChild.child(0).getType());
+		}
+
+		FunctionSignatureType functionSignatureType = new FunctionSignatureType(returnType,paramTypeList);
+		
+		boolean isImmutable=true;
+		addBinding(identifier, functionSignatureType, isImmutable);
+		identifier.setType(functionSignatureType);
+
+	}
+	@Override
+	public void visitEnter(ParameterListNode node) {
+		
+				
+
+	}
+	@Override
+	public void visitLeave(ParameterListNode node) {
+		//leaveScope(node);
+		// bind params
+		boolean isImmutable=false;
+
+		IdentifierNode identifier = null; //(IdentifierNode) node.child(0);
+		for(ParseNode paramSpec:node.getChildren()) {
+			identifier = (IdentifierNode) paramSpec.child(1);
+			identifier.setType(paramSpec.child(0).getType()); //redundant
+			//System.out.println(paramSpec.child(0));
+			addBinding(identifier,paramSpec.child(0).getType(), isImmutable);
+		}
+
 	}
 	@Override
 	public void visitLeave(RangeNode node) {
@@ -359,9 +420,6 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	@Override
 	public void visitEnter(ForNode node) {
 		enterSubscope(node);
-//		IdentifierNode ident = (IdentifierNode) node.getChildren().get(0);
-//		ident.setType(PrimitiveType.INTEGER);
-//		addBinding(ident,PrimitiveType.INTEGER , true);
 		
 
 	}
@@ -467,8 +525,6 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			ParseNode left  = node.child(0);
 			ParseNode right = node.child(1);
 			
-			
-			
 			childTypes = Arrays.asList(left.getType(), right.getType());		
 		}
 		
@@ -489,12 +545,16 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	// IdentifierNodes, with helper methods
 	@Override
 	public void visit(IdentifierNode node) {
-		if(!isBeingDeclared(node)) {		
-			Binding binding = node.findVariableBinding();
-			
-			node.setType(binding.getType());
-			node.setBinding(binding);
-		}
+		
+			if(!isBeingDeclared(node)) {	
+				//System.out.println(node.getToken());
+				Binding binding = node.findVariableBinding();
+				
+				node.setType(binding.getType());
+				node.setBinding(binding);
+			}
+	
+		
 		// else parent DeclarationNode does the processing.
 	}
 	private boolean isBeingDeclared(IdentifierNode node) {

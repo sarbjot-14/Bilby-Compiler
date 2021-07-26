@@ -17,6 +17,9 @@ public class Scope {
 	public static Scope createProgramScope() {
 		return new Scope(programScopeAllocator(), nullInstance());
 	}
+	public static Scope createParameterScope() {
+		return new Scope(parameterScopeAllocator(), nullInstance());
+	}
 	public Scope createSubscope() {
 		return new Scope(allocator, this);
 	}
@@ -25,6 +28,12 @@ public class Scope {
 		return new PositiveMemoryAllocator(
 				MemoryAccessMethod.DIRECT_ACCESS_BASE, 
 				MemoryLocation.GLOBAL_VARIABLE_BLOCK);
+	}
+	
+	private static MemoryAllocator parameterScopeAllocator() {
+		return new NegativeMemoryAllocator(
+				MemoryAccessMethod.INDIRECT_ACCESS_BASE, 
+				MemoryLocation.FRAME_POINTER);
 	}
 	
 //////////////////////////////////////////////////////////////////////
