@@ -16,10 +16,12 @@ import parseTree.nodeTypes.FloatingConstantNode;
 import parseTree.nodeTypes.ForNode;
 import parseTree.nodeTypes.ForNodeX;
 import parseTree.nodeTypes.FunctionDefinitionNode;
+import parseTree.nodeTypes.FunctionInvocation;
 import parseTree.nodeTypes.IdentifierNode;
 import parseTree.nodeTypes.IfNode;
 import parseTree.nodeTypes.IndexAssignmentNode;
 import parseTree.nodeTypes.IntegerConstantNode;
+import parseTree.nodeTypes.InvocationExpressionList;
 import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.OperatorNode;
 import parseTree.nodeTypes.ParameterListNode;
@@ -96,6 +98,12 @@ public interface ParseNodeVisitor {
 	
 	void visitEnter(FunctionDefinitionNode node);
 	void visitLeave(FunctionDefinitionNode node);
+	
+	void visitEnter(FunctionInvocation node);
+	void visitLeave(FunctionInvocation node);
+	
+	void visitEnter(InvocationExpressionList node);
+	void visitLeave(InvocationExpressionList node);
 	
 	
 
@@ -258,6 +266,18 @@ public interface ParseNodeVisitor {
 		public void visitLeave(FunctionDefinitionNode node) {
 			defaultVisitLeave(node);
 		}
+		public void visitEnter(FunctionInvocation node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(FunctionInvocation node) {
+			defaultVisitLeave(node);
+		}
+		public void visitEnter(InvocationExpressionList node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(InvocationExpressionList node) {
+			defaultVisitLeave(node);
+		}
 		
 
 		public void visit(BooleanConstantNode node) {
@@ -314,6 +334,7 @@ public interface ParseNodeVisitor {
 		public void visit(ContinueNode node) {
 			defaultVisitForLeaf(node);
 		}
+		
 		
 	
 	}

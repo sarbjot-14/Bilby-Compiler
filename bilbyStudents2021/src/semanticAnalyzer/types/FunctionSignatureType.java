@@ -32,6 +32,9 @@ public class FunctionSignatureType implements Type {
 		
 		findTypeVariables();
 	}
+	public Type[] getParamTypes() {
+		return paramTypes;
+	}
 	private void findTypeVariables() {
 		typeVariables = new HashSet<TypeVariable>();
 		for(Type type:paramTypes) {
@@ -100,8 +103,8 @@ public class FunctionSignatureType implements Type {
 	
 	@Override
 	public int getSize() {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		return 4;
 	}
 	@Override
 	public String infoString() {

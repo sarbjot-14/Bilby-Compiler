@@ -26,6 +26,7 @@ import parseTree.nodeTypes.FloatingConstantNode;
 import parseTree.nodeTypes.ForNode;
 import parseTree.nodeTypes.ForNodeX;
 import parseTree.nodeTypes.FunctionDefinitionNode;
+import parseTree.nodeTypes.FunctionInvocation;
 import parseTree.nodeTypes.IdentifierNode;
 import parseTree.nodeTypes.IfNode;
 import parseTree.nodeTypes.IntegerConstantNode;
@@ -51,6 +52,7 @@ import semanticAnalyzer.types.PrimitiveType.*;
 import semanticAnalyzer.types.Range;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
+import symbolTable.NegativeMemoryAllocator;
 import symbolTable.Scope;
 import tokens.LextantToken;
 import tokens.Token;
@@ -74,7 +76,13 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		leaveScope(node);
 	}
 	public void visitEnter(StatementBlockNode node) {
-		enterSubscope(node);
+		if(node.getParent() instanceof FunctionDefinitionNode) {
+			enterProcedureScope(node);
+		}
+		else {
+			enterSubscope(node);
+		}
+		
 	}
 	public void visitLeave(StatementBlockNode node) {
 		leaveScope(node);
@@ -89,6 +97,10 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	}	
 	private void enterParameterScope(ParseNode node) {
 		Scope scope = Scope.createParameterScope();
+		node.setScope(scope);
+	}
+	private void enterProcedureScope(ParseNode node) {
+		Scope scope = Scope.createProcedureScope();
 		node.setScope(scope);
 	}
 	@SuppressWarnings("unused")
@@ -318,7 +330,46 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		return true;
 	}
 	@Override
+	public void visitEnter(FunctionInvocation node) {
+		
+	}
+	@Override
+	public void visitLeave(FunctionInvocation node) {
+		// get binding and check if formals match actuals
+
+		IdentifierNode ident = (IdentifierNode) node.getChildren().get(0);
+
+		Binding binding = ident.findVariableBinding();
+		//System.out.println(binding.getLexeme());
+
+		FunctionSignatureType functionSignatureType = (FunctionSignatureType) binding.getType();
+		Type[] formals = functionSignatureType.getParamTypes();
+		List<ParseNode> actuals = node.child(1).getChildren();
+		if(formals.length != actuals.size()) {
+			System.out.println("Acutals and Formals not same size!!!!!");
+		}
+		else {
+			for(int i=0; i<formals.length ;i++) {
+				if(formals[i] != actuals.get(i).getType()) {
+					System.out.println("Acutals and Formals not same Type!!!!!");
+				}
+			}
+		}
+
+
+		// set binding and type on identifier
+		ident.setBinding(binding);
+		//ident.setType(functionSignatureType);
+		// set type on functionInvocation node
+		node.setType(functionSignatureType.returnType());
+
+
+
+
+	}
+	@Override
 	public void visitEnter(FunctionDefinitionNode node) {
+		// TODO: set dynamic link and return type
 		// set types of param
 		boolean isImmutable=false;
 		
@@ -351,7 +402,8 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		FunctionSignatureType functionSignatureType = new FunctionSignatureType(returnType,paramTypeList);
 		
 		boolean isImmutable=true;
-		addBinding(identifier, functionSignatureType, isImmutable);
+		addGlobalBinding(identifier, functionSignatureType, isImmutable);
+		//addBinding(identifier, functionSignatureType, isImmutable);
 		identifier.setType(functionSignatureType);
 
 	}
@@ -374,6 +426,12 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			//System.out.println(paramSpec.child(0));
 			addBinding(identifier,paramSpec.child(0).getType(), isImmutable);
 		}
+		// allocate space for dynamic link and return addresss
+		Scope s = identifier.getLocalScope();
+		NegativeMemoryAllocator allocator = (NegativeMemoryAllocator) s.getAllocationStrategy();
+		allocator.allocate(PrimitiveType.INTEGER.getSize());
+		allocator.allocate(PrimitiveType.INTEGER.getSize());
+		
 
 	}
 	@Override
@@ -547,7 +605,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	public void visit(IdentifierNode node) {
 		
 			if(!isBeingDeclared(node)) {	
-				//System.out.println(node.getToken());
+				
 				Binding binding = node.findVariableBinding();
 				
 				node.setType(binding.getType());
@@ -566,6 +624,12 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Binding binding = scope.createBinding(identifierNode, type,isImmutable);
 		identifierNode.setBinding(binding);
 	}
+	private void addGlobalBinding(IdentifierNode identifierNode, Type type, boolean isImmutable) {
+		Scope scope = identifierNode.getGlobalScope();
+		Binding binding = scope.createBinding(identifierNode, type,isImmutable);
+		identifierNode.setBinding(binding);
+	}
+	
 	
 	///////////////////////////////////////////////////////////////////////////
 	// error logging/printing

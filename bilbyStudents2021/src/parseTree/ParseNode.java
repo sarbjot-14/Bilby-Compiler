@@ -5,6 +5,7 @@ import java.util.List;
 
 import inputHandler.Locator;
 import inputHandler.TextLocation;
+import parseTree.nodeTypes.ProgramNode;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
@@ -71,6 +72,14 @@ public class ParseNode implements Locator {
 	public Scope getLocalScope() {
 		for(ParseNode current : pathToRoot()) {
 			if(current.hasScope()) {
+				return current.getScope();
+			}
+		}
+		return Scope.nullInstance();
+	}
+	public Scope getGlobalScope() {
+		for(ParseNode current : pathToRoot()) {
+			if(current instanceof ProgramNode) {
 				return current.getScope();
 			}
 		}

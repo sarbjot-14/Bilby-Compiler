@@ -16,10 +16,12 @@ import parseTree.nodeTypes.FloatingConstantNode;
 import parseTree.nodeTypes.ForNode;
 import parseTree.nodeTypes.ForNodeX;
 import parseTree.nodeTypes.FunctionDefinitionNode;
+import parseTree.nodeTypes.FunctionInvocation;
 import parseTree.nodeTypes.IdentifierNode;
 import parseTree.nodeTypes.IfNode;
 import parseTree.nodeTypes.IndexAssignmentNode;
 import parseTree.nodeTypes.IntegerConstantNode;
+import parseTree.nodeTypes.InvocationExpressionList;
 import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.OperatorNode;
 import parseTree.nodeTypes.ParameterListNode;
@@ -788,20 +790,47 @@ public class Parser {
 		return (token.isLextant(Punctuator.SUBTRACT,Punctuator.ADD, Punctuator.NOT, Keyword.LOW,Keyword.HIGH,Keyword.LENGTH  ) || startsIndexingExpression(nowReading) );
 	}
 	
-	// indexingExpression -> atomicExpression ([ expression ])* 
+	// indexingExpression -> atomicExpression ([ expression ])*  ||  atomicExpression  _(_ expressionList _)_
 	private ParseNode parseIndexingExpression() {
 		if(!startsIndexingExpression(nowReading)) {
 			return syntaxErrorNode("index expression");
 		}
 		ParseNode left = parseAtomicExpression();
-		while(nowReading.isLextant(Punctuator.OPEN_BRACKET)) {
+		if(nowReading.isLextant(Punctuator.OPEN_BRACE_PAREN)) {
 			Token bracketToken = nowReading;
-			expect(Punctuator.OPEN_BRACKET);
-			ParseNode right = parseExpression();
-			expect(Punctuator.CLOSE_BRACKET);
-			Token indexingToken = LextantToken.make(bracketToken, bracketToken.getLexeme(), Punctuator.INDEXING);
-			left = OperatorNode.withChildren(indexingToken, left, right);
+			expect(Punctuator.OPEN_BRACE_PAREN);
+			
+			//parent.appendChild(firstElement);
+			ParseNode functionInvocation = new FunctionInvocation(bracketToken);
+			functionInvocation.appendChild(left);
+			ParseNode invocationExpressionList = new InvocationExpressionList(bracketToken);
+			if(startsExpression(nowReading)) {
+				invocationExpressionList.appendChild(parseExpression());
+			}
+
+			while(nowReading.isLextant(Punctuator.COMMA)) {
+				expect(Punctuator.COMMA);
+				if(!startsExpression(nowReading)) {
+					return syntaxErrorNode("incorrect invocation expression list");
+				}
+				invocationExpressionList.appendChild(parseExpression());
+			}	
+			expect(Punctuator.CLOSE_BRACE_PAREN);
+			functionInvocation.appendChild(invocationExpressionList);
+			return functionInvocation;
+			
 		}
+		else {
+			while(nowReading.isLextant(Punctuator.OPEN_BRACKET)) {
+				Token bracketToken = nowReading;
+				expect(Punctuator.OPEN_BRACKET);
+				ParseNode right = parseExpression();
+				expect(Punctuator.CLOSE_BRACKET);
+				Token indexingToken = LextantToken.make(bracketToken, bracketToken.getLexeme(), Punctuator.INDEXING);
+				left = OperatorNode.withChildren(indexingToken, left, right);
+			}
+		}
+		
 		return left;
 	}
 	

@@ -17,7 +17,10 @@ public class MemoryLocation {
 		this.baseAddress = baseAddress;
 		this.offset = offset;
 	}
-
+	//TODO: if there are no bookmarks
+	//after the remove, it adds the maximum allocated size to all of those MemoryLocations. This will necessitate
+	//putting a mutating method on MemoryLocation.
+	
 	public MemoryAccessMethod getAccessor() {
 		return accessor;
 	}

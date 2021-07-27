@@ -57,7 +57,7 @@ public class IdentifierNode extends ParseNode {
 		// if parent is either forNodex or function def then throw error
 		// !false && !false && !true
 		// true && true && false
-		if(!(this.getParent() instanceof ForNodeX) && !(this.getParent() instanceof FunctionDefinitionNode )&& !(this.getParent() instanceof ParameterSpecificationNode)) {
+		if(!(this.getParent() instanceof ForNodeX) && !(this.getParent() instanceof FunctionDefinitionNode )&& !(this.getParent() instanceof ParameterSpecificationNode)&& !(this.getParent() instanceof FunctionInvocation)) {
 			System.out.println("called for"+this.toString());
 			System.out.println(this.getParent() instanceof ParameterSpecificationNode);
 			useBeforeDefineError();
@@ -82,4 +82,5 @@ public class IdentifierNode extends ParseNode {
 	public void accept(ParseNodeVisitor visitor) {
 		visitor.visit(this);
 	}
+	
 }

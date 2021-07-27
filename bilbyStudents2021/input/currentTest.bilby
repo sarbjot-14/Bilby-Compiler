@@ -5,4 +5,6 @@ func float weight(int numHydrogen, int numOxygen) {
 	imm molecularWeight := hy * numHydrogen + ox * numOxygen ;
 	return molecularWeight * g ;
 }
-main{print "helloWorld" $n;}
+main{
+	imm ans  := weight(4,5);
+}
