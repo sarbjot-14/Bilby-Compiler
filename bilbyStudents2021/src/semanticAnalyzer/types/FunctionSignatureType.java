@@ -26,13 +26,15 @@ public class FunctionSignatureType implements Type {
 	public FunctionSignatureType(Type returnType,List<Type> paramTypeList) {
 		//assert(types.length >= 1);
 		if(paramTypeList.size()>0) {
+			
 			storeParamTypes(paramTypeList);
 		}
 		this.returnType = returnType;
 		
-		findTypeVariables();
+		//findTypeVariables();
 	}
 	public Type[] getParamTypes() {
+		
 		return paramTypes;
 	}
 	private void findTypeVariables() {
@@ -110,15 +112,20 @@ public class FunctionSignatureType implements Type {
 	public String infoString() {
 		//(int, int) -> float
 		String info = "(";
-		for(int i = 0; i < paramTypes.length ; i++) {
-			info += paramTypes[i] ;
-			if(i==paramTypes.length-1 ) {
-				continue;
+		if(paramTypes != null) {
+			for(int i = 0; i < paramTypes.length ; i++) {
+				info += paramTypes[i] ;
+				if(i==paramTypes.length-1 ) {
+					continue;
+				}
+				info+=",";
+				
 			}
-			info+=",";
-			
 		}
-		return info+")"+" "+"->"+" "+this.returnType ;
+		
+		info+=")";
+		
+		return info+" "+"->"+" "+this.returnType ;
 		
 	}
 	@Override
