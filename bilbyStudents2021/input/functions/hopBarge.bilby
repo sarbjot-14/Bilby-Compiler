@@ -1,0 +1,13 @@
+func int barge (int e, float f, int g ) {
+	return 5;
+}
+func int hop ( ) {
+	imm a := 14;
+	imm b := 1.23;
+	imm c := 20;
+	imm d := barge( a, b, c);
+	return c;
+}
+main{
+	imm ans  := hop();
+}

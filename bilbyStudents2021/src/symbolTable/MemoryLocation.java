@@ -24,6 +24,9 @@ public class MemoryLocation {
 	public MemoryAccessMethod getAccessor() {
 		return accessor;
 	}
+	public void addTotalParameterSizeToOffset(int addition) {
+		offset = offset + addition;
+	}
 	public String getBaseAddress() {
 		return baseAddress;
 	}

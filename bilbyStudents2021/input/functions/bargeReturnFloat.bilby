@@ -1,0 +1,11 @@
+func float barge (int e, float f, int g ) {
+	print e $n;
+	
+	return f;
+}
+
+main{
+	print "before call" $n;
+	imm ans  := barge(5,6.7,8);
+	print ans $n;
+}

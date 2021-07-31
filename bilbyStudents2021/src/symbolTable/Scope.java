@@ -34,7 +34,7 @@ public class Scope {
 	}
 	
 	private static MemoryAllocator parameterScopeAllocator() {
-		return new NegativeMemoryAllocator(
+		return new ParameterMemoryAllocator(
 				MemoryAccessMethod.INDIRECT_ACCESS_BASE, 
 				MemoryLocation.FRAME_POINTER);
 	}

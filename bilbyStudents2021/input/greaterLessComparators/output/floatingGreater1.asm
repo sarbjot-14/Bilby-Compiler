@@ -21,6 +21,16 @@
         PushD        $heap-first-free          
         Exchange                               
         StoreI                                 
+        DLabel       $stack-pointer            
+        DataI        0                         
+        PushD        $stack-pointer            
+        Memtop                                 
+        StoreI                                 
+        DLabel       $frame-pointer            
+        DataI        0                         
+        PushD        $frame-pointer            
+        Memtop                                 
+        StoreI                                 
         Jump         $$main                    
         DLabel       $eat-location-zero        
         DataZ        8                         

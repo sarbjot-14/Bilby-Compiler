@@ -52,6 +52,7 @@ import semanticAnalyzer.types.PrimitiveType.*;
 import semanticAnalyzer.types.Range;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
+import symbolTable.MemoryLocation;
 import symbolTable.NegativeMemoryAllocator;
 import symbolTable.Scope;
 import tokens.LextantToken;
@@ -78,6 +79,11 @@ class SemanticAnalysisVisitorAll extends ParseNodeVisitor.Default {
 	public void visitEnter(StatementBlockNode node) {
 		if(node.getParent() instanceof FunctionDefinitionNode) {
 			enterProcedureScope(node);
+			// allocate space for dynamic link and return addresss
+			Scope s = node.getScope();
+			NegativeMemoryAllocator allocator = (NegativeMemoryAllocator) s.getAllocationStrategy();
+			allocator.allocate(PrimitiveType.INTEGER.getSize());
+			allocator.allocate(PrimitiveType.INTEGER.getSize());
 		}
 		else {
 			enterSubscope(node);
@@ -351,8 +357,6 @@ class SemanticAnalysisVisitorAll extends ParseNodeVisitor.Default {
 				}
 			}
 		}
-
-
 		// set binding and type on identifier
 		ident.setBinding(binding);
 		//ident.setType(functionSignatureType);
@@ -363,6 +367,15 @@ class SemanticAnalysisVisitorAll extends ParseNodeVisitor.Default {
 
 
 	}
+	@Override
+	public void visitEnter(FunctionDefinitionNode node) {
+		enterParameterScope(node); 
+	}
+
+	@Override
+	public void visitLeave(FunctionDefinitionNode node) {
+		leaveScope(node);
+	}
 	
 	@Override
 	public void visitEnter(ParameterListNode node) {
@@ -372,22 +385,20 @@ class SemanticAnalysisVisitorAll extends ParseNodeVisitor.Default {
 	}
 	@Override
 	public void visitLeave(ParameterListNode node) {
-		//leaveScope(node);
+	
+		IdentifierNode identifier = null; //(IdentifierNode) node.child(0);
 		// bind params
 		boolean isImmutable=false;
 
-		IdentifierNode identifier = null; //(IdentifierNode) node.child(0);
+		//IdentifierNode identifier = null; //(IdentifierNode) node.child(0);
 		for(ParseNode paramSpec:node.getChildren()) {
 			identifier = (IdentifierNode) paramSpec.child(1);
 			identifier.setType(paramSpec.child(0).getType()); //redundant
 			addBinding(identifier,paramSpec.child(0).getType(), isImmutable);
-		}
-		// allocate space for dynamic link and return addresss
-//		Scope s = identifier.getLocalScope();
-//		NegativeMemoryAllocator allocator = (NegativeMemoryAllocator) s.getAllocationStrategy();
-//		allocator.allocate(PrimitiveType.INTEGER.getSize());
-//		allocator.allocate(PrimitiveType.INTEGER.getSize());
 		
+			
+			
+		}	
 
 	}
 	@Override

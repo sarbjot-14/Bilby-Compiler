@@ -23,6 +23,8 @@ import parseTree.nodeTypes.MainBlockNode;
 import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.FloatingConstantNode;
 import parseTree.nodeTypes.ForNode;
+import parseTree.nodeTypes.FunctionDefinitionNode;
+import parseTree.nodeTypes.FunctionInvocation;
 import parseTree.nodeTypes.ArrayNode;
 import parseTree.nodeTypes.AssignmentNode;
 import parseTree.nodeTypes.IdentifierNode;
@@ -35,6 +37,7 @@ import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.StatementBlockNode;
 import parseTree.nodeTypes.ProgramNode;
 import parseTree.nodeTypes.RangeNode;
+import parseTree.nodeTypes.ReturnNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
@@ -42,6 +45,7 @@ import parseTree.nodeTypes.TypeNode;
 import parseTree.nodeTypes.WhileNode;
 import semanticAnalyzer.signatures.Promotion;
 import semanticAnalyzer.types.Array;
+import semanticAnalyzer.types.FunctionSignatureType;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Range;
 import semanticAnalyzer.types.Type;
@@ -238,11 +242,14 @@ public class ASMCodeGenerator {
 			}
 		}
 		public void visitLeave(StatementBlockNode node) {
-			newVoidCode(node);
-			for(ParseNode child : node.getChildren()) {
-				ASMCodeFragment childCode = removeVoidCode(child);
-				code.append(childCode);
+			if(!(node.getParent() instanceof FunctionDefinitionNode)) {
+				newVoidCode(node);
+				for(ParseNode child : node.getChildren()) {
+					ASMCodeFragment childCode = removeVoidCode(child);
+					code.append(childCode);
+				}
 			}
+			
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -272,14 +279,21 @@ public class ASMCodeGenerator {
 		public void visitLeave(DeclarationNode node) {
 			newVoidCode(node);
 			ASMCodeFragment lvalue = removeAddressCode(node.child(0));	
-			ASMCodeFragment rvalue = removeValueCode(node.child(1));
-			
 			code.append(lvalue);
-			code.append(rvalue);
 			
+			ASMCodeFragment rvalue = removeValueCode(node.child(1));
+			code.append(rvalue);
 			
 			ASMCodeFragment storeFrag = generateStore(node);
 			code.append(storeFrag);
+			
+			if(!(node.child(1) instanceof FunctionInvocation)) {
+				
+			}
+			
+			
+			
+			
 			
 		}
 		public void visitLeave(AssignmentNode node) {
@@ -644,6 +658,195 @@ public class ASMCodeGenerator {
 			else {
 				throw new RuntimeException("Varient unimplemented in ASMCodeGenerator Operator Nde");
 			}
+
+		}
+		///////////////////////////////////////////////////////////////////////////
+		// return
+//		public void visitLeave(ReturnNode node) {
+//			
+//			//newVoidCode(node);
+//			newValueCode(node);
+//			code.append(removeValueCode(node));
+//			
+//
+//
+//		}
+		///////////////////////////////////////////////////////////////////////////
+		// function invocation
+		public void visitLeave(FunctionInvocation node) {
+			//newVoidCode(node);
+			newValueCode(node); // TODO: fix this?
+			// parameters are stored by the allocator?
+			// TODO: jump to function definition
+			Labeller labeller = new Labeller("function-invocation");
+			String startLabel = labeller.newLabel("start");
+			String endLabel = labeller.newLabel("end");
+			code.add(Label, startLabel);
+			
+			// store parameters?
+			code.add(PushD,RunTime.STACK_POINTER);
+			code.add(LoadI);
+			
+			for(ParseNode arg: node.child(1).getChildren()) {
+				
+				code.add(PushI,arg.getType().getSize());
+				code.add(Subtract);
+				code.add(Duplicate);
+
+				code.append(removeValueCode(arg));
+				code.add(opcodeForStore(arg.getType()) );
+				
+			}
+			// update StackPointer
+			code.add(PushD,RunTime.STACK_POINTER);
+			//code.add(LoadI); // TODO: is this right?
+			code.add(Exchange);
+			code.add(StoreI);
+			code.add(Call, "-function-definition-1-start");
+			
+			// function then should take the return value from the location pointed at by the stack counter and 
+			//place it on the ASM stack. 
+			//code.add(PStack);
+			FunctionSignatureType sig = (FunctionSignatureType) node.child(0).getType();
+			Type returnType = sig.returnType();
+			
+			code.add(PushD,RunTime.STACK_POINTER);
+			code.add(LoadI);
+			//System.out.println(opcodeForLoad(returnType));
+			code.add(opcodeForLoad(returnType));
+			
+			//Finally, it moves the stack pointer up by the size of the return value:
+			code.add(PushD,RunTime.STACK_POINTER);
+			code.add(Duplicate);
+			code.add(LoadI);
+			code.add(PushI,returnType.getSize());
+			code.add(Add);
+			code.add(StoreI);
+			
+			
+			
+			
+		
+		}
+		///////////////////////////////////////////////////////////////////////////
+		// function defintion
+		public void visitLeave(FunctionDefinitionNode node) {
+			newVoidCode(node);
+			
+			Labeller labeller = new Labeller("function-definition");
+			String startLabel = labeller.newLabel("start");
+			String skipLabel = labeller.newLabel("skip");
+			// need to skip over this code when visited
+			
+			code.add(Jump,skipLabel);
+			code.add(Label, startLabel);
+			// frame pointer
+			
+			// store frame pointer as dynamic link
+			code.add(PushD,RunTime.STACK_POINTER); //[&address, STACK_POINTER]
+			code.add(LoadI); //[&address,&STACK_POINTER]
+			code.add(PushI,4);  
+			code.add(Subtract);  // [&address,(&STACK_POINTER-4)]	
+			code.add(Duplicate);// [&address,(&STACK_POINTER-4), (&STACK_POINTER-4)]	
+			
+			code.add(PushD,RunTime.FRAME_POINTER); // [&address,(&STACK_POINTER-4), (&STACK_POINTER-4), framePointer]
+			code.add(LoadI);  
+			//code.add(PStack);
+			code.add(StoreI); // [&address,(&STACK_POINTER-4)]
+			// store return address
+			code.add(PushI, 4);
+			code.add(Subtract); // [&address,(&STACK_POINTER-4 -4)]
+			code.add(Exchange);
+			code.add(StoreI);
+			
+			// Frame pointer is set to same as Stack Pointer
+			code.add(PushD,RunTime.FRAME_POINTER); 
+			//code.add(LoadI);
+			code.add(PushD, RunTime.STACK_POINTER);
+			code.add(LoadI);
+			code.add(StoreI);
+			
+			// size of the frame for barge() is subtracted from the stack pointer.
+			Scope scope = node.child(3).getScope();
+			code.add(PushD, RunTime.STACK_POINTER);
+			code.add(Duplicate);
+			code.add(LoadI);
+			code.add(PushI,scope.getAllocatedSize() );
+			code.add(Subtract);
+			code.add(StoreI);
+			
+			// execute procedure code 
+			Type returnType = null; //save type for later
+			for(ParseNode child : node.child(3).getChildren()) { // TODO: What if return isnt last statement?
+				if(child instanceof ReturnNode){
+					// put return value on asm stack
+					returnType = child.child(0).getType();
+					code.append(removeValueCode(child.child(0)));
+					
+				}
+				else {
+					ASMCodeFragment childCode = removeVoidCode(child);
+					code.append(childCode);
+				}
+			}
+			
+			//exit handshake code for barge( ) should first push the return address (stored at framePointer-
+			//8) onto the accumulator stack
+			code.add(PushD,RunTime.FRAME_POINTER); 
+			code.add(LoadI);
+			code.add(PushI, 8);
+			code.add(Subtract);
+			code.add(LoadI);
+			
+			
+			//then replace the frame pointer with the dynamic link
+			code.add(PushD,RunTime.FRAME_POINTER); 
+			code.add(PushD,RunTime.FRAME_POINTER); 
+			code.add(PushI, 4);
+			code.add(Subtract);
+			code.add(LoadI);
+			code.add(StoreI);
+			
+			//Exchange operation
+			//brings the return value back to the top of the ASM accumulator stack.
+			code.add(Exchange); //[&returnAddress, returnValue]
+			
+			
+			//Then the code should increase the stack pointer by the size of barge's frame + the size of barge's arguments,
+			//i.e. by the size of the parameter scope. Everything now below the stack pointer is no longer needed.
+			code.add(PushD,RunTime.STACK_POINTER);
+			code.add(Duplicate);
+			code.add(LoadI);
+			code.add(PushI, node.child(3).getScope().getAllocatedSize());
+			code.add(Add);
+			code.add(PushI,node.getScope().getAllocatedSize() );	
+			code.add(Add);
+			code.add(StoreI);
+			
+			//Finally, it should decrease the stack pointer by the return value size (in our example, the return value is an int,
+			//having a size of 4 bytes).
+			code.add(PushD,RunTime.STACK_POINTER);
+			code.add(Duplicate);
+			code.add(LoadI);
+			code.add(PushI, returnType.getSize());
+			code.add(Subtract);
+			code.add(StoreI);
+			
+			// Then it should store the return value at that location.
+			code.add(PushD,RunTime.STACK_POINTER);
+			code.add(LoadI);
+			code.add(Exchange);
+			code.add(opcodeForStore(returnType));
+			
+	
+			
+			
+			//return using the return address on the ASM stack, transferring control back 
+			code.add(Return);	
+			
+			//code.add(Jump,"-function-invocation-2-end ");
+			code.add(Label,skipLabel);
+			
 
 		}
 		///////////////////////////////////////////////////////////////////////////

@@ -69,7 +69,11 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	public void visitEnter(ProgramNode node) {
 		enterProgramScope(node);
 	}
-
+	
+	@Override
+	public void visitEnter(FunctionDefinitionNode node) {
+		//enterParameterScope(node); // dont do this
+	}
 
 	@Override
 	public void visitLeave(FunctionDefinitionNode node) {

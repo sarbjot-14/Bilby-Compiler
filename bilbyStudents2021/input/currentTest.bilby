@@ -1,15 +1,4 @@
-func int barge (int e, float f, int g ) {
-	return e;
-}
 
 
-func int hop ( ) {
-	imm a := 14;
-	imm b := 1.23;
-	imm c := 20;
-	imm d := barge( a, b, c);
-	return d;
-}
-main{
-	imm ans  := hop();
-}
+
+
