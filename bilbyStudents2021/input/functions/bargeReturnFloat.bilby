@@ -1,6 +1,5 @@
 func float barge (int e, float f, int g ) {
 	print e $n;
-	
 	return f;
 }
 

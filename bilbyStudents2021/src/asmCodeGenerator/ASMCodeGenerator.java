@@ -278,18 +278,21 @@ public class ASMCodeGenerator {
 
 		public void visitLeave(DeclarationNode node) {
 			newVoidCode(node);
+			code.add(PStack);
 			ASMCodeFragment lvalue = removeAddressCode(node.child(0));	
 			code.append(lvalue);
+			code.add(PStack);
 			
 			ASMCodeFragment rvalue = removeValueCode(node.child(1));
+			
 			code.append(rvalue);
+			code.add(PStack);
 			
 			ASMCodeFragment storeFrag = generateStore(node);
+			code.add(Halt);
 			code.append(storeFrag);
 			
-			if(!(node.child(1) instanceof FunctionInvocation)) {
-				
-			}
+			
 			
 			
 			
@@ -675,9 +678,10 @@ public class ASMCodeGenerator {
 		// function invocation
 		public void visitLeave(FunctionInvocation node) {
 			//newVoidCode(node);
+			
 			newValueCode(node); // TODO: fix this?
 			// parameters are stored by the allocator?
-			// TODO: jump to function definition
+			
 			Labeller labeller = new Labeller("function-invocation");
 			String startLabel = labeller.newLabel("start");
 			String endLabel = labeller.newLabel("end");
@@ -702,7 +706,9 @@ public class ASMCodeGenerator {
 			//code.add(LoadI); // TODO: is this right?
 			code.add(Exchange);
 			code.add(StoreI);
-			code.add(Call, "-function-definition-1-start");
+			
+			//System.out.println( node.child(0).getToken().getLexeme()+"-function-definition");
+			code.add(Call, node.child(0).getToken().getLexeme()+"-function-definition");
 			
 			// function then should take the return value from the location pointed at by the stack counter and 
 			//place it on the ASM stack. 
@@ -712,8 +718,12 @@ public class ASMCodeGenerator {
 			
 			code.add(PushD,RunTime.STACK_POINTER);
 			code.add(LoadI);
+			code.add(PStack);
+			
 			//System.out.println(opcodeForLoad(returnType));
 			code.add(opcodeForLoad(returnType));
+			code.add(PStack);
+			
 			
 			//Finally, it moves the stack pointer up by the size of the return value:
 			code.add(PushD,RunTime.STACK_POINTER);
@@ -732,14 +742,15 @@ public class ASMCodeGenerator {
 		// function defintion
 		public void visitLeave(FunctionDefinitionNode node) {
 			newVoidCode(node);
-			
+			//System.out.println(node.child(1).getToken().getLexeme()+"-function-definition");
 			Labeller labeller = new Labeller("function-definition");
-			String startLabel = labeller.newLabel("start");
+			String startLabel = node.child(1).getToken().getLexeme()+"-function-definition";
 			String skipLabel = labeller.newLabel("skip");
 			// need to skip over this code when visited
 			
 			code.add(Jump,skipLabel);
 			code.add(Label, startLabel);
+			code.add(PStack);
 			// frame pointer
 			
 			// store frame pointer as dynamic link
@@ -751,7 +762,7 @@ public class ASMCodeGenerator {
 			
 			code.add(PushD,RunTime.FRAME_POINTER); // [&address,(&STACK_POINTER-4), (&STACK_POINTER-4), framePointer]
 			code.add(LoadI);  
-			//code.add(PStack);
+			code.add(PStack);
 			code.add(StoreI); // [&address,(&STACK_POINTER-4)]
 			// store return address
 			code.add(PushI, 4);
@@ -810,6 +821,7 @@ public class ASMCodeGenerator {
 			//Exchange operation
 			//brings the return value back to the top of the ASM accumulator stack.
 			code.add(Exchange); //[&returnAddress, returnValue]
+			code.add(PStack);
 			
 			
 			//Then the code should increase the stack pointer by the size of barge's frame + the size of barge's arguments,
@@ -835,7 +847,8 @@ public class ASMCodeGenerator {
 			// Then it should store the return value at that location.
 			code.add(PushD,RunTime.STACK_POINTER);
 			code.add(LoadI);
-			code.add(Exchange);
+			code.add(Exchange); //[&returnAddress, STACK_POINTER returnValue]
+			code.add(PStack);
 			code.add(opcodeForStore(returnType));
 			
 	
