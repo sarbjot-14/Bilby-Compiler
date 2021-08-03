@@ -7,4 +7,5 @@ func float weight(int numHydrogen, int numOxygen) {
 }
 main{
 	imm ans  := weight(4,5);
+	print ans $n;
 }

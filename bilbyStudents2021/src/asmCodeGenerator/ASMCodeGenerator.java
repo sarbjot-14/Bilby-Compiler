@@ -168,7 +168,6 @@ public class ASMCodeGenerator {
 				code.add(LoadI);
 			}	
 			else if(node.getType() == PrimitiveType.FLOAT) {
-				code.add(PStack);
 				code.add(LoadF);
 				
 			}
@@ -280,18 +279,13 @@ public class ASMCodeGenerator {
 
 		public void visitLeave(DeclarationNode node) {
 			newVoidCode(node);
-			code.add(PStack);
 			ASMCodeFragment lvalue = removeAddressCode(node.child(0));	
 			code.append(lvalue);
-			code.add(PStack);
 			
 			ASMCodeFragment rvalue = removeValueCode(node.child(1));
 			code.append(rvalue);
-			code.add(PStack);
-			code.add(PStack);
 			
 			ASMCodeFragment storeFrag = generateStore(node);
-			//code.add(Halt);
 			code.append(storeFrag);
 	
 			
@@ -325,7 +319,7 @@ public class ASMCodeGenerator {
 			Type type = node.getType();
 			ASMCodeFragment storeFrag = generateStore(node);
 			code.append(storeFrag);
-			code.add(Halt);
+			//code.add(Halt);
 		}
 		public void visitLeave(IndexAssignmentNode node) {
 			
@@ -576,7 +570,6 @@ public class ASMCodeGenerator {
 					
 					code.add(PushD,highendLabel);
 					code.add(LoadC);
-					//code.add(PStack);
 					code.add(StoreC);
 					
 					code.add(PushI,1);
@@ -677,7 +670,7 @@ public class ASMCodeGenerator {
 		public void visitLeave(FunctionInvocation node) {
 			//newVoidCode(node);
 			
-			newValueCode(node); // TODO: fix this?
+			newValueCode(node); 
 			// parameters are stored by the allocator?
 			
 			Labeller labeller = new Labeller("function-invocation");
@@ -709,19 +702,20 @@ public class ASMCodeGenerator {
 			
 			code.add(Call, node.child(0).getToken().getLexeme()+"-function-definition");
 			
+			// check if frame pointer is the same...
+			code.add(PushD,RunTime.FRAME_POINTER); 
+			code.add(LoadI);  
+			code.add(Pop);
 			// function then should take the return value from the location pointed at by the stack counter and 
 			//place it on the ASM stack. 
-			//code.add(PStack);
 			FunctionSignatureType sig = (FunctionSignatureType) node.child(0).getType();
 			Type returnType = sig.returnType();
 			
 			code.add(PushD,RunTime.STACK_POINTER);
 			code.add(LoadI);
-			code.add(PStack);
 			
 			//System.out.println(opcodeForLoad(returnType));
 			code.add(opcodeForLoad(returnType));
-			code.add(PStack);
 			
 			
 			//Finally, it moves the stack pointer up by the size of the return value:
@@ -746,7 +740,6 @@ public class ASMCodeGenerator {
 			
 			code.add(Jump,skipLabel);
 			code.add(Label, startLabel);
-			code.add(PStack);
 			// frame pointer
 			
 			// store frame pointer as dynamic link
@@ -758,7 +751,6 @@ public class ASMCodeGenerator {
 			
 			code.add(PushD,RunTime.FRAME_POINTER); // [&address,(&STACK_POINTER-4), (&STACK_POINTER-4), framePointer]
 			code.add(LoadI);  
-			code.add(PStack);
 			code.add(StoreI); // [&address,(&STACK_POINTER-4)]
 			// store return address
 			code.add(PushI, 4);
@@ -809,6 +801,7 @@ public class ASMCodeGenerator {
 			//then replace the frame pointer with the dynamic link
 			code.add(PushD,RunTime.FRAME_POINTER); 
 			code.add(PushD,RunTime.FRAME_POINTER); 
+			code.add(LoadI);
 			code.add(PushI, 4);
 			code.add(Subtract);
 			code.add(LoadI);
@@ -817,7 +810,6 @@ public class ASMCodeGenerator {
 			//Exchange operation
 			//brings the return value back to the top of the ASM accumulator stack.
 			code.add(Exchange); //[&returnAddress, returnValue]
-			code.add(PStack);
 			
 			
 			//Then the code should increase the stack pointer by the size of barge's frame + the size of barge's arguments,
@@ -844,7 +836,6 @@ public class ASMCodeGenerator {
 			code.add(PushD,RunTime.STACK_POINTER);
 			code.add(LoadI);
 			code.add(Exchange); //[&returnAddress, STACK_POINTER returnValue]
-			code.add(PStack);
 			code.add(opcodeForStore(returnType));
 			
 
