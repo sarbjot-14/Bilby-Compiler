@@ -410,6 +410,7 @@ public class PrintStatementGenerator {
 				
 			}
 			else if(myArray.getSubtype() ==PrimitiveType.FLOAT) {
+				
 				code.add(LoadF);
 				code.add(PushD, RunTime.FLOATING_PRINT_FORMAT);
 				code.add(Printf);

@@ -168,7 +168,9 @@ public class ASMCodeGenerator {
 				code.add(LoadI);
 			}	
 			else if(node.getType() == PrimitiveType.FLOAT) {
+				code.add(PStack);
 				code.add(LoadF);
+				
 			}
 			else if(node.getType() == PrimitiveType.BOOLEAN) {
 				code.add(LoadC);
@@ -284,19 +286,14 @@ public class ASMCodeGenerator {
 			code.add(PStack);
 			
 			ASMCodeFragment rvalue = removeValueCode(node.child(1));
-			
 			code.append(rvalue);
+			code.add(PStack);
 			code.add(PStack);
 			
 			ASMCodeFragment storeFrag = generateStore(node);
-			code.add(Halt);
+			//code.add(Halt);
 			code.append(storeFrag);
-			
-			
-			
-			
-			
-			
+	
 			
 		}
 		public void visitLeave(AssignmentNode node) {
@@ -328,6 +325,7 @@ public class ASMCodeGenerator {
 			Type type = node.getType();
 			ASMCodeFragment storeFrag = generateStore(node);
 			code.append(storeFrag);
+			code.add(Halt);
 		}
 		public void visitLeave(IndexAssignmentNode node) {
 			
@@ -708,6 +706,7 @@ public class ASMCodeGenerator {
 			code.add(StoreI);
 			
 			//System.out.println( node.child(0).getToken().getLexeme()+"-function-definition");
+			
 			code.add(Call, node.child(0).getToken().getLexeme()+"-function-definition");
 			
 			// function then should take the return value from the location pointed at by the stack counter and 
@@ -733,10 +732,7 @@ public class ASMCodeGenerator {
 			code.add(Add);
 			code.add(StoreI);
 			
-			
-			
-			
-		
+
 		}
 		///////////////////////////////////////////////////////////////////////////
 		// function defintion
@@ -851,9 +847,7 @@ public class ASMCodeGenerator {
 			code.add(PStack);
 			code.add(opcodeForStore(returnType));
 			
-	
-			
-			
+
 			//return using the return address on the ASM stack, transferring control back 
 			code.add(Return);	
 			
