@@ -1,7 +1,9 @@
+
+
 main{
 
 	print #C <= #C $n;
-	print #C <= #G $n;
+	%print #C <= #G $n;
 	
 	
 }

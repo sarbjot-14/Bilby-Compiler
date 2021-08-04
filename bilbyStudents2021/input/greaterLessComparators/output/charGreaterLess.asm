@@ -410,6 +410,9 @@
         Pop                                    
         PushI        1                         
         Jump         -lessThanEquals-13-join   
+        Label        -lessThanEquals-13-true   
+        PushI        1                         
+        Jump         -lessThanEquals-13-join   
         Label        -lessThanEquals-13-false  
         PushI        0                         
         Jump         -lessThanEquals-13-join   
@@ -437,6 +440,9 @@
         Jump         -lessThanEquals-15-true   
         Label        -lessThanEquals-15-trueZero 
         Pop                                    
+        PushI        1                         
+        Jump         -lessThanEquals-15-join   
+        Label        -lessThanEquals-15-true   
         PushI        1                         
         Jump         -lessThanEquals-15-join   
         Label        -lessThanEquals-15-false  

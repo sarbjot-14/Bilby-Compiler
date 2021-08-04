@@ -64,10 +64,14 @@ public class LessThanEqualCodeGeneratorInt implements SimpleCodeGenerator {
 		code.add(Pop);
 		code.add(PushI, 1);
 		code.add(Jump, joinLabel);
+		code.add(Label, trueLabel);
+		code.add(PushI, 1);
+		code.add(Jump, joinLabel);
 		code.add(Label, falseLabel);
 		code.add(PushI, 0);
 		code.add(Jump, joinLabel);
 		code.add(Label, joinLabel);
+		
 		
 		return code;
 	}
