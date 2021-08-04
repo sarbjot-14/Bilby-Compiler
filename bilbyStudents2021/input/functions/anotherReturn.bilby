@@ -1,6 +1,5 @@
 func int pax( int a, int b) {
-	
-	if (a<b ) {
+	if (a <b ) {
 		print "what" $n;
 		return a ;
 	}
@@ -11,8 +10,10 @@ main {
 	imm a := 21;
 	imm b := 14;
 	imm c := 16;
-	
-	imm m := pax(25, 25);
-	print m $n;
-	
+	if( a > 5) {
+		imm m := pax(a, b);
+		print m $n;
+	}
+		
+
 }

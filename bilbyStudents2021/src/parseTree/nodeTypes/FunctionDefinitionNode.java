@@ -5,7 +5,7 @@ import parseTree.ParseNodeVisitor;
 import tokens.Token;
 
 public class FunctionDefinitionNode extends ParseNode {
-
+	private String startExistHandShakeLabel;
 	public FunctionDefinitionNode(Token token) {
 		super(token);
 	}
@@ -15,6 +15,14 @@ public class FunctionDefinitionNode extends ParseNode {
 	
 	////////////////////////////////////////////////////////////
 	// no attributes
+	
+	public void setStartExistHandShakeLabel(String startExistHandShakeLabel) {
+		this.startExistHandShakeLabel = startExistHandShakeLabel;
+	}
+	
+	public String getStartExistHandShakeLabel() {
+		return startExistHandShakeLabel;
+	}
 
 	
 	///////////////////////////////////////////////////////////
@@ -25,4 +33,5 @@ public class FunctionDefinitionNode extends ParseNode {
 		visitChildren(visitor);
 		visitor.visitLeave(this);
 	}
+	
 }

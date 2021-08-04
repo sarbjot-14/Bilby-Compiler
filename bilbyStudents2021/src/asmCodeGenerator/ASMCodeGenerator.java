@@ -149,6 +149,7 @@ public class ASMCodeGenerator {
 			return frag;
 		}		
 		ASMCodeFragment removeVoidCode(ParseNode node) {
+			
 			ASMCodeFragment frag = getAndRemoveCode(node);
 			assert frag.isVoid();
 			return frag;
@@ -243,13 +244,40 @@ public class ASMCodeGenerator {
 			}
 		}
 		public void visitLeave(StatementBlockNode node) {
+			
 			if(!(node.getParent() instanceof FunctionDefinitionNode)) {
 				newVoidCode(node);
 				for(ParseNode child : node.getChildren()) {
-					ASMCodeFragment childCode = removeVoidCode(child);
-					code.append(childCode);
+//					ASMCodeFragment childCode = removeVoidCode(child);
+//					code.append(childCode);
+					//
+					if(child instanceof ReturnNode){
+						// put return value on asm stack
+						
+						
+						for(ParseNode current : node.pathToRoot()) {
+							if(current instanceof FunctionDefinitionNode  ) {
+								FunctionDefinitionNode funcDef = (FunctionDefinitionNode)current;
+								//System.out.println(funcDef.getStartExistHandShakeLabel());
+								code.append(removeValueCode(child.child(0)));
+								code.add(Jump,funcDef.getStartExistHandShakeLabel());
+								//code.add(Halt);
+								break;
+							}
+							
+						}	
+						break;
+						
+					}
+					else {
+						
+						ASMCodeFragment childCode = removeVoidCode(child);
+						code.append(childCode);
+					}
 				}
+				
 			}
+			
 			
 		}
 
@@ -319,7 +347,7 @@ public class ASMCodeGenerator {
 			Type type = node.getType();
 			ASMCodeFragment storeFrag = generateStore(node);
 			code.append(storeFrag);
-			//code.add(Halt);
+			
 		}
 		public void visitLeave(IndexAssignmentNode node) {
 			
@@ -703,9 +731,9 @@ public class ASMCodeGenerator {
 			code.add(Call, node.child(0).getToken().getLexeme()+"-function-definition");
 			
 			// check if frame pointer is the same...
-			code.add(PushD,RunTime.FRAME_POINTER); 
-			code.add(LoadI);  
-			code.add(Pop);
+//			code.add(PushD,RunTime.FRAME_POINTER); 
+//			code.add(LoadI);  
+//			code.add(Pop);
 			// function then should take the return value from the location pointed at by the stack counter and 
 			//place it on the ASM stack. 
 			FunctionSignatureType sig = (FunctionSignatureType) node.child(0).getType();
@@ -714,8 +742,9 @@ public class ASMCodeGenerator {
 			code.add(PushD,RunTime.STACK_POINTER);
 			code.add(LoadI);
 			
-			//System.out.println(opcodeForLoad(returnType));
+			
 			code.add(opcodeForLoad(returnType));
+			
 			
 			
 			//Finally, it moves the stack pointer up by the size of the return value:
@@ -730,11 +759,19 @@ public class ASMCodeGenerator {
 		}
 		///////////////////////////////////////////////////////////////////////////
 		// function defintion
+		public void visitEnter(FunctionDefinitionNode node) {
+			newVoidCode(node);
+			String startExitHandShakeLabel = node.child(1).getToken().getLexeme()+"-exit-hand-shake";
+			node.setStartExistHandShakeLabel(startExitHandShakeLabel);
+		}
 		public void visitLeave(FunctionDefinitionNode node) {
 			newVoidCode(node);
 			//System.out.println(node.child(1).getToken().getLexeme()+"-function-definition");
 			Labeller labeller = new Labeller("function-definition");
 			String startLabel = node.child(1).getToken().getLexeme()+"-function-definition";
+			String startExitHandShakeLabel = node.getStartExistHandShakeLabel();
+			//node.setStartExistHandShakeLabel(startExitHandShakeLabel);
+			
 			String skipLabel = labeller.newLabel("skip");
 			// need to skip over this code when visited
 			
@@ -775,12 +812,15 @@ public class ASMCodeGenerator {
 			code.add(StoreI);
 			
 			// execute procedure code 
-			Type returnType = null; //save type for later
+			//Type returnType = null; //save type for later
 			for(ParseNode child : node.child(3).getChildren()) { // TODO: What if return isnt last statement?
 				if(child instanceof ReturnNode){
 					// put return value on asm stack
-					returnType = child.child(0).getType();
+					
+					//returnType = child.child(0).getType();
 					code.append(removeValueCode(child.child(0)));
+					code.add(Jump,startExitHandShakeLabel);
+					break;
 					
 				}
 				else {
@@ -791,6 +831,8 @@ public class ASMCodeGenerator {
 			
 			//exit handshake code for barge( ) should first push the return address (stored at framePointer-
 			//8) onto the accumulator stack
+			code.add(Label, startExitHandShakeLabel);
+			
 			code.add(PushD,RunTime.FRAME_POINTER); 
 			code.add(LoadI);
 			code.add(PushI, 8);
@@ -828,7 +870,7 @@ public class ASMCodeGenerator {
 			code.add(PushD,RunTime.STACK_POINTER);
 			code.add(Duplicate);
 			code.add(LoadI);
-			code.add(PushI, returnType.getSize());
+			code.add(PushI, node.child(0).getType().getSize());
 			code.add(Subtract);
 			code.add(StoreI);
 			
@@ -836,7 +878,8 @@ public class ASMCodeGenerator {
 			code.add(PushD,RunTime.STACK_POINTER);
 			code.add(LoadI);
 			code.add(Exchange); //[&returnAddress, STACK_POINTER returnValue]
-			code.add(opcodeForStore(returnType));
+			
+			code.add(opcodeForStore(node.child(0).getType()));
 			
 
 			//return using the return address on the ASM stack, transferring control back 
@@ -1141,8 +1184,7 @@ public class ASMCodeGenerator {
 				code.append(removeValueCode(elements.get(i)));
 				// if not matching with array type && NOT AN ARRAY && NOT A RANGE
 				if(elements.get(i).getType() != arrayType && !(arrayType instanceof Array)&& !(arrayType instanceof Range)){
-//					System.out.println("Does not match");
-//					System.out.println(elements.get(i).getType());
+
 					if(elements.get(i).getType() == PrimitiveType.CHARACTER) {
 						if(arrayType == PrimitiveType.INTEGER ) {
 							// nothing?

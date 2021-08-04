@@ -7,7 +7,7 @@ import static asmCodeGenerator.codeStorage.ASMOpcode.PushI;
 import static asmCodeGenerator.codeStorage.ASMOpcode.JumpFalse;
 import static asmCodeGenerator.codeStorage.ASMOpcode.Duplicate;
 import static asmCodeGenerator.codeStorage.ASMOpcode.PStack;
-
+import static asmCodeGenerator.codeStorage.ASMOpcode.Pop;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class LessCodeGenerator implements SimpleCodeGenerator {
 		String trueLabel  = labeller.newLabel("true");
 		String falseLabel = labeller.newLabel("false");
 		String joinLabel  = labeller.newLabel("join");
-		String trueZeroLabel  = labeller.newLabel("trueZero");
+		String falseZeroLabel  = labeller.newLabel("falseZero");
 
 		ASMCodeFragment code = new ASMCodeFragment(CodeType.GENERATES_VALUE);
 
@@ -48,14 +48,19 @@ public class LessCodeGenerator implements SimpleCodeGenerator {
 		for(ASMCodeFragment fragment: args) {
 			code.append(fragment);
 		}
+		//code.add(PStack);
 
 		code.add(Label, subLabel);
 		code.add(subtractOpcode);
 		code.add(Duplicate);
-		code.add(jumpPosOpcode, falseLabel);
+		code.add(jumpPosOpcode, falseZeroLabel);
 		code.add(JumpFalse, falseLabel);
 		code.add(Jump, trueLabel);
 
+		code.add(Label, falseZeroLabel);
+		code.add(Pop);
+		code.add(PushI, 0);
+		code.add(Jump, joinLabel);
 		code.add(Label, trueLabel);
 		code.add(PushI, 1);
 		code.add(Jump, joinLabel);
@@ -63,6 +68,7 @@ public class LessCodeGenerator implements SimpleCodeGenerator {
 		code.add(PushI, 0);
 		code.add(Jump, joinLabel);
 		code.add(Label, joinLabel);
+		//code.add(PStack);
 		return code;
 	}
 
