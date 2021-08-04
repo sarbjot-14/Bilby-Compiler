@@ -275,9 +275,13 @@
         Label        -lessInt-5-sub            
         Subtract                               
         Duplicate                              
-        JumpPos      -lessInt-5-false          
+        JumpPos      -lessInt-5-falseZero      
         JumpFalse    -lessInt-5-false          
         Jump         -lessInt-5-true           
+        Label        -lessInt-5-falseZero      
+        Pop                                    
+        PushI        0                         
+        Jump         -lessInt-5-join           
         Label        -lessInt-5-true           
         PushI        1                         
         Jump         -lessInt-5-join           
@@ -303,9 +307,13 @@
         Label        -lessInt-7-sub            
         Subtract                               
         Duplicate                              
-        JumpPos      -lessInt-7-false          
+        JumpPos      -lessInt-7-falseZero      
         JumpFalse    -lessInt-7-false          
         Jump         -lessInt-7-true           
+        Label        -lessInt-7-falseZero      
+        Pop                                    
+        PushI        0                         
+        Jump         -lessInt-7-join           
         Label        -lessInt-7-true           
         PushI        1                         
         Jump         -lessInt-7-join           
@@ -331,9 +339,13 @@
         Label        -greater-than-equal-int-9-sub 
         Subtract                               
         Duplicate                              
-        JumpFalse    -greater-than-equal-int-9-true 
+        JumpFalse    -greater-than-equal-int-9-trueZero 
         JumpPos      -greater-than-equal-int-9-true 
         Jump         -greater-than-equal-int-9-false 
+        Label        -greater-than-equal-int-9-trueZero 
+        Pop                                    
+        PushI        1                         
+        Jump         -greater-than-equal-int-9-join 
         Label        -greater-than-equal-int-9-true 
         PushI        1                         
         Jump         -greater-than-equal-int-9-join 
@@ -359,9 +371,13 @@
         Label        -greater-than-equal-int-11-sub 
         Subtract                               
         Duplicate                              
-        JumpFalse    -greater-than-equal-int-11-true 
+        JumpFalse    -greater-than-equal-int-11-trueZero 
         JumpPos      -greater-than-equal-int-11-true 
         Jump         -greater-than-equal-int-11-false 
+        Label        -greater-than-equal-int-11-trueZero 
+        Pop                                    
+        PushI        1                         
+        Jump         -greater-than-equal-int-11-join 
         Label        -greater-than-equal-int-11-true 
         PushI        1                         
         Jump         -greater-than-equal-int-11-join 
@@ -387,10 +403,11 @@
         Label        -lessThanEquals-13-sub    
         Subtract                               
         Duplicate                              
-        JumpFalse    -lessThanEquals-13-true   
+        JumpFalse    -lessThanEquals-13-trueZero 
         JumpPos      -lessThanEquals-13-false  
         Jump         -lessThanEquals-13-true   
-        Label        -lessThanEquals-13-true   
+        Label        -lessThanEquals-13-trueZero 
+        Pop                                    
         PushI        1                         
         Jump         -lessThanEquals-13-join   
         Label        -lessThanEquals-13-false  
@@ -415,10 +432,11 @@
         Label        -lessThanEquals-15-sub    
         Subtract                               
         Duplicate                              
-        JumpFalse    -lessThanEquals-15-true   
+        JumpFalse    -lessThanEquals-15-trueZero 
         JumpPos      -lessThanEquals-15-false  
         Jump         -lessThanEquals-15-true   
-        Label        -lessThanEquals-15-true   
+        Label        -lessThanEquals-15-trueZero 
+        Pop                                    
         PushI        1                         
         Jump         -lessThanEquals-15-join   
         Label        -lessThanEquals-15-false  

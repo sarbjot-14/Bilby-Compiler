@@ -1,18 +1,7 @@
-func int pax( int a, int b) {
+main{
+
+	print #C <= #C $n;
+	print #C <= #G $n;
 	
-	if (a<b ) {
-		print "what" $n;
-		return a ;
-	}
-	print "here" $n;
-	return b;
-}
-main {
-	imm a := 21;
-	imm b := 14;
-	imm c := 16;
-	
-	imm m := pax(25, 25);
-	print m $n;
 	
 }

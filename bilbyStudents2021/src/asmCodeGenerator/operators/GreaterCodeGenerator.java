@@ -4,6 +4,7 @@ import static asmCodeGenerator.codeStorage.ASMOpcode.Jump;
 import static asmCodeGenerator.codeStorage.ASMOpcode.JumpPos;
 import static asmCodeGenerator.codeStorage.ASMOpcode.Label;
 import static asmCodeGenerator.codeStorage.ASMOpcode.PushI;
+import static asmCodeGenerator.codeStorage.ASMOpcode.*;
 
 import java.util.List;
 
@@ -46,7 +47,6 @@ public class GreaterCodeGenerator implements SimpleCodeGenerator {
 
 		code.add(Label, subLabel);
 		code.add(subtractOpcode);
-
 		code.add(jumpPosOpcode, trueLabel);
 		code.add(Jump, falseLabel);
 
@@ -57,6 +57,7 @@ public class GreaterCodeGenerator implements SimpleCodeGenerator {
 		code.add(PushI, 0);
 		code.add(Jump, joinLabel);
 		code.add(Label, joinLabel);
+	
 		return code;
 	}
 

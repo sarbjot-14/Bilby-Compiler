@@ -1,0 +1,16 @@
+
+func int fact(int n)
+{
+	print n $n;
+    if (n <= 1){ 
+        return 1;
+    }
+    else{
+        return n*fact(n-1); 
+    }   
+}
+main {
+	imm m := fact(3);
+	print m $n;
+	
+}

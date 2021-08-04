@@ -744,6 +744,7 @@ public class ASMCodeGenerator {
 			
 			
 			code.add(opcodeForLoad(returnType));
+			//code.add(PStack);
 			
 			
 			
@@ -878,7 +879,7 @@ public class ASMCodeGenerator {
 			code.add(PushD,RunTime.STACK_POINTER);
 			code.add(LoadI);
 			code.add(Exchange); //[&returnAddress, STACK_POINTER returnValue]
-			
+			//code.add(PStack);
 			code.add(opcodeForStore(node.child(0).getType()));
 			
 

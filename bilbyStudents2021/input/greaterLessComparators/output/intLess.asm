@@ -223,9 +223,13 @@
         Label        -lessInt-1-sub            
         Subtract                               
         Duplicate                              
-        JumpPos      -lessInt-1-false          
+        JumpPos      -lessInt-1-falseZero      
         JumpFalse    -lessInt-1-false          
         Jump         -lessInt-1-true           
+        Label        -lessInt-1-falseZero      
+        Pop                                    
+        PushI        0                         
+        Jump         -lessInt-1-join           
         Label        -lessInt-1-true           
         PushI        1                         
         Jump         -lessInt-1-join           
@@ -251,9 +255,13 @@
         Label        -lessInt-3-sub            
         Subtract                               
         Duplicate                              
-        JumpPos      -lessInt-3-false          
+        JumpPos      -lessInt-3-falseZero      
         JumpFalse    -lessInt-3-false          
         Jump         -lessInt-3-true           
+        Label        -lessInt-3-falseZero      
+        Pop                                    
+        PushI        0                         
+        Jump         -lessInt-3-join           
         Label        -lessInt-3-true           
         PushI        1                         
         Jump         -lessInt-3-join           
@@ -279,9 +287,13 @@
         Label        -lessInt-5-sub            
         Subtract                               
         Duplicate                              
-        JumpPos      -lessInt-5-false          
+        JumpPos      -lessInt-5-falseZero      
         JumpFalse    -lessInt-5-false          
         Jump         -lessInt-5-true           
+        Label        -lessInt-5-falseZero      
+        Pop                                    
+        PushI        0                         
+        Jump         -lessInt-5-join           
         Label        -lessInt-5-true           
         PushI        1                         
         Jump         -lessInt-5-join           
