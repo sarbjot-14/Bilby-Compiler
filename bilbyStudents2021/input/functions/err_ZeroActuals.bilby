@@ -1,0 +1,8 @@
+func float weight(int firstA, int secondA) {
+
+	return 5555.8 ;
+}
+main{
+	imm ans  := weight();
+	print ans $n;
+}

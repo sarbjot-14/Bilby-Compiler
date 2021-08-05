@@ -36,6 +36,7 @@ import parseTree.nodeTypes.ParameterListNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.ProgramNode;
 import parseTree.nodeTypes.RangeNode;
+import parseTree.nodeTypes.ReturnNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
@@ -343,17 +344,19 @@ class SemanticAnalysisVisitorAll extends ParseNodeVisitor.Default {
 		List<ParseNode> actuals = node.child(1).getChildren();
 		if(formals == null ) {
 			if( actuals.size() != 0) {
-				System.out.println("Acutals and Formals not same size!!!!!");
+				incorrectNumberOfParametersError(node,formals);
+				
 			}
 			
 		}
 		else if(formals.length != actuals.size()) {
-			System.out.println("Acutals and Formals not same size!!!!!");
+			incorrectNumberOfParametersError(node,formals);
 		}
 		else {
 			for(int i=0; i<formals.length ;i++) {
 				if(formals[i] != actuals.get(i).getType()) {
-					System.out.println("Acutals and Formals not same Type!!!!!");
+					parameterExpressionListTypeError(node, formals[i], actuals.get(i).getType());
+					//System.out.println("Acutals and Formals not same Type!!!!!");
 				}
 			}
 		}
@@ -366,6 +369,29 @@ class SemanticAnalysisVisitorAll extends ParseNodeVisitor.Default {
 
 
 
+	}
+
+	@Override
+	public void visitLeave(ReturnNode node) {
+		
+		node.setType(node.child(0).getType());
+		//System.out.println(node.child(0));
+		for(ParseNode current : node.pathToRoot()) {
+			if(current instanceof FunctionDefinitionNode  ) {
+				FunctionDefinitionNode funcDef = (FunctionDefinitionNode)current;
+				Type funcType = funcDef.child(0).getType();
+				if(funcType != node.getType()) {
+					
+					invalidReturntypeError(node,funcType, node.getType());
+				}
+
+				break;
+			}
+			else if(current instanceof ProgramNode) {
+				returnNotInFunctionError(node);
+			}
+
+		}
 	}
 	@Override
 	public void visitEnter(FunctionDefinitionNode node) {
@@ -599,7 +625,18 @@ class SemanticAnalysisVisitorAll extends ParseNodeVisitor.Default {
 	
 	///////////////////////////////////////////////////////////////////////////
 	// error logging/printing
-
+	private void incorrectNumberOfParametersError(ParseNode node,  Type[] childTypes) {
+		Token token = node.getToken();
+		
+		logError("provided incorrect number of parameters in function " + node.child(0).getToken().getLexeme() + " " 
+				 + childTypes  + " at " + token.getLocation());	
+	}
+	private void parameterExpressionListTypeError(ParseNode node, Type formal, Type actual) {
+		Token token = node.getToken();
+		
+		logError("types did not match in function " + node.child(0).getToken().getLexeme() + " "+formal + "  and " 
+				 + actual  + " at " + token.getLocation());	
+	}
 	private void multipleInterpretationError(OperatorNode node, List<Type> childTypes) {
 		Token token = node.getToken();
 		logError("operator " + token.getLexeme() + " has multiple interpretations " 
@@ -614,6 +651,16 @@ class SemanticAnalysisVisitorAll extends ParseNodeVisitor.Default {
 		Token token = node.getToken();
 		
 		logError("array cannot be promoted to a common type");	
+	}
+	private void returnNotInFunctionError(ParseNode node) {
+		Token token = node.getToken();
+		
+		logError("return is not in function");	
+	}
+	private void invalidReturntypeError(ParseNode node, Type funcType, Type returnType) {
+		Token token = node.getToken();
+		logError("return type  has invalid type " 
+				+ funcType  + " and " + returnType + " at " + token.getLocation());
 	}
 	private void typeCheckError(ParseNode node, List<Type> operandTypes) {
 		Token token = node.getToken();

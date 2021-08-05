@@ -6,6 +6,8 @@ import java.util.List;
 
 import inputHandler.Locator;
 
+import static asmCodeGenerator.codeStorage.ASMOpcode.Jump;
+
 import java.util.ArrayList;
 import lexicalAnalyzer.Lextant;
 import lexicalAnalyzer.Punctuator;
@@ -36,6 +38,7 @@ import parseTree.nodeTypes.ParameterListNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.ProgramNode;
 import parseTree.nodeTypes.RangeNode;
+import parseTree.nodeTypes.ReturnNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
@@ -73,34 +76,40 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	@Override
 	public void visitEnter(FunctionDefinitionNode node) {
 		//enterParameterScope(node); // dont do this
+		// set the function binding
+				IdentifierNode identifier = (IdentifierNode) node.child(1);
+				Type returnType = ((TypeNode)node.child(0)).typeFromToken();
+				
+				List<Type> paramTypeList = new ArrayList<Type>();
+				TypeNode typeNode = null;
+				for(ParseNode nodeChild:node.child(2).getChildren()) {
+					typeNode = (TypeNode) nodeChild.child(0);
+					//System.out.println(typeNode.typeFromToken());
+					paramTypeList.add(typeNode.typeFromToken());
+					//System.out.println(nodeChild.child(0).getToken());
+					//System.out.println(nodeChild.child(0));
+				}
+				FunctionSignatureType functionSignatureType = new FunctionSignatureType(returnType,paramTypeList);
+				//System.out.println(functionSignatureType);
+				boolean isImmutable=true;
+				addGlobalBinding(identifier, functionSignatureType, isImmutable);
+				//addBinding(identifier, functionSignatureType, isImmutable);
+				identifier.setType(functionSignatureType);
 	}
 
 	@Override
 	public void visitLeave(FunctionDefinitionNode node) {
 		//leaveScope(node); // leave parameter scope
 		
-		// set the function binding
-		IdentifierNode identifier = (IdentifierNode) node.child(1);
-		Type returnType = ((TypeNode)node.child(0)).typeFromToken();
 		
-		List<Type> paramTypeList = new ArrayList<Type>();
-		TypeNode typeNode = null;
-		for(ParseNode nodeChild:node.child(2).getChildren()) {
-			typeNode = (TypeNode) nodeChild.child(0);
-			//System.out.println(typeNode.typeFromToken());
-			paramTypeList.add(typeNode.typeFromToken());
-			//System.out.println(nodeChild.child(0).getToken());
-			//System.out.println(nodeChild.child(0));
-		}
-		FunctionSignatureType functionSignatureType = new FunctionSignatureType(returnType,paramTypeList);
-		//System.out.println(functionSignatureType);
-		boolean isImmutable=true;
-		addGlobalBinding(identifier, functionSignatureType, isImmutable);
-		//addBinding(identifier, functionSignatureType, isImmutable);
-		identifier.setType(functionSignatureType);
 
 	}
-	
+//	@Override
+//	public void visitEnter(ReturnNode node) {
+//		 
+//	}
+//
+
 	
 	// binding
 	private void addGlobalBinding(IdentifierNode identifierNode, Type type, boolean isImmutable) {
@@ -140,6 +149,11 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Token token = node.getToken();
 		logError("operator " + token.getLexeme() + " has multiple interpretations " 
 				+ childTypes  + " at " + token.getLocation());
+	}
+	private void invalidReturntypeError(ParseNode node, Type funcType, Type returnType) {
+		Token token = node.getToken();
+		logError("return type  has invalid type " 
+				+ funcType  + " and " + returnType + " at " + token.getLocation());
 	}
 	private void invalidRangeTypeError(ParseNode node, Type type) {
 		Token token = node.getToken();

@@ -1,4 +1,4 @@
-func int weight(int numHydrogen, int numOxygen) {
+func float weight(int numHydrogen, int numOxygen) {
 	imm g := 6.02E23 ;
 	imm hy := 1.008 ;
 	imm ox := 15.999 ;
